@@ -1,6 +1,6 @@
 import { Info, Links, Title } from "./components";
 import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/react"
+// import { SpeedInsights } from "@vercel/speed-insights/react"
 
 const App = () => {
   return (
@@ -11,7 +11,7 @@ const App = () => {
         <Info />
       </div>
       <Analytics />
-      <SpeedInsights />
+      {/* <SpeedInsights /> */}
     </>
   );
 };
