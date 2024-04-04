@@ -10,7 +10,7 @@ const Info = () => {
         <p>First album soon</p>
         <p>Subscribe for more</p>
       </div>
-      <p>(001)</p>
+      <p><a target="_blank" href="https://www.bytcd.com/">(001</a>)</p>
     </div>
   );
 };
