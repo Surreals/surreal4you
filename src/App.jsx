@@ -1,5 +1,7 @@
 import { Info, Links, Title } from "./components";
 import { Analytics } from "@vercel/analytics/react";
+import mp4 from './assets/vid.mp4';
+import webm from './assets/vid.webm';
 // import { SpeedInsights } from "@vercel/speed-insights/react"
 
 const App = () => {
@@ -9,9 +11,9 @@ const App = () => {
         <Links />
         <Title />
         <Info />
-        <video autoPlay muted loop style={{zIndex: '-1'}} className="absolute blur-sm md:blur-none -translate-x-1/2 -translate-y-2 md:-translate-x-1.5 md:-translate-y-1  w-auto min-w-full min-h-full max-w-none">
-          <source src="public/vid.webm" type="video/webm"/>
-          <source src="public/vid.mp4" type="video/mp4" />
+        <video autoPlay muted loop style={{zIndex: '-1'}} className="bg-slate-50 hue-rotate-45 absolute blur-sm md:blur-0 -translate-x-1/2 -translate-y-3 md:-translate-x-1.5 md:-translate-y-1  w-auto min-w-full min-h-full max-w-none">
+          <source src={webm} type="video/webm"/>
+          <source src={mp4} type="video/mp4" />
         </video>
       </div>
       <Analytics />

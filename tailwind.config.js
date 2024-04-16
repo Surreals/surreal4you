@@ -5,7 +5,12 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      hueRotate: {
+        '-45': '-45deg',
+        45: '45deg',
+      }
+    },
   },
   plugins: [],
 }
