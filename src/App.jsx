@@ -10,7 +10,8 @@ const App = () => {
         <Title />
         <Info />
         <video autoPlay muted loop style={{zIndex: '-1'}} className="absolute blur-sm md:blur-none -translate-x-1/2 -translate-y-2 md:-translate-x-1.5 md:-translate-y-1  w-auto min-w-full min-h-full max-w-none">
-          <source src="src/assets/vid.mp4" type="video/mp4" />
+          <source src="public/vid.webm" type="video/webm"/>
+          <source src="public/vid.mp4" type="video/mp4" />
         </video>
       </div>
       <Analytics />
