@@ -7,7 +7,7 @@ export const mainLinks = [
 
 export const sideLinks = [
     {name: 'INSTAGRAM', url: 'https://www.instagram.com/surrealovych/'},
-    {name: 'TIKTOK', url: 'https://www.youtube.com/channel/UCK4Jk9WTq1hlpt5s6nWnuZA'},
-    {name: 'TELEGRAM', url: 'https://t.me/surrealenko'},
-    {name: 'OTHER', url: 'https://linktr.ee/surreal4you'},
+    {name: 'TIKTOK', url: 'https://www.tiktok.com/@surrealovych'},
+    {name: 'TELEGRAM', url: 'https://t.me/+TXM2bH5v0945MWNi'},
+    {name: 'OTHER', url: 'https://t.me/surrealenko'},
 ]

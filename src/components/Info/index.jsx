@@ -12,7 +12,7 @@ const Info = () => {
         <p>Hip-hop Artist</p>
       </div>
       <div className="text-left">
-        <p>First album out</p>
+        <p>album out</p>
         <p>Subscribe for more</p>
       </div>
       <p><a target="_blank" href="https://www.bytcd.com/">(001</a>)</p>
