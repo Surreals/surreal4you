@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://surreal4you.com/sitemap.xml
+Sitemap: https://www.surreal4you.com/sitemap.xml

@@ -3,7 +3,7 @@ import { mainLinks, sideLinks } from "../../utils/constants";
 const Links = () => {
   const buildLink = ({ name, url }) => {
     return (
-      <a target="_blank" key={name} href={url} className="w-auto hover:underline">
+      <a target="_blank" rel="noopener noreferrer" key={name} href={url} className="w-auto hover:underline">
         {name}
       </a>
     );

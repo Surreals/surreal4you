@@ -15,7 +15,7 @@ const Info = () => {
         <p>album out</p>
         <p>Subscribe for more</p>
       </div>
-      <p><a target="_blank" href="https://www.bytcd.com/">(001</a>)</p>
+      <p><a target="_blank" rel="noopener" href="https://www.bytcd.com/">(001</a>)</p>
     </div>
   );
 };
