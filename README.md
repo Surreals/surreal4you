@@ -1,6 +1,6 @@
 # surreal4you
 
-Official website of **SURREAL** — hip-hop artist from Uzhhorod, Ukraine.
+Official website of **Srrl** — hip-hop artist from Uzhhorod, Ukraine.
 
 Built with **Next.js (App Router, SSR)**, React 18 and Tailwind CSS.
 

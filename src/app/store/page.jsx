@@ -4,14 +4,14 @@ import { getContent } from "../../lib/content";
 import { SPOTIFY_ARTIST_URL } from "../../utils/constants";
 
 export const metadata = {
-  title: "Store — SURREAL",
+  title: "Store — Srrl",
   description:
-    "Official SURREAL merch. Prints and apparel from the HEHEMONIA era. Also available on the SURREAL Spotify artist profile.",
+    "Official Srrl merch. Prints and apparel from the HEHEMONIA era. Also available on the Srrl Spotify artist profile.",
   alternates: { canonical: "/store" },
   openGraph: {
-    title: "Store — SURREAL",
+    title: "Store — Srrl",
     description:
-      "Official SURREAL merch. Prints and apparel from the HEHEMONIA era.",
+      "Official Srrl merch. Prints and apparel from the HEHEMONIA era.",
     url: "/store",
   },
 };
@@ -23,7 +23,7 @@ const Store = async () => {
     <main className="mx-auto min-h-screen max-w-6xl px-4 py-8 md:px-8 md:py-16">
       <header className="flex items-baseline justify-between font-bold uppercase tracking-wide">
         <Link href="/" className="hover:underline">
-          ← surreal
+          ← Srrl
         </Link>
         <span>Store</span>
       </header>
@@ -41,7 +41,7 @@ const Store = async () => {
         <h2 className="mb-4 font-bold uppercase tracking-wide">Listen while you browse</h2>
         <SpotifyEmbed />
         <p className="mt-4 text-sm opacity-70">
-          Merch is also listed on the SURREAL Spotify artist profile.{" "}
+          Merch is also listed on the Srrl Spotify artist profile.{" "}
           <a
             href={SPOTIFY_ARTIST_URL}
             target="_blank"

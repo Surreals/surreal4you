@@ -4,16 +4,16 @@ import "./globals.css";
 
 const SITE_URL = "https://surreal4you.com";
 const DESCRIPTION =
-  "Official website of SURREAL, a hip-hop artist from Uzhhorod, Ukraine. New album HEHEMONIA out now. Stream SURREAL on Spotify, Apple Music, YouTube, Instagram, TikTok, and Telegram.";
+  "Official website of Srrl, a hip-hop artist from Uzhhorod, Ukraine. New album HEHEMONIA out now. Stream Srrl on Spotify, Apple Music, YouTube, Instagram, TikTok, and Telegram.";
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "SURREAL - Hip-Hop Artist | Official Website",
+  title: "Srrl - Hip-Hop Artist | Official Website",
   description: DESCRIPTION,
-  applicationName: "SURREAL",
-  authors: [{ name: "SURREAL" }],
+  applicationName: "Srrl",
+  authors: [{ name: "Srrl" }],
   keywords: [
-    "SURREAL",
+    "Srrl",
     "surrealovych",
     "surreal4you",
     "HEHEMONIA",
@@ -44,23 +44,23 @@ export const metadata = {
     type: "profile",
     username: "surrealovych",
     url: SITE_URL,
-    siteName: "SURREAL",
-    title: "SURREAL - Hip-Hop Artist | Official Website",
+    siteName: "Srrl",
+    title: "Srrl - Hip-Hop Artist | Official Website",
     description: DESCRIPTION,
     locale: "en_US",
     images: [
       {
         url: "/og-image.png",
         type: "image/png",
-        alt: "SURREAL - Hip-Hop Artist",
+        alt: "Srrl - Hip-Hop Artist",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SURREAL - Hip-Hop Artist | Official Website",
+    title: "Srrl - Hip-Hop Artist | Official Website",
     description: DESCRIPTION,
-    images: [{ url: "/og-image.png", alt: "SURREAL - Hip-Hop Artist" }],
+    images: [{ url: "/og-image.png", alt: "Srrl - Hip-Hop Artist" }],
   },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
@@ -80,7 +80,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "MusicGroup",
   "@id": `${SITE_URL}/#artist`,
-  name: "SURREAL",
+  name: "Srrl",
   alternateName: "surrealovych",
   description: "Hip-hop artist from Uzhhorod, Ukraine",
   url: `${SITE_URL}/`,

@@ -24,7 +24,6 @@ const AlbumAnnounce = ({ album = defaultAlbum }) => {
         </a>
       ) : null}
       <div className="text-center font-bold uppercase leading-tight">
-        <p className="text-xs tracking-[0.3em] opacity-60">new album</p>
         <p className="text-2xl md:text-3xl tracking-wide">{album.title}</p>
         <a
           href={album.listenUrl}

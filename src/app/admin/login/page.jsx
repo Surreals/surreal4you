@@ -14,7 +14,7 @@ const LoginPage = async () => {
   return (
     <main className="flex min-h-screen items-center justify-center bg-white px-6 text-black">
       <div className="w-full max-w-sm border-[3px] border-black p-8">
-        <div className="mb-2 text-[11px] tracking-[0.18em] opacity-60">SURREAL</div>
+        <div className="mb-2 text-[11px] tracking-[0.18em] opacity-60">Srrl</div>
         <h1 className="mb-6 text-2xl font-black uppercase tracking-tight">Admin</h1>
         <form
           action={async () => {
