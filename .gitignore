@@ -12,6 +12,17 @@ dist
 dist-ssr
 *.local
 
+# Next.js
+.next
+out
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# Local admin content store (dev fallback when Blob is not configured)
+.data
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
