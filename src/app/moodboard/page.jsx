@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Cursor } from "../../components";
+import { Cursor, Scanline } from "../../components";
 
 export const metadata = {
   title: "Visual System — Srrl",
@@ -204,6 +204,7 @@ const Moodboard = () => {
         <span>srrl · visual system</span>
       </footer>
       <Cursor />
+      <Scanline />
     </main>
   );
 };

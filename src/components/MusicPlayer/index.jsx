@@ -14,7 +14,7 @@ const MusicPlayer = () => {
           open ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"
         }`}
       >
-        <div className="mx-auto max-w-2xl border border-line bg-asphalt">
+        <div className="mx-auto max-w-2xl overflow-hidden rounded-xl border border-line bg-asphalt">
           <SpotifyEmbed height={152} />
         </div>
       </div>

@@ -135,3 +135,24 @@ body::after {
   top: 50%;
   animation: boot-scan 1.2s ease-in-out forwards;
 }
+
+/* Scanline sweep */
+@keyframes scanline {
+  0% {
+    transform: translateY(-5vh);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(105vh);
+    opacity: 0;
+  }
+}
+.scanline {
+  animation: scanline 7s linear infinite;
+}

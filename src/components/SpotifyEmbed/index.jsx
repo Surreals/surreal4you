@@ -10,7 +10,7 @@ const SpotifyEmbed = ({ id = SPOTIFY_ARTIST_ID, type = "artist", height = 352 })
       loading="lazy"
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
       allowFullScreen
-      style={{ border: 0, borderRadius: 0, display: "block" }}
+      style={{ border: 0, borderRadius: 12, display: "block" }}
     />
   );
 };

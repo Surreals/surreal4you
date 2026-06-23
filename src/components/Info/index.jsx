@@ -26,7 +26,7 @@ const Info = ({ album = defaultAlbum }) => {
           href="https://www.bytcd.com/"
           className="underline underline-offset-2 transition-colors hover:text-xray"
         >
-          bytcd
+          by bytcd.com
         </a>
       </p>
     </div>

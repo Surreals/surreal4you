@@ -6,6 +6,7 @@ import {
   Info,
   Links,
   MusicPlayer,
+  Scanline,
   StatusLine,
   Title,
   TrackingCleaner,
@@ -38,6 +39,7 @@ const Home = async () => {
       </div>
       <MusicPlayer />
       <Cursor />
+      <Scanline />
       <BootIntro />
       <TrackingCleaner />
     </main>

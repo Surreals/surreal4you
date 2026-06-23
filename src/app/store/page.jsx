@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Cursor, Product, SpotifyEmbed } from "../../components";
+import { Cursor, Product, Scanline, SpotifyEmbed } from "../../components";
 import { getContent } from "../../lib/content";
 import { SPOTIFY_ARTIST_URL } from "../../utils/constants";
 
@@ -43,7 +43,7 @@ const Store = async () => {
         <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.18em] text-concrete">
           <span className="text-signal">02</span> / listen while you browse
         </h2>
-        <div className="overflow-hidden border border-line">
+        <div className="overflow-hidden rounded-xl border border-line">
           <SpotifyEmbed />
         </div>
         <p className="mt-4 font-mono text-[11px] uppercase tracking-wide text-concrete">
@@ -59,6 +59,7 @@ const Store = async () => {
         </p>
       </section>
       <Cursor />
+      <Scanline />
     </main>
   );
 };

@@ -12,6 +12,7 @@ import StatusLine from "./StatusLine";
 import Cursor from "./Cursor";
 import ScrambleText from "./ScrambleText";
 import BootIntro from "./BootIntro";
+import Scanline from "./Scanline";
 
 export {
     Links,
@@ -28,4 +29,5 @@ export {
     Cursor,
     ScrambleText,
     BootIntro,
+    Scanline,
 }

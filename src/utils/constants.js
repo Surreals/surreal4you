@@ -31,7 +31,7 @@ export const sideLinks = [
 export const showAlbumAnnounce = false;
 
 export const album = {
-    title: 'hehemonia',
+    title: 'гегемонія',
     status: 'OUT 03.07',
     releaseDate: '2026-07-03', // 03.07
     cover: '/hehemonia.png',
