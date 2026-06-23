@@ -12,6 +12,7 @@ const NAV = [
   { href: "/admin/products", label: "Products" },
   { href: "/admin/album", label: "Album" },
   { href: "/admin/links", label: "Links" },
+  { href: "/moodboard", label: "Moodboard", external: true },
 ];
 
 const DashboardLayout = async ({ children }) => {
@@ -41,9 +42,13 @@ const DashboardLayout = async ({ children }) => {
                 <Link
                   key={item.href}
                   href={item.href}
+                  {...(item.external
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                   className="px-3 py-2 text-[12px] font-extrabold uppercase tracking-[0.08em] transition-colors hover:bg-black hover:text-white"
                 >
                   {item.label}
+                  {item.external ? " ↗" : ""}
                 </Link>
               ))}
             </nav>

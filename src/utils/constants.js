@@ -21,9 +21,14 @@ export const sideLinks = [
     {name: 'OTHER', url: 'https://t.me/surrealenko'},
 ]
 
+// Flip to `true` on release day (03.07) to show the album announcement on the
+// landing page again.
+export const showAlbumAnnounce = false;
+
 export const album = {
     title: 'гегемонія',
-    status: 'OUT NOW',
+    status: 'OUT 03.07',
+    releaseDate: '2026-07-03', // 03.07
     cover: '/hehemonia.png',
     listenUrl: SPOTIFY_ARTIST_URL,
 }

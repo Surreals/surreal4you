@@ -1,0 +1,156 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - heading "Srrl" [level=1]:
+        - generic: Srrl
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]: srrl
+          - generic [ref=e8]: uzh · 48.62n 22.29e
+        - generic [ref=e9]:
+          - generic [ref=e10]:
+            - link "01 STORE" [ref=e11] [cursor=pointer]:
+              - /url: /store
+              - generic [ref=e12]: "01"
+              - generic [ref=e13]: STORE
+            - link "02 SPOTIFY" [ref=e14] [cursor=pointer]:
+              - /url: https://open.spotify.com/artist/0cpL1ooyiyxpJ4KRz8ILWW?si=xMjRsQ7PTdadF9e4FRyHrA
+              - generic [ref=e15]: "02"
+              - generic [ref=e16]: SPOTIFY
+            - link "03 APPLE" [ref=e17] [cursor=pointer]:
+              - /url: https://music.apple.com/us/artist/surreal/1631369195
+              - generic [ref=e18]: "03"
+              - generic [ref=e19]: APPLE
+            - link "04 YOUTUBE" [ref=e20] [cursor=pointer]:
+              - /url: https://www.youtube.com/channel/UCK4Jk9WTq1hlpt5s6nWnuZA
+              - generic [ref=e21]: "04"
+              - generic [ref=e22]: YOUTUBE
+          - generic [ref=e23]:
+            - link "INSTAGRAM 01" [ref=e24] [cursor=pointer]:
+              - /url: https://www.instagram.com/surrealovych/
+              - generic [ref=e25]: INSTAGRAM
+              - generic [ref=e26]: "01"
+            - link "TIKTOK 02" [ref=e27] [cursor=pointer]:
+              - /url: https://www.tiktok.com/@surrealovych
+              - generic [ref=e28]: TIKTOK
+              - generic [ref=e29]: "02"
+            - link "TELEGRAM 03" [ref=e30] [cursor=pointer]:
+              - /url: https://t.me/+TXM2bH5v0945MWNi
+              - generic [ref=e31]: TELEGRAM
+              - generic [ref=e32]: "03"
+            - link "OTHER 04" [ref=e33] [cursor=pointer]:
+              - /url: https://t.me/surrealenko
+              - generic [ref=e34]: OTHER
+              - generic [ref=e35]: "04"
+      - generic [ref=e36]:
+        - generic [ref=e37]: next
+        - generic [ref=e39]: "03.07"
+        - generic [ref=e40]: гегемонія
+      - generic [ref=e42]:
+        - button "(001) — double-click for the visual system" [ref=e43] [cursor=pointer]: (001)
+        - generic [ref=e45]:
+          - paragraph [ref=e46]: 25 · uzh
+          - paragraph [ref=e47]: hip-hop
+        - generic [ref=e48]:
+          - paragraph [ref=e49]: гегемонія — out 03.07
+          - paragraph [ref=e50]: soon xxx more
+        - paragraph [ref=e51]:
+          - link "bytcd" [ref=e52] [cursor=pointer]:
+            - /url: https://www.bytcd.com/
+    - iframe [ref=e53]:
+      - generic [ref=f2e4]:
+        - generic [ref=f2e5]:
+          - img "Surreal cover" [ref=f2e8] [cursor=pointer]
+          - button "Play on Spotify" [ref=f2e10] [cursor=pointer]:
+            - img [ref=f2e11]
+          - generic [ref=f2e18]:
+            - generic [ref=f2e19]: Surreal
+            - generic [ref=f2e20]: ·
+            - generic [ref=f2e21]: Top tracks
+        - list "Track list" [ref=f2e25]:
+          - listitem [ref=f2e26]:
+            - button "Play track" [ref=f2e28] [cursor=pointer]:
+              - generic [ref=f2e29]: "1"
+            - heading "KITKA DNB" [level=3] [ref=f2e30]
+            - heading "Explicit Surreal" [level=4] [ref=f2e31]:
+              - generic "Explicit" [ref=f2e32]: E
+              - text: Surreal
+            - generic [ref=f2e33]: 02:18
+          - listitem [ref=f2e34]:
+            - button "Play track" [ref=f2e36] [cursor=pointer]:
+              - generic [ref=f2e37]: "2"
+            - heading "Sugar Money" [level=3] [ref=f2e38]
+            - heading "Explicit eshkerya, Surreal" [level=4] [ref=f2e39]:
+              - generic "Explicit" [ref=f2e40]: E
+              - text: eshkerya, Surreal
+            - generic [ref=f2e41]: 02:19
+          - listitem [ref=f2e42]:
+            - button "Play track" [ref=f2e44] [cursor=pointer]:
+              - generic [ref=f2e45]: "3"
+            - heading "XY" [level=3] [ref=f2e46]
+            - heading "Explicit Surreal" [level=4] [ref=f2e47]:
+              - generic "Explicit" [ref=f2e48]: E
+              - text: Surreal
+            - generic [ref=f2e49]: 01:38
+          - listitem [ref=f2e50]:
+            - button "Play track" [ref=f2e52] [cursor=pointer]:
+              - generic [ref=f2e53]: "4"
+            - heading "Cultureshock" [level=3] [ref=f2e54]
+            - heading "Explicit Surreal, battlebow" [level=4] [ref=f2e55]:
+              - generic "Explicit" [ref=f2e56]: E
+              - text: Surreal, battlebow
+            - generic [ref=f2e57]: 03:09
+          - listitem [ref=f2e58]:
+            - button "Play track" [ref=f2e60] [cursor=pointer]:
+              - generic [ref=f2e61]: "5"
+            - heading "CEO" [level=3] [ref=f2e62]
+            - heading "Explicit Surreal, Lefor" [level=4] [ref=f2e63]:
+              - generic "Explicit" [ref=f2e64]: E
+              - text: Surreal, Lefor
+            - generic [ref=f2e65]: 02:16
+          - listitem [ref=f2e66]:
+            - button "Play track" [ref=f2e68] [cursor=pointer]:
+              - generic [ref=f2e69]: "6"
+            - heading "MONTE" [level=3] [ref=f2e70]
+            - heading "Explicit Surreal" [level=4] [ref=f2e71]:
+              - generic "Explicit" [ref=f2e72]: E
+              - text: Surreal
+            - generic [ref=f2e73]: 02:28
+          - listitem [ref=f2e74]:
+            - button "Play track" [ref=f2e76] [cursor=pointer]:
+              - generic [ref=f2e77]: "7"
+            - heading "Кітка" [level=3] [ref=f2e78]
+            - heading "Explicit Surreal, MainKun" [level=4] [ref=f2e79]:
+              - generic "Explicit" [ref=f2e80]: E
+              - text: Surreal, MainKun
+            - generic [ref=f2e81]: 01:46
+          - listitem [ref=f2e82]:
+            - button "Play track" [ref=f2e84] [cursor=pointer]:
+              - generic [ref=f2e85]: "8"
+            - heading "Woody" [level=3] [ref=f2e86]
+            - heading "Explicit Surreal, Кульпарківська" [level=4] [ref=f2e87]:
+              - generic "Explicit" [ref=f2e88]: E
+              - text: Surreal, Кульпарківська
+            - generic [ref=f2e89]: 02:43
+          - listitem [ref=f2e90]:
+            - button "Play track" [ref=f2e92] [cursor=pointer]:
+              - generic [ref=f2e93]: "9"
+            - heading "LEMON JUICE" [level=3] [ref=f2e94]
+            - heading "Explicit Surreal" [level=4] [ref=f2e95]:
+              - generic "Explicit" [ref=f2e96]: E
+              - text: Surreal
+            - generic [ref=f2e97]: 02:18
+          - listitem [ref=f2e98]:
+            - button "Play track" [ref=f2e100] [cursor=pointer]:
+              - generic [ref=f2e101]: "10"
+            - heading "PRYTAMANNO" [level=3] [ref=f2e102]
+            - heading "Explicit Surreal" [level=4] [ref=f2e103]:
+              - generic "Explicit" [ref=f2e104]: E
+              - text: Surreal
+            - generic [ref=f2e105]: 02:24
+    - generic [ref=e55]:
+      - button "play" [ref=e56] [cursor=pointer]:
+        - generic [ref=e57]: ▶
+      - generic [ref=e58]: Srrl
+      - generic [ref=e59]: lalala
+  - alert [ref=e60]

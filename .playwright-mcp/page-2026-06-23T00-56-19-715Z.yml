@@ -1,0 +1,133 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]: visual system / moodboard
+        - generic [ref=e6]: uzh · 48.62n 22.29e
+      - paragraph [ref=e7]: Srrl
+      - paragraph [ref=e8]: холодний сюр — спостереження · форензика · рентген
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - generic [ref=e11]: "00"
+        - heading "Ідея" [level=2] [ref=e12]
+      - generic [ref=e13]:
+        - paragraph [ref=e14]: "Холодна сторона: не теплі коричневі тони, а сталь, асфальт і рентген-синій з одним хірургічним червоним. Наскрізний мотив — спостереження: рамки детекції, замилені номери, рентген-кадри, нічна камера. Артист — об'єкт під наглядом. Surreal."
+        - generic [ref=e15]:
+          - img "гегемонія — cover" [ref=e16]
+          - generic [ref=e17]: obj-01
+    - generic [ref=e18]:
+      - generic [ref=e19]:
+        - generic [ref=e20]: "01"
+        - heading "Палітра" [level=2] [ref=e21]
+      - generic [ref=e22]:
+        - generic [ref=e23]:
+          - generic [ref=e24]: asphalt
+          - generic [ref=e25]: "#0a0c0e"
+          - generic [ref=e26]: background
+        - generic [ref=e27]:
+          - generic [ref=e28]: graphite
+          - generic [ref=e29]: "#23282e"
+          - generic [ref=e30]: surface
+        - generic [ref=e31]:
+          - generic [ref=e32]: concrete
+          - generic [ref=e33]: "#6e7b86"
+          - generic [ref=e34]: muted text
+        - generic [ref=e35]:
+          - generic [ref=e36]: x-ray
+          - generic [ref=e37]: "#7fa8c9"
+          - generic [ref=e38]: cool accent
+        - generic [ref=e39]:
+          - generic [ref=e40]: cold white
+          - generic [ref=e41]: "#e8eef2"
+          - generic [ref=e42]: text
+        - generic [ref=e43]:
+          - generic [ref=e44]: signal
+          - generic [ref=e45]: "#d11a2a"
+          - generic [ref=e46]: the red
+    - generic [ref=e47]:
+      - generic [ref=e48]:
+        - generic [ref=e49]: "02"
+        - heading "Шрифти" [level=2] [ref=e50]
+      - generic [ref=e51]:
+        - generic [ref=e52]:
+          - generic [ref=e53]: Srrl
+          - generic [ref=e54]: rock salt — signature only
+        - generic [ref=e55]:
+          - generic [ref=e56]: Archivo
+          - generic [ref=e57]: archivo 800 — body + headings
+        - generic [ref=e58]:
+          - generic [ref=e59]: 48.62N 22.29E
+          - generic [ref=e60]: space mono — labels
+    - generic [ref=e61]:
+      - generic [ref=e62]:
+        - generic [ref=e63]: "03"
+        - heading "Обробка" [level=2] [ref=e64]
+      - generic [ref=e65]:
+        - generic [ref=e66]: film grain
+        - generic [ref=e68]: detection frame
+        - generic [ref=e70]: x-ray / forensic photo
+        - generic [ref=e72]: status · rec line
+        - generic [ref=e74]: section index
+        - generic [ref=e76]: night camera
+    - generic [ref=e78]:
+      - generic [ref=e79]:
+        - generic [ref=e80]: "04"
+        - heading "Твої фото → ролі" [level=2] [ref=e81]
+      - generic [ref=e82]:
+        - figure "hero / press" [ref=e83]:
+          - img "srrl — hero / press" [ref=e84]
+          - generic:
+            - generic: subject_01 · hero
+          - generic [ref=e86]: hero / press
+        - figure "прес-портрет ніч" [ref=e87]:
+          - img "srrl — прес-портрет" [ref=e88]
+          - generic:
+            - generic: subject_01 · night
+          - generic [ref=e89]:
+            - generic [ref=e90]: прес-портрет
+            - generic [ref=e91]: ніч
+        - 'figure "мотив: авто ніч · cctv" [ref=e92]':
+          - 'img "srrl — мотив: авто" [ref=e93]'
+          - generic:
+            - generic: obj · mb_w211
+          - generic [ref=e94]:
+            - generic [ref=e95]: "мотив: авто"
+            - generic [ref=e96]: ніч · cctv
+        - 'figure "мотив: авто" [ref=e97]':
+          - 'img "srrl — мотив: авто" [ref=e98]'
+          - generic:
+            - generic: obj · mb_w211
+          - generic [ref=e100]: "мотив: авто"
+        - 'figure "мотив: авто" [ref=e101]':
+          - 'img "srrl — мотив: авто" [ref=e102]'
+          - generic:
+            - generic: obj · mb_w211
+          - generic [ref=e104]: "мотив: авто"
+        - figure "текстура" [ref=e105]:
+          - img "srrl — текстура" [ref=e106]
+          - generic:
+            - generic: texture · x-ray
+          - generic [ref=e108]: текстура
+        - figure "акцент rainbow" [ref=e109]:
+          - img "srrl — акцент" [ref=e110]
+          - generic:
+            - generic: accent · chroma
+          - generic [ref=e111]:
+            - generic [ref=e112]: акцент
+            - generic [ref=e113]: rainbow
+    - generic [ref=e114]:
+      - generic [ref=e115]:
+        - generic [ref=e116]: "05"
+        - heading "Правила" [level=2] [ref=e117]
+      - generic [ref=e118]:
+        - paragraph [ref=e119]: одна червона. без другого акценту.
+        - paragraph [ref=e120]: хейрлайни. червоне — лише рамка детекції.
+        - paragraph [ref=e121]: фото знебарвлене → колір на ховер.
+        - paragraph [ref=e122]: "моно — латиниця: коди, координати."
+        - paragraph [ref=e123]: rock salt — лише підпис.
+        - paragraph [ref=e124]: "гострі кути. без теплих тонів. без #000."
+    - generic [ref=e125]:
+      - link "← srrl" [ref=e126] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e127]: srrl · visual system
+  - alert [ref=e128]

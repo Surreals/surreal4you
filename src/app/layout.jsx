@@ -1,6 +1,26 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Archivo, Space_Mono, Rock_Salt } from "next/font/google";
 import "./globals.css";
+
+// SRRL type system — see DESIGN.md
+const archivo = Archivo({
+  subsets: ["latin"],
+  variable: "--font-archivo",
+  display: "swap",
+});
+const spaceMono = Space_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-space-mono",
+  display: "swap",
+});
+const rockSalt = Rock_Salt({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-rock-salt",
+  display: "swap",
+});
 
 const SITE_URL = "https://surreal4you.com";
 const DESCRIPTION =
@@ -73,7 +93,7 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#000000",
+  themeColor: "#0a0c0e",
 };
 
 const jsonLd = {
@@ -103,7 +123,10 @@ const jsonLd = {
 
 const RootLayout = ({ children }) => {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={`${archivo.variable} ${spaceMono.variable} ${rockSalt.variable}`}
+    >
       <body className="font-sans">
         {children}
         <script

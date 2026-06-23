@@ -5,6 +5,8 @@ import AlbumAnnounce from "./AlbumAnnounce";
 import SpotifyEmbed from "./SpotifyEmbed";
 import Product from "./Product";
 import TrackingCleaner from "./TrackingCleaner";
+import HqMarker from "./HqMarker";
+import MusicPlayer from "./MusicPlayer";
 
 export {
     Links,
@@ -14,4 +16,6 @@ export {
     SpotifyEmbed,
     Product,
     TrackingCleaner,
+    HqMarker,
+    MusicPlayer,
 }

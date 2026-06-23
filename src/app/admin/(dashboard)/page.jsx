@@ -19,7 +19,7 @@ const AdminDashboard = async () => {
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="mb-1 text-3xl font-black uppercase tracking-tight">Dashboard</h1>
+        <h1 className="mb-1 text-3xl font-black tracking-tight">Dashboard</h1>
         <p className="text-[11px] opacity-60">Manage what the public site shows.</p>
       </div>
 
