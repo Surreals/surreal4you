@@ -76,3 +76,62 @@ body::after {
     scroll-behavior: auto;
   }
 }
+
+/* Custom crosshair cursor (desktop only — toggled from JS) */
+.custom-cursor,
+.custom-cursor * {
+  cursor: none !important;
+}
+.custom-cursor .reticle {
+  display: block;
+}
+.reticle {
+  transition: opacity 0.2s ease;
+  will-change: transform;
+}
+.reticle-box {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border: 1px solid var(--xray);
+  opacity: 0.85;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+.reticle-dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  background: var(--signal);
+}
+.reticle[data-active="true"] .reticle-box {
+  transform: scale(1.5);
+  border-color: var(--signal);
+}
+
+/* Boot intro scanline sweep */
+@keyframes boot-scan {
+  0% {
+    transform: translateY(-50vh);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(50vh);
+    opacity: 0;
+  }
+}
+.boot-scan {
+  top: 50%;
+  animation: boot-scan 1.2s ease-in-out forwards;
+}

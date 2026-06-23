@@ -28,6 +28,9 @@ out
 /out/
 next-env.d.ts
 
+# Playwright MCP / local verification artifacts
+.playwright-mcp/
+
 # production
 /build
 

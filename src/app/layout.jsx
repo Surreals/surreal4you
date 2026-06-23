@@ -117,7 +117,7 @@ const jsonLd = {
     "https://www.youtube.com/channel/UCK4Jk9WTq1hlpt5s6nWnuZA",
     "https://www.instagram.com/surrealovych/",
     "https://www.tiktok.com/@surrealovych",
-    "https://t.me/surrealenko",
+    "https://t.me/surreal4you",
   ],
 };
 

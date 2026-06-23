@@ -1,4 +1,15 @@
-import { AlbumAnnounce, Info, Links, MusicPlayer, Title, TrackingCleaner } from "../components";
+import {
+  AlbumAnnounce,
+  BootIntro,
+  Countdown,
+  Cursor,
+  Info,
+  Links,
+  MusicPlayer,
+  StatusLine,
+  Title,
+  TrackingCleaner,
+} from "../components";
 import { getContent } from "../lib/content";
 import { showAlbumAnnounce } from "../utils/constants";
 
@@ -11,31 +22,14 @@ const Home = async () => {
         <Title />
 
         <div className="rise relative z-10 flex flex-col gap-5">
-          <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-concrete">
-            <span className="flex items-center gap-2">
-              <span className="size-1.5 animate-pulse bg-signal" aria-hidden="true" />
-              srrl
-            </span>
-            <span>uzh · 48.62n 22.29e</span>
-          </div>
+          <StatusLine />
           <Links links={links} />
         </div>
 
         {showAlbumAnnounce ? (
           <AlbumAnnounce album={album} />
         ) : (
-          <div className="rise relative z-10 flex flex-col items-center gap-2 place-self-center [animation-delay:120ms]">
-            <span className="flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] text-concrete">
-              <span className="size-1.5 animate-pulse bg-signal" aria-hidden="true" />
-              next
-            </span>
-            <span className="font-mono text-4xl font-bold tracking-[0.05em] text-cold md:text-5xl">
-              03.07
-            </span>
-            <span className="text-xs font-extrabold tracking-[0.18em] text-concrete">
-              {album.title}
-            </span>
-          </div>
+          <Countdown title={album.title} />
         )}
 
         <div className="rise [animation-delay:240ms]">
@@ -43,6 +37,8 @@ const Home = async () => {
         </div>
       </div>
       <MusicPlayer />
+      <Cursor />
+      <BootIntro />
       <TrackingCleaner />
     </main>
   );

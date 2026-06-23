@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { mainLinks, sideLinks } from "../../utils/constants";
+import ScrambleText from "../ScrambleText";
 
 // Catalogued links — each tagged with a forensic two-digit index.
 const buildLink = ({ name, url, internal }, index, align) => {
@@ -8,16 +9,17 @@ const buildLink = ({ name, url, internal }, index, align) => {
       {String(index + 1).padStart(2, "0")}
     </span>
   );
+  const label = <ScrambleText text={name} />;
   const inner =
     align === "right" ? (
       <>
-        <span>{name}</span>
+        {label}
         {tag}
       </>
     ) : (
       <>
         {tag}
-        <span>{name}</span>
+        {label}
       </>
     );
 

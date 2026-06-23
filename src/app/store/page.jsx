@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Product, SpotifyEmbed } from "../../components";
+import { Cursor, Product, SpotifyEmbed } from "../../components";
 import { getContent } from "../../lib/content";
 import { SPOTIFY_ARTIST_URL } from "../../utils/constants";
 
@@ -58,6 +58,7 @@ const Store = async () => {
           </a>
         </p>
       </section>
+      <Cursor />
     </main>
   );
 };

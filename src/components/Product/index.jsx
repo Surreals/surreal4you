@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 const Product = ({ product, index = 0 }) => {
-  const { name, detail, price, image, buyUrl } = product;
+  const { name, detail, price, image } = product;
   const tag = `mm-${String(index + 1).padStart(2, "0")}`;
   return (
     <div className="group flex flex-col">
@@ -33,16 +33,9 @@ const Product = ({ product, index = 0 }) => {
           {detail}
         </p>
       ) : null}
-      {buyUrl ? (
-        <a
-          href={buyUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-3 inline-flex items-center justify-center gap-2 border border-line py-2 text-center font-mono text-xs uppercase tracking-[0.2em] text-cold transition-colors hover:border-signal hover:bg-signal hover:text-cold"
-        >
-          buy <span aria-hidden="true">→</span>
-        </a>
-      ) : null}
+      <span className="mt-3 inline-flex items-center justify-center border border-line py-2 text-center font-mono text-xs uppercase tracking-[0.2em] text-concrete">
+        soon
+      </span>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Cursor } from "../../components";
 
 export const metadata = {
   title: "Visual System — Srrl",
@@ -30,21 +31,21 @@ const TREATMENTS = [
 
 const PLATES = [
   { src: "/moodboard/hero.webp", tag: "subject_01 · hero", role: "hero / press", desc: "" },
-  { src: "/moodboard/night.webp", tag: "subject_01 · night", role: "прес-портрет", desc: "ніч" },
-  { src: "/moodboard/car-night.webp", tag: "obj · mb_w211", role: "мотив: авто", desc: "ніч · cctv" },
-  { src: "/moodboard/car-street.webp", tag: "obj · mb_w211", role: "мотив: авто", desc: "" },
-  { src: "/moodboard/car-field.webp", tag: "obj · mb_w211", role: "мотив: авто", desc: "" },
-  { src: "/moodboard/xray.webp", tag: "texture · x-ray", role: "текстура", desc: "" },
-  { src: "/moodboard/chroma.webp", tag: "accent · chroma", role: "акцент", desc: "rainbow", wide: true },
+  { src: "/moodboard/night.webp", tag: "subject_01 · night", role: "press portrait", desc: "night" },
+  { src: "/moodboard/car-night.webp", tag: "obj · mb_w211", role: "motif: auto", desc: "night · cctv" },
+  { src: "/moodboard/car-street.webp", tag: "obj · mb_w211", role: "motif: auto", desc: "" },
+  { src: "/moodboard/car-field.webp", tag: "obj · mb_w211", role: "motif: auto", desc: "" },
+  { src: "/moodboard/xray.webp", tag: "texture · x-ray", role: "texture", desc: "" },
+  { src: "/moodboard/chroma.webp", tag: "accent · chroma", role: "accent", desc: "rainbow", wide: true },
 ];
 
 const RULES = [
-  "одна червона. без другого акценту.",
-  "хейрлайни. червоне — лише рамка детекції.",
-  "фото знебарвлене → колір на ховер.",
-  "моно — латиниця: коди, координати.",
-  "rock salt — лише підпис.",
-  "гострі кути. без теплих тонів. без #000.",
+  "one red. no second accent.",
+  "hairlines. red only on detection frames.",
+  "photos desaturated → color on hover.",
+  "mono is latin: codes, coordinates.",
+  "rock salt — signature only.",
+  "sharp corners. no warm tones. no #000.",
 ];
 
 const Section = ({ n, title, children }) => (
@@ -70,23 +71,23 @@ const Moodboard = () => {
           Srrl
         </p>
         <p className="mt-3 text-base font-extrabold uppercase tracking-wide md:text-xl">
-          холодний сюр — <span className="text-xray">спостереження · форензика · рентген</span>
+          cold surreal — <span className="text-xray">surveillance · forensics · x-ray</span>
         </p>
       </header>
 
-      <Section n="00" title="Ідея">
+      <Section n="00" title="Concept">
         <div className="grid items-center gap-6 md:grid-cols-[1.1fr_0.9fr]">
           <p className="max-w-[62ch] text-sm leading-relaxed text-concrete">
-            Холодна сторона: не теплі коричневі тони, а сталь, асфальт і рентген-синій з одним
-            хірургічним <span className="text-signal">червоним</span>. Наскрізний мотив —{" "}
-            <span className="text-cold">спостереження</span>: рамки детекції, замилені номери,
-            рентген-кадри, нічна камера. Артист — об&apos;єкт під наглядом. Surreal.
+            The cold side: not warm browns but steel, asphalt and x-ray blue with one surgical{" "}
+            <span className="text-signal">red</span>. The throughline is{" "}
+            <span className="text-cold">surveillance</span>: detection frames, blurred plates,
+            x-ray frames, night camera. The artist is an object under observation. Surreal.
           </p>
           <div className="group relative border border-line">
             <span className="pointer-events-none absolute -inset-1.5 border border-signal opacity-70" aria-hidden="true" />
             <Image
               src="/hehemonia.png"
-              alt="гегемонія — cover"
+              alt="hehemonia — cover"
               width={1024}
               height={1024}
               className="h-auto w-full [filter:grayscale(0.4)_contrast(1.05)_brightness(0.92)] transition-[filter] duration-500 group-hover:[filter:none]"
@@ -98,7 +99,7 @@ const Moodboard = () => {
         </div>
       </Section>
 
-      <Section n="01" title="Палітра">
+      <Section n="01" title="Palette">
         <div className="grid grid-cols-3 border border-line md:grid-cols-6">
           {PALETTE.map((c) => (
             <div
@@ -120,7 +121,7 @@ const Moodboard = () => {
         </div>
       </Section>
 
-      <Section n="02" title="Шрифти">
+      <Section n="02" title="Type">
         <div className="grid gap-4 md:grid-cols-3">
           <div className="flex min-h-[150px] flex-col justify-between border border-line p-5">
             <span className="font-display text-4xl text-cold">Srrl</span>
@@ -143,7 +144,7 @@ const Moodboard = () => {
         </div>
       </Section>
 
-      <Section n="03" title="Обробка">
+      <Section n="03" title="Treatments">
         <div className="flex flex-wrap gap-2.5">
           {TREATMENTS.map((t) => (
             <span key={t.label} className="flex items-center gap-2.5 border border-line px-3.5 py-2.5 text-sm">
@@ -154,7 +155,7 @@ const Moodboard = () => {
         </div>
       </Section>
 
-      <Section n="04" title="Твої фото → ролі">
+      <Section n="04" title="Photos → roles">
         <div className="grid gap-3 sm:grid-cols-3">
           {PLATES.map((p) => (
             <figure
@@ -166,7 +167,7 @@ const Moodboard = () => {
                 alt={`srrl — ${p.role}`}
                 width={p.wide ? 1280 : 768}
                 height={p.wide ? 560 : 1024}
-                className={`w-full object-cover [filter:grayscale(0.45)_contrast(1.05)_brightness(0.9)] transition-[filter,transform] duration-500 group-hover:scale-[1.02] group-hover:[filter:none] ${
+                className={`w-full object-cover [filter:grayscale(0.3)_contrast(1.02)] transition-[filter,transform] duration-500 group-hover:scale-[1.02] group-hover:[filter:none] ${
                   p.wide ? "aspect-[16/7]" : "aspect-[3/4]"
                 }`}
               />
@@ -186,7 +187,7 @@ const Moodboard = () => {
         </div>
       </Section>
 
-      <Section n="05" title="Правила">
+      <Section n="05" title="Rules">
         <div className="grid gap-3.5 md:grid-cols-2">
           {RULES.map((r) => (
             <p key={r} className="border-l-2 border-signal pl-3.5 font-mono text-[13px] leading-relaxed text-concrete">
@@ -202,6 +203,7 @@ const Moodboard = () => {
         </Link>
         <span>srrl · visual system</span>
       </footer>
+      <Cursor />
     </main>
   );
 };
