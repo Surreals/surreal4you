@@ -51,6 +51,18 @@ payment processing. Update prices, images and `ORDER_URL` with real values.
 
 ### Merch on Spotify
 
+Current setup flow:
+
+1. Create the products in Shopify.
+2. Install / connect the Spotify for Artists Shopify sales channel:
+   <https://apps.shopify.com/spotify>
+3. In Spotify for Artists, open Merch & Events and connect the Shopify store:
+   <https://artists.spotify.com/merch>
+4. Publish the Shopify products to Spotify, then pin/tag featured merch in
+   Spotify for Artists.
+5. Paste the same Shopify product URLs into `/admin/products` as `Buy URL` so
+   the website store links to the catalog Spotify uses.
+
 Listing merch **on the Spotify artist profile** is not a website feature — it is
 configured in **Spotify for Artists** by linking an approved merch partner
 (e.g. Shopify). The site supports this by embedding the Spotify player and linking

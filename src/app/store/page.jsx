@@ -47,7 +47,7 @@ const Store = async () => {
           <SpotifyEmbed />
         </div>
         <p className="mt-4 font-mono text-[11px] uppercase tracking-wide text-concrete">
-          merch is also listed on the srrl spotify artist profile.{" "}
+          spotify merch is powered by the same shopify catalog once connected.{" "}
           <a
             href={SPOTIFY_ARTIST_URL}
             target="_blank"

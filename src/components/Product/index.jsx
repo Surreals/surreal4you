@@ -1,8 +1,9 @@
 import Image from "next/image";
 
 const Product = ({ product, index = 0 }) => {
-  const { name, detail, price, image } = product;
+  const { name, detail, price, image, buyUrl } = product;
   const tag = `mm-${String(index + 1).padStart(2, "0")}`;
+  const hasBuyUrl = Boolean(buyUrl);
   return (
     <div className="group flex flex-col">
       <div className="relative flex aspect-square items-center justify-center overflow-hidden border border-line bg-graphite">
@@ -33,9 +34,20 @@ const Product = ({ product, index = 0 }) => {
           {detail}
         </p>
       ) : null}
-      <span className="mt-3 inline-flex items-center justify-center border border-line py-2 text-center font-mono text-xs uppercase tracking-[0.2em] text-concrete">
-        soon
-      </span>
+      {hasBuyUrl ? (
+        <a
+          href={buyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-flex items-center justify-center border border-line py-2 text-center font-mono text-xs uppercase tracking-[0.2em] text-cold transition-colors hover:border-xray hover:bg-xray hover:text-asphalt"
+        >
+          buy
+        </a>
+      ) : (
+        <span className="mt-3 inline-flex items-center justify-center border border-line py-2 text-center font-mono text-xs uppercase tracking-[0.2em] text-concrete">
+          soon
+        </span>
+      )}
     </div>
   );
 };

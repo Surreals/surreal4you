@@ -27,7 +27,7 @@ const ProductForm = ({ product }) => {
           <input name="detail" defaultValue={product?.detail ?? ""} className={inputClass} />
         </Field>
         <Field label="Buy URL">
-          <input name="buyUrl" defaultValue={product?.buyUrl ?? ""} placeholder="https://t.me/..." className={inputClass} />
+          <input name="buyUrl" defaultValue={product?.buyUrl ?? ""} placeholder="https://your-store.myshopify.com/products/..." className={inputClass} />
         </Field>
         <Field label="Image path or URL">
           <input name="image" defaultValue={product?.image ?? ""} placeholder="/dil.png or https://…" className={inputClass} />
