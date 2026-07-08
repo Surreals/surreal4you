@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { NOTIFY_URL } from "../../utils/constants";
 
-// Release: 10.07 (Kyiv time).
+// Release: 17.07 (Kyiv time).
 const TARGET = new Date("2026-07-10T00:00:00+03:00").getTime();
 const pad = (n) => String(n).padStart(2, "0");
 
@@ -44,11 +44,11 @@ const Countdown = ({ title }) => {
         </span>
       ) : (
         <span className="font-mono text-4xl font-bold tabular-nums tracking-[0.05em] text-cold md:text-6xl">
-          10.07
+          17.07
         </span>
       )}
       <span className="text-xs font-extrabold uppercase tracking-[0.18em] text-concrete">
-        10.07 — {title}
+        17.07 — {title}
       </span>
       <a
         href={NOTIFY_URL}
