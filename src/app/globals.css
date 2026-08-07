@@ -175,6 +175,21 @@ body {
   }
 }
 
+/*
+ * Signature watermark — pressed into the surface, not painted on it.
+ *
+ * A flat translucent fill reads as a decal no matter how low the opacity,
+ * because its edge is a hard alpha step. Here the letterform has no fill at
+ * all: it is drawn by a shadow along its top lip and a highlight along its
+ * bottom, so the light has to come from the same place as the rest of the page
+ * for it to resolve. Half a pixel of blur kills the last of the vector edge.
+ */
+.watermark {
+  color: transparent;
+  text-shadow: 0 1px 1px rgba(238, 241, 232, 0.1), 0 -1px 1px rgba(0, 0, 0, 0.65);
+  filter: blur(0.6px);
+}
+
 /* Custom crosshair cursor (desktop only — toggled from JS) */
 .custom-cursor,
 .custom-cursor * {

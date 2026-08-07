@@ -33,7 +33,7 @@ const Title = () => {
     <h1 className="pointer-events-none absolute inset-0 z-0 flex select-none items-center justify-center">
       <span
         ref={ref}
-        className="font-display text-7xl leading-none text-bone/[0.09] transition-transform duration-300 ease-out sm:text-8xl md:text-9xl"
+        className="watermark font-display text-7xl leading-none transition-transform duration-300 ease-out sm:text-8xl md:text-9xl"
       >
         Srrl
       </span>
