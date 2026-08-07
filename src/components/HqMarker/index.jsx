@@ -12,9 +12,9 @@ const HqMarker = () => {
       onDoubleClick={() => router.push("/moodboard")}
       title="(001)"
       aria-label="(001) — double-click for the visual system"
-      className="flex items-center gap-2 uppercase tracking-[0.14em] transition-colors hover:text-xray"
+      className="flex items-center gap-2 uppercase tracking-[0.14em] transition-colors hover:text-leaf"
     >
-      <span className="inline-block size-1.5 animate-pulse bg-signal" aria-hidden="true" />
+      <span className="inline-block size-1.5 animate-pulse bg-leaf" aria-hidden="true" />
       (001)
     </button>
   );

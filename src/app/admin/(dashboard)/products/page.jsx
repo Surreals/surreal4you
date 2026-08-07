@@ -1,15 +1,28 @@
 import { getContent } from "@/lib/content";
 import ProductForm from "./ProductForm";
 import DeleteButton from "./DeleteButton";
+import StoreVisibility from "./StoreVisibility";
 
 export const metadata = { robots: { index: false, follow: false } };
 
 const ProductsPage = async () => {
-  const { products } = await getContent();
+  const { products, settings } = await getContent();
 
   return (
     <div className="space-y-10">
-      <h1 className="text-3xl font-black uppercase tracking-tight">Products</h1>
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <h1 className="text-3xl font-black uppercase tracking-tight">Merch</h1>
+        <a
+          href="/store"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[11px] font-extrabold uppercase tracking-[0.1em] underline decoration-2 underline-offset-4"
+        >
+          Preview /store ↗
+        </a>
+      </div>
+
+      <StoreVisibility visible={settings.showStore} />
 
       <section className="border-[3px] border-black p-4 text-sm leading-relaxed">
         <h2 className="mb-2 text-[11px] font-extrabold uppercase tracking-[0.12em] opacity-60">

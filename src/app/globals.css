@@ -4,14 +4,13 @@
 
 /* SRRL visual system — see DESIGN.md */
 :root {
-  --asphalt: #0a0c0e;
-  --graphite: #23282e;
-  --concrete: #6e7b86;
-  --xray: #7fa8c9;
-  --xray-pale: #b9d3e3;
-  --cold-white: #e8eef2;
-  --signal: #d11a2a;
-  --line: rgba(255, 255, 255, 0.1);
+  --bark: #141811;
+  --moss: #262b21;
+  --lichen: #7e8a74;
+  --leaf: #8fbf6a;
+  --leaf-pale: #c3d9ac;
+  --bone: #eef1e8;
+  --line: rgba(238, 241, 232, 0.12);
 }
 
 html {
@@ -24,8 +23,8 @@ body {
 }
 
 body {
-  background-color: var(--asphalt);
-  color: var(--cold-white);
+  background-color: var(--bark);
+  color: var(--bone);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -41,15 +40,15 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Keyboard focus — x-ray outline */
+/* Keyboard focus — leaf outline */
 :focus-visible {
-  outline: 2px solid var(--xray);
+  outline: 2px solid var(--leaf);
   outline-offset: 2px;
 }
 
 ::selection {
-  background: var(--signal);
-  color: var(--cold-white);
+  background: var(--leaf);
+  color: var(--bark);
 }
 
 /* Entrance — content rises in on load */
@@ -96,7 +95,7 @@ body::after {
   width: 28px;
   height: 28px;
   margin: -14px 0 0 -14px;
-  border: 1px solid var(--xray);
+  border: 1px solid var(--leaf);
   opacity: 0.85;
   transition: transform 0.18s ease, border-color 0.18s ease;
 }
@@ -107,11 +106,11 @@ body::after {
   width: 3px;
   height: 3px;
   margin: -1.5px 0 0 -1.5px;
-  background: var(--signal);
+  background: var(--bone);
 }
 .reticle[data-active="true"] .reticle-box {
   transform: scale(1.5);
-  border-color: var(--signal);
+  border-color: var(--leaf-pale);
 }
 
 /* Boot intro scanline sweep */

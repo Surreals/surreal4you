@@ -5,7 +5,7 @@ import ScrambleText from "../ScrambleText";
 // Catalogued links — each tagged with a forensic two-digit index.
 const buildLink = ({ name, url, internal }, index, align) => {
   const tag = (
-    <span className="font-mono text-[10px] tracking-widest text-concrete transition-colors group-hover:text-signal">
+    <span className="font-mono text-[10px] tracking-widest text-lichen transition-colors group-hover:text-leaf">
       {String(index + 1).padStart(2, "0")}
     </span>
   );
@@ -24,7 +24,7 @@ const buildLink = ({ name, url, internal }, index, align) => {
     );
 
   const className =
-    "group flex w-auto items-center gap-2 transition-colors hover:text-xray";
+    "group flex w-auto items-center gap-2 transition-colors hover:text-leaf";
 
   if (internal || url?.startsWith("/")) {
     return (

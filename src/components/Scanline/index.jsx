@@ -15,7 +15,7 @@ const Scanline = () => {
   return (
     <div
       aria-hidden="true"
-      className="scanline pointer-events-none fixed inset-x-0 top-0 z-[60] h-px bg-xray/20"
+      className="scanline pointer-events-none fixed inset-x-0 top-0 z-[60] h-px bg-leaf/20"
     />
   );
 };

@@ -29,13 +29,13 @@ const BootIntro = () => {
 
   return (
     <div
-      className={`fixed inset-0 z-[2000] flex flex-col items-center justify-center gap-4 bg-asphalt transition-opacity duration-500 ${
+      className={`fixed inset-0 z-[2000] flex flex-col items-center justify-center gap-4 bg-bark transition-opacity duration-500 ${
         closing ? "opacity-0" : "opacity-100"
       }`}
     >
-      <span className="boot-scan pointer-events-none absolute inset-x-0 h-px bg-signal/70" />
-      <span className="font-display text-5xl leading-none text-cold md:text-7xl">Srrl</span>
-      <span className="font-mono text-[10px] tracking-[0.4em] text-concrete">
+      <span className="boot-scan pointer-events-none absolute inset-x-0 h-px bg-leaf/70" />
+      <span className="font-display text-5xl leading-none text-bone md:text-7xl">Srrl</span>
+      <span className="font-mono text-[10px] tracking-[0.4em] text-lichen">
         uzh · 48.62n 22.29e
       </span>
     </div>

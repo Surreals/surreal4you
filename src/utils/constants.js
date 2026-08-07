@@ -3,9 +3,6 @@ export const SPOTIFY_ARTIST_URL = `https://open.spotify.com/artist/${SPOTIFY_ART
 
 export const YOUTUBE_URL = 'https://www.youtube.com/channel/UCK4Jk9WTq1hlpt5s6nWnuZA';
 
-// Telegram channel — release / drop notifications ("notify me" CTA).
-export const NOTIFY_URL = 'https://t.me/+TXM2bH5v0945MWNi';
-
 // Where "Buy" buttons in the catalog point. Catalog-only store: orders are
 // taken over this channel (no on-site checkout). Update to a real store URL
 // when one exists.
@@ -26,14 +23,16 @@ export const sideLinks = [
     {name: 'OTHER', url: 'https://t.me/surrealenko'},
 ]
 
-// Flip to `true` on release day (17.07) to show the album announcement on the
-// landing page again.
-export const showAlbumAnnounce = false;
+// Seed for the admin-managed settings (see src/lib/content.js).
+export const settings = {
+    // Merch is unpublished: the STORE link is hidden and /store stays out of
+    // search until this is switched on from /admin/products.
+    showStore: false,
+}
 
+// Feeds the mono info strip at the bottom of the landing page. Editable from
+// /admin/album.
 export const album = {
     title: 'гегемонія',
-    status: 'OUT 17.07',
-    releaseDate: '2026-07-17', // 17.07
-    cover: '/hehemonia.png',
-    listenUrl: SPOTIFY_ARTIST_URL,
+    status: 'OUT now',
 }

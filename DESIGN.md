@@ -1,39 +1,40 @@
 ---
 name: srrl-visual-system
 description: >
-  Visual system for the SRRL artist site — the COLD side: steel, asphalt and
-  x-ray blue with one surgical red. The throughline
-  motif (not in the reference) is SURVEILLANCE — detection frames, blurred plates,
-  x-ray plates, night-camera grain. The artist is an object under observation in a
-  strange, slightly unreal world. That is "Surreal".
+  Visual system for the SRRL artist site — a night field: bark, moss and bone
+  with one living leaf-green. The throughline motif is SURVEILLANCE — detection
+  frames, blurred plates, night-camera grain. The artist is an object under
+  observation in a strange, slightly unreal world. That is "Surreal".
 ---
 
 # SRRL — Visual System
 
-> Mood: холодний сюр — спостереження · форензика · рентген.
+> Mood: сюр у природі — спостереження · форензика · заростання.
 
 ## Color
 
-One dark canvas, one cool family of greys/blues, **one** surgical red accent. Never add a
-second accent — consistency beats variety.
+One dark, slightly green canvas, one family of natural greens/greys, **one** leaf-green accent.
+Never add a second accent — consistency beats variety.
 
-| Token (code)      | Hex                     | Role                                            |
-|-------------------|-------------------------|-------------------------------------------------|
-| `asphalt`         | `#0a0c0e`               | Page background (off-black, cool-tinted)        |
-| `graphite`        | `#23282e`               | Raised surfaces, image wells, placeholders      |
-| `concrete`        | `#6e7b86`               | Muted text, mono labels                         |
-| `xray` (DEFAULT)  | `#7fa8c9`               | Cool accent — prices, listen links, hover       |
-| `xray.pale`       | `#b9d3e3`               | Lightest cool tint                              |
-| `cold` (cold-white)| `#e8eef2`              | Primary text                                    |
-| `signal` (the red)| `#d11a2a`               | Surgical accent — detection tags, REC dot, CTAs |
-| `line`            | `rgba(255,255,255,.10)` | Hairlines / borders                             |
+| Token (code)      | Hex                       | Role                                             |
+|-------------------|---------------------------|--------------------------------------------------|
+| `bark`            | `#141811`                 | Page background (charcoal-green, never `#000`)   |
+| `moss`            | `#262b21`                 | Raised surfaces, image wells, placeholders       |
+| `lichen`          | `#7e8a74`                 | Muted text, mono labels                          |
+| `leaf` (DEFAULT)  | `#8fbf6a`                 | **The** accent — detection tags, REC dot, prices, links, CTA fill |
+| `leaf.pale`       | `#c3d9ac`                 | Lightest tint — hover, secondary markers         |
+| `bone`            | `#eef1e8`                 | Primary text (warm off-white)                    |
+| `line`            | `rgba(238,241,232,.12)`   | Hairlines / borders                              |
 
-Shadows, if any, stay near-black and cool. No warm browns — this is the cold inversion.
-No purple/blue "AI gradient".
+`leaf` is bright, so anything **filled** with it carries `text-bark`, never `text-bone`
+(`bone` on `leaf` is 1.87:1 — unreadable). `bark` on `leaf` is 8.41:1.
+
+Shadows, if any, stay near-black and green-tinted. No cool steel blues, no red, no purple/blue
+"AI gradient".
 
 CSS variables live in [`src/app/globals.css`](src/app/globals.css); Tailwind tokens in
-[`tailwind.config.js`](tailwind.config.js). Use the Tailwind names (`bg-asphalt`, `text-concrete`,
-`border-line`, `bg-signal`, `text-xray`) in components.
+[`tailwind.config.js`](tailwind.config.js). Use the Tailwind names (`bg-bark`, `text-lichen`,
+`border-line`, `bg-leaf`, `text-leaf`) in components.
 
 ## Typography
 
@@ -43,7 +44,7 @@ Three voices, wired via `next/font` in [`src/app/layout.jsx`](src/app/layout.jsx
   (800), `uppercase`, tight tracking. The workhorse.
 - **Space Mono** (`font-mono`, 400/700) — technical/forensic labels, codes, coordinates, prices,
   section numbers. Always `uppercase` + positive tracking (`tracking-[0.14em]`–`[0.18em]`),
-  usually `text-concrete`.
+  usually `text-lichen`.
 - **Rock Salt** (`font-display`) — handwritten signature. Use **sparingly** — the SRRL signature
   only, never body copy.
 
@@ -55,32 +56,32 @@ consistent.
 
 1. **Film grain** — a fixed, `pointer-events-none` SVG fractal-noise overlay at ~6% opacity over
    the whole page (`body::after`). Breaks digital flatness; reads as night-camera.
-2. **Detection frame** — a thin `signal` (red) border offset around a subject (album cover,
-   product), with a small Space Mono **corner tag** (e.g. `OUT NOW`, `MM-01`). The subject is
-   "tagged".
-3. **X-ray / forensic photo treatment** — images render `grayscale(.35) contrast(1.05)
-   brightness(.94)` and resolve to full color on hover (`group-hover:[filter:none]`). The subject
-   "comes into focus" under observation.
-4. **Status / REC line** — Space Mono label strips with a pulsing `signal` square (REC dot) and
+2. **Detection frame** — a thin `leaf` border offset around a subject (product, plate), with a
+   small Space Mono **corner tag** (e.g. `MM-01`) in `bg-leaf text-bark`. The subject is "tagged".
+3. **Forensic photo treatment** — images render `grayscale(.35) contrast(1.02) brightness(.98)`
+   and resolve to full color on hover (`group-hover:[filter:none]`). The subject "comes into
+   focus" under observation.
+4. **Status / REC line** — Space Mono label strips with a pulsing `leaf` square (REC dot) and
    real coordinates (Uzhhorod `48.62N 22.29E`).
-5. **Section index** — `signal` two-digit mono numbers (`01`, `02`) prefix section headers.
+5. **Section index** — `leaf` two-digit mono numbers (`01`, `02`) prefix section headers.
 
 ## Component rules
 
-- **Backgrounds**: page `bg-asphalt`; image wells / placeholders `bg-graphite`.
-- **Borders**: hairlines use `border-line`. The only red borders are detection frames / CTA hover.
-- **Hover/active**: every interactive element shifts color (`hover:text-xray`) or fills
-  (`hover:bg-signal`); add `transition-colors` (200–500ms). Keyboard `:focus-visible` shows an
-  `xray` outline (global).
-- **Buttons (CTA)**: hairline border at rest → fill `signal` on hover. Mono label, wide tracking,
-  trailing `→`.
+- **Backgrounds**: page `bg-bark`; image wells / placeholders `bg-moss`.
+- **Borders**: hairlines use `border-line`. The only green borders are detection frames / CTA hover.
+- **Hover/active**: every interactive element shifts color (`hover:text-leaf`) or fills
+  (`hover:bg-leaf hover:text-bark`); add `transition-colors` (200–500ms). Keyboard
+  `:focus-visible` shows a `leaf` outline (global).
+- **Buttons (CTA)**: hairline border at rest → fill `leaf` (+ `text-bark`) on hover. Mono label,
+  wide tracking, trailing `→`.
 - **Motion**: animate `transform`/`opacity`/`filter` only (GPU). No `top/left/width` animation.
 - **Layout**: full-screen sections use `min-h-[100dvh]` (not `100vh`). Single-screen landing keeps
-  its top / center / bottom rhythm.
+  its top / bottom rhythm.
 
 ## Don't
 
-- No second accent color; no warm tones; no pure `#000` background.
+- No second accent color; no red; no cool steel blue; no pure `#000` background or `#fff` text.
+- Never put `bone` text on a `leaf` fill.
 - No Rock Salt outside the signature; no Cyrillic in the mono voice.
 - Don't restyle the `/admin` panel under this system unless asked — it's a private tool, not a
   public surface.

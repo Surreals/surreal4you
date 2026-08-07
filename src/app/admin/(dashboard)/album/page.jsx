@@ -18,7 +18,15 @@ const AlbumPage = async () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-black uppercase tracking-tight">Album announcement</h1>
+      <h1 className="text-3xl font-black uppercase tracking-tight">Album</h1>
+      <p className="max-w-prose text-[11px] leading-relaxed opacity-60">
+        The landing page no longer carries an album announcement block. These two values feed the
+        mono info strip at the bottom of the landing page, which reads{" "}
+        <span className="font-mono">
+          {album.title} — {(album.status ?? "").toLowerCase()}
+        </span>
+        .
+      </p>
 
       <form action={saveAlbum} className="space-y-3 border-[3px] border-black p-4">
         <div className="grid gap-3 md:grid-cols-2">
@@ -27,15 +35,6 @@ const AlbumPage = async () => {
           </Field>
           <Field label="Status">
             <input name="status" defaultValue={album.status ?? ""} placeholder="OUT NOW" className={inputClass} />
-          </Field>
-          <Field label="Listen URL">
-            <input name="listenUrl" defaultValue={album.listenUrl ?? ""} placeholder="https://open.spotify.com/…" className={inputClass} />
-          </Field>
-          <Field label="Cover path or URL">
-            <input name="cover" defaultValue={album.cover ?? ""} placeholder="/hehemonia.png or https://…" className={inputClass} />
-          </Field>
-          <Field label="Or upload cover">
-            <input type="file" name="coverFile" accept="image/*" className="w-full text-sm" />
           </Field>
         </div>
         <button

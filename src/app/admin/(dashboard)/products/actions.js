@@ -16,9 +16,21 @@ function slugify(s) {
 }
 
 function refresh() {
+  revalidatePath("/");
   revalidatePath("/store");
+  revalidatePath("/sitemap.xml");
   revalidatePath("/admin/products");
   revalidatePath("/admin");
+}
+
+// Publishes / unpublishes the whole merch section: the STORE link on the
+// landing page and /store's presence in the sitemap and in search.
+export async function setStoreVisibility(formData) {
+  await requireAdmin();
+  const showStore = str(formData, "showStore") === "true";
+  const content = await getContent();
+  await saveContent({ ...content, settings: { ...content.settings, showStore } });
+  refresh();
 }
 
 export async function saveProduct(formData) {

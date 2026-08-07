@@ -7,15 +7,15 @@ const Info = ({ album = defaultAlbum }) => {
   const age = calculateAge(birthDate);
 
   return (
-    <div className="grid w-full grid-cols-2 items-end gap-x-4 gap-y-4 font-mono text-[10px] tracking-[0.14em] text-concrete sm:text-[11px] md:flex md:justify-between md:gap-3">
+    <div className="grid w-full grid-cols-2 items-end gap-x-4 gap-y-4 font-mono text-[10px] tracking-[0.14em] text-lichen sm:text-[11px] md:flex md:justify-between md:gap-3">
       <HqMarker />
-      <div className="justify-self-end text-right text-cold/80 md:justify-self-auto md:text-left">
+      <div className="justify-self-end text-right text-bone/80 md:justify-self-auto md:text-left">
         <p>{age} · uzh</p>
         <p>hip-hop</p>
       </div>
-      <div className="text-left text-cold/80">
+      <div className="text-left text-bone/80">
         <p>
-          {album.title} — {album.status.toLowerCase()}
+          {album.title} — {(album.status ?? "").toLowerCase()}
         </p>
         <p>soon xxx more</p>
       </div>
@@ -24,7 +24,7 @@ const Info = ({ album = defaultAlbum }) => {
           target="_blank"
           rel="noopener"
           href="https://www.bytcd.com/"
-          className="underline underline-offset-2 transition-colors hover:text-xray"
+          className="underline underline-offset-2 transition-colors hover:text-leaf"
         >
           by bytcd.com
         </a>

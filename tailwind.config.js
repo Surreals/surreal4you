@@ -7,16 +7,15 @@ export default {
     extend: {
       colors: {
         // SRRL visual system — see DESIGN.md
-        asphalt: "#0a0c0e",
-        graphite: "#23282e",
-        concrete: "#6e7b86",
-        xray: {
-          DEFAULT: "#7fa8c9",
-          pale: "#b9d3e3",
+        bark: "#141811",
+        moss: "#262b21",
+        lichen: "#7e8a74",
+        leaf: {
+          DEFAULT: "#8fbf6a",
+          pale: "#c3d9ac",
         },
-        cold: "#e8eef2",
-        signal: "#d11a2a",
-        line: "rgba(255,255,255,0.10)",
+        bone: "#eef1e8",
+        line: "rgba(238,241,232,0.12)",
       },
       fontFamily: {
         sans: ["var(--font-archivo)", "system-ui", "sans-serif"],

@@ -1,7 +1,5 @@
 import {
-  AlbumAnnounce,
   BootIntro,
-  Countdown,
   Cursor,
   Info,
   Links,
@@ -12,10 +10,15 @@ import {
   TrackingCleaner,
 } from "../components";
 import { getContent } from "../lib/content";
-import { showAlbumAnnounce } from "../utils/constants";
+import { isStoreLink } from "../lib/store";
 
 const Home = async () => {
-  const { album, links } = await getContent();
+  const { album, links, settings } = await getContent();
+
+  // The store link only exists on the landing page while merch is published.
+  const visible = (list) =>
+    settings.showStore ? list : list.filter((l) => !isStoreLink(l));
+  const publicLinks = { main: visible(links.main), side: visible(links.side) };
 
   return (
     <main className="flex min-h-[100dvh] flex-col p-0 md:p-24 lg:p-32">
@@ -24,14 +27,8 @@ const Home = async () => {
 
         <div className="rise relative z-10 flex flex-col gap-5">
           <StatusLine />
-          <Links links={links} />
+          <Links links={publicLinks} />
         </div>
-
-        {showAlbumAnnounce ? (
-          <AlbumAnnounce album={album} />
-        ) : (
-          <Countdown title={album.title} />
-        )}
 
         <div className="rise [animation-delay:240ms]">
           <Info album={album} />

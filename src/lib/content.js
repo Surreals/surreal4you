@@ -2,7 +2,12 @@ import { cache } from "react";
 import { promises as fs } from "fs";
 import path from "path";
 import { list, put } from "@vercel/blob";
-import { mainLinks, sideLinks, album as defaultAlbum } from "../utils/constants";
+import {
+  mainLinks,
+  sideLinks,
+  album as defaultAlbum,
+  settings as defaultSettings,
+} from "../utils/constants";
 import { products as defaultProducts } from "../data/products";
 
 const CONTENT_PATH = "content/site.json";
@@ -15,17 +20,24 @@ export const DEFAULT_CONTENT = {
   products: defaultProducts,
   album: defaultAlbum,
   links: { main: mainLinks, side: sideLinks },
+  settings: defaultSettings,
 };
 
 // Coerce arbitrary stored JSON into the shape the UI expects.
 function normalize(raw) {
   const c = raw && typeof raw === "object" ? raw : {};
+  const s = c.settings && typeof c.settings === "object" ? c.settings : {};
   return {
     products: Array.isArray(c.products) ? c.products : DEFAULT_CONTENT.products,
     album: { ...DEFAULT_CONTENT.album, ...(c.album && typeof c.album === "object" ? c.album : {}) },
     links: {
       main: Array.isArray(c.links?.main) ? c.links.main : DEFAULT_CONTENT.links.main,
       side: Array.isArray(c.links?.side) ? c.links.side : DEFAULT_CONTENT.links.side,
+    },
+    settings: {
+      // Stored content written before this flag existed must not silently
+      // publish the store, so anything other than `true` reads as hidden.
+      showStore: s.showStore === true,
     },
   };
 }

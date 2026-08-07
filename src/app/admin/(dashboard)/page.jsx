@@ -12,7 +12,7 @@ const StatCard = ({ label, value, href }) => (
 );
 
 const AdminDashboard = async () => {
-  const { products, album, links } = await getContent();
+  const { products, album, links, settings } = await getContent();
   const linkCount = (links.main?.length ?? 0) + (links.side?.length ?? 0);
   const storeConfigured = process.env.BLOB_READ_WRITE_TOKEN ? "Vercel Blob" : "Local file (dev)";
 
@@ -24,8 +24,12 @@ const AdminDashboard = async () => {
       </div>
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+        <StatCard
+          label="Merch"
+          value={settings.showStore ? "Published" : "Hidden"}
+          href="/admin/products"
+        />
         <StatCard label="Products" value={products.length} href="/admin/products" />
-        <StatCard label="Album status" value={album.status || "—"} href="/admin/album" />
         <StatCard label="Links" value={linkCount} href="/admin/links" />
       </div>
 
@@ -35,8 +39,12 @@ const AdminDashboard = async () => {
         </h2>
         <div className="divide-y-2 divide-black border-[3px] border-black text-sm">
           <div className="flex justify-between gap-4 p-3">
-            <span>Album</span>
+            <span>Album (info strip)</span>
             <span className="truncate font-black">{album.title} — {album.status}</span>
+          </div>
+          <div className="flex justify-between gap-4 p-3">
+            <span>STORE link on landing</span>
+            <span className="font-black">{settings.showStore ? "Visible" : "Hidden"}</span>
           </div>
           <div className="flex justify-between gap-4 p-3">
             <span>Products in store</span>

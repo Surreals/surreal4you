@@ -6,14 +6,15 @@ Built with **Next.js (App Router, SSR)**, React 18 and Tailwind CSS.
 
 ## Pages
 
-- `/` — landing page with the album announcement (cover + minimal text), links and bio.
+- `/` — landing page: signature watermark, status line, links and the bio strip.
 - `/store` — catalog-only merch store with an embedded Spotify player.
-- `/admin` — password-protected admin panel (Google login) to edit products, the album announcement and links.
+- `/moodboard` — the visual system reference (see [`DESIGN.md`](DESIGN.md)).
+- `/admin` — admin panel (Google login) to manage merch, its visibility, the album strip and links.
 
 ## Admin panel
 
 Google sign-in (NextAuth v5) restricted to an email allowlist. Edited content
-(products, album, links) and uploaded images are stored in **Vercel Blob**;
+(products, settings, album, links) and uploaded images are stored in **Vercel Blob**;
 the public pages read it at request time. Locally, if `BLOB_READ_WRITE_TOKEN`
 is not set, content falls back to a `.data/content.json` file (dev only) and
 image uploads are disabled (use the image-path field instead).
@@ -44,10 +45,15 @@ Other scripts: `pnpm build`, `pnpm start`, `pnpm lint`.
 
 ## Store
 
-Catalog-only — products live in [`src/data/products.js`](src/data/products.js). "Buy"
-buttons open the order channel set by `ORDER_URL` in
-[`src/utils/constants.js`](src/utils/constants.js). There is no on-site checkout or
-payment processing. Update prices, images and `ORDER_URL` with real values.
+Catalog-only — seed products live in [`src/data/products.js`](src/data/products.js), and are
+managed from `/admin/products` once an admin saves. "Buy" buttons open the order channel set by
+`ORDER_URL` in [`src/utils/constants.js`](src/utils/constants.js). There is no on-site checkout or
+payment processing.
+
+**Visibility.** `/admin/products` carries a master switch (`settings.showStore`). While merch is
+hidden, any link pointing at `/store` is stripped from the landing page and `/store` is left out of
+[`src/app/sitemap.js`](src/app/sitemap.js) and marked `noindex` — but the page still opens by
+direct URL so the catalog can be previewed before it goes live.
 
 ### Merch on Spotify
 
