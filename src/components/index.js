@@ -8,6 +8,7 @@ import HqMarker from "./HqMarker";
 import MusicPlayer from "./MusicPlayer";
 import StatusLine from "./StatusLine";
 import Cursor from "./Cursor";
+import FilmGrain from "./FilmGrain";
 import ScrambleText from "./ScrambleText";
 import BootIntro from "./BootIntro";
 import Scanline from "./Scanline";
@@ -23,6 +24,7 @@ export {
     MusicPlayer,
     StatusLine,
     Cursor,
+    FilmGrain,
     ScrambleText,
     BootIntro,
     Scanline,

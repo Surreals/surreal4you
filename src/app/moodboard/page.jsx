@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Cursor, Scanline } from "../../components";
+import { Cursor, FilmGrain, Scanline } from "../../components";
 
 export const metadata = {
   title: "Visual System — Srrl",
@@ -207,6 +207,7 @@ const Moodboard = () => {
       </footer>
       <Cursor />
       <Scanline />
+      <FilmGrain />
     </main>
   );
 };

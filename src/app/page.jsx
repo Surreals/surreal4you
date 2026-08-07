@@ -1,6 +1,7 @@
 import {
   BootIntro,
   Cursor,
+  FilmGrain,
   Info,
   Links,
   MusicPlayer,
@@ -37,6 +38,7 @@ const Home = async () => {
       <MusicPlayer />
       <Cursor />
       <Scanline />
+      <FilmGrain />
       <BootIntro />
       <TrackingCleaner />
     </main>

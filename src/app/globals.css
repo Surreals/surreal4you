@@ -29,15 +29,109 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Film grain — night-camera / forensic texture over the whole page */
-body::after {
-  content: "";
+/*
+ * Old-film treatment — see the FilmGrain component. Two fixed layers: grain
+ * that jumps frame to frame (real grain is re-exposed every frame, so it must
+ * not slide) and a projector vignette that breathes. Public pages only; /admin
+ * stays clean.
+ *
+ * Dials: --grain-opacity (how present the stock is) and --vignette-strength
+ * (how far the projector falls off at the corners).
+ */
+.film {
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: 999;
-  opacity: 0.06;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  overflow: hidden;
+  pointer-events: none;
+  --grain-opacity: 0.1;
+  --vignette-strength: 0.38;
+}
+
+.film-grain {
+  position: absolute;
+  top: -25%;
+  left: -25%;
+  width: 150%;
+  height: 150%;
+  opacity: var(--grain-opacity);
+  /* Desaturated so the stock reads as silver halide, not RGB sensor noise. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.8s steps(1) infinite;
+}
+
+/* 10 discrete stops over 0.8s ≈ 12 fps — the hand-cranked end of the range. */
+@keyframes grain {
+  0% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-3%, -5%);
+  }
+  20% {
+    transform: translate(-7%, 3%);
+  }
+  30% {
+    transform: translate(5%, -7%);
+  }
+  40% {
+    transform: translate(-2%, 7%);
+  }
+  50% {
+    transform: translate(-7%, -3%);
+  }
+  60% {
+    transform: translate(7%, 1%);
+  }
+  70% {
+    transform: translate(1%, 5%);
+  }
+  80% {
+    transform: translate(3%, -6%);
+  }
+  90% {
+    transform: translate(-5%, 4%);
+  }
+}
+
+.film-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(0, 0, 0, var(--vignette-strength)) 100%
+  );
+  animation: projector 6s steps(1) infinite;
+}
+
+/* Exposure wobble — the lamp is never perfectly steady. */
+@keyframes projector {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  12% {
+    opacity: 0.88;
+  }
+  24% {
+    opacity: 1;
+  }
+  38% {
+    opacity: 0.93;
+  }
+  52% {
+    opacity: 1;
+  }
+  61% {
+    opacity: 0.9;
+  }
+  76% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 0.95;
+  }
 }
 
 /* Keyboard focus — leaf outline */
@@ -69,6 +163,11 @@ body::after {
 
 @media (prefers-reduced-motion: reduce) {
   .rise {
+    animation: none;
+  }
+  /* Grain and lamp freeze, but the texture stays — it is not motion, it is stock. */
+  .film-grain,
+  .film-vignette {
     animation: none;
   }
   html {

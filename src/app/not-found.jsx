@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FilmGrain } from "../components";
 
 export const metadata = {
   title: "404 — Srrl",
@@ -18,6 +19,7 @@ const NotFound = () => {
       >
         <span aria-hidden="true">←</span> srrl
       </Link>
+      <FilmGrain />
     </main>
   );
 };

@@ -54,8 +54,13 @@ consistent.
 
 ## Motifs (the surveillance throughline)
 
-1. **Film grain** — a fixed, `pointer-events-none` SVG fractal-noise overlay at ~6% opacity over
-   the whole page (`body::after`). Breaks digital flatness; reads as night-camera.
+1. **Old-film stock** — the `<FilmGrain />` component: a fixed, `pointer-events-none` pair of
+   layers over the whole page. Desaturated SVG fractal noise that *jumps* between 10 discrete
+   positions at ~12fps (grain is re-exposed every frame, so it must never slide), plus a radial
+   projector vignette whose opacity wobbles like an unsteady lamp. Breaks digital flatness; reads
+   as projected film rather than a clean screen. Tune with `--grain-opacity` /
+   `--vignette-strength` on `.film`. Both animations stop under `prefers-reduced-motion` while the
+   texture stays. Rendered per public page, never in the root layout — `/admin` must stay clean.
 2. **Detection frame** — a thin `leaf` border offset around a subject (product, plate), with a
    small Space Mono **corner tag** (e.g. `MM-01`) in `bg-leaf text-bark`. The subject is "tagged".
 3. **Forensic photo treatment** — images render `grayscale(.35) contrast(1.02) brightness(.98)`

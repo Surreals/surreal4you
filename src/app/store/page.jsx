@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Cursor, Product, Scanline, SpotifyEmbed } from "../../components";
+import { Cursor, FilmGrain, Product, Scanline, SpotifyEmbed } from "../../components";
 import { getContent } from "../../lib/content";
 import { SPOTIFY_ARTIST_URL } from "../../utils/constants";
 
@@ -66,6 +66,7 @@ const Store = async () => {
       </section>
       <Cursor />
       <Scanline />
+      <FilmGrain />
     </main>
   );
 };
