@@ -26,7 +26,24 @@ body {
   background-color: var(--bark);
   color: var(--bone);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/*
+ * Wrapping. Headings are short enough to balance; mono labels and body copy get
+ * `pretty` so a single word never dangles on its own line.
+ */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p,
+figcaption,
+li {
+  text-wrap: pretty;
 }
 
 /*
@@ -161,8 +178,22 @@ body {
   animation: rise 0.7s cubic-bezier(0.16, 0.84, 0.44, 1) both;
 }
 
+/*
+ * On the first visit of a session the boot overlay covers the page for ~1.1s —
+ * long enough for this entrance to play out entirely unseen. BootIntro marks the
+ * document while the overlay is up, so the rise holds its first frame and then
+ * plays through the overlay's fade.
+ */
+html[data-boot] .rise {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .rise {
+    animation: none;
+  }
+  /* REC dots keep the leaf square — only the pulse stops. */
+  .animate-pulse {
     animation: none;
   }
   /* Grain and lamp freeze, but the texture stays — it is not motion, it is stock. */

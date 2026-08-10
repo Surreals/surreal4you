@@ -24,7 +24,7 @@ const Info = ({ album = defaultAlbum }) => {
           target="_blank"
           rel="noopener"
           href="https://www.bytcd.com/"
-          className="underline underline-offset-2 transition-colors hover:text-leaf"
+          className="relative underline underline-offset-2 transition-colors before:absolute before:-inset-x-2 before:-inset-y-3.5 before:content-[''] hover:text-leaf"
         >
           by bytcd.com
         </a>

@@ -1,5 +1,8 @@
 import { SPOTIFY_ARTIST_ID } from "../../utils/constants";
 
+// Sharp corners: the wells that hold this embed are hairline-bordered squares.
+const frameStyle = { border: 0, display: "block" };
+
 const SpotifyEmbed = ({ id = SPOTIFY_ARTIST_ID, type = "artist", height = 352 }) => {
   return (
     <iframe
@@ -10,7 +13,7 @@ const SpotifyEmbed = ({ id = SPOTIFY_ARTIST_ID, type = "artist", height = 352 })
       loading="lazy"
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
       allowFullScreen
-      style={{ border: 0, borderRadius: 12, display: "block" }}
+      style={frameStyle}
     />
   );
 };

@@ -11,6 +11,8 @@ const ScrambleText = ({ text }) => {
   const raf = useRef(0);
 
   const run = () => {
+    // The decode is pure motion — the colour shift is the feedback that stays.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     cancelAnimationFrame(raf.current);
     const total = Math.max(8, text.length + 4);
     let frame = 0;
@@ -39,7 +41,11 @@ const ScrambleText = ({ text }) => {
       <span className="invisible" aria-hidden="true">
         {text}
       </span>
-      <span className="absolute left-0 top-0 whitespace-nowrap">{out}</span>
+      {/* Mid-decode this reads as noise, so it is kept out of the a11y tree —
+          the link carries the real name via aria-label. */}
+      <span aria-hidden="true" className="absolute left-0 top-0 whitespace-nowrap">
+        {out}
+      </span>
     </span>
   );
 };

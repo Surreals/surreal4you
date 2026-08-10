@@ -81,14 +81,30 @@ consistent.
   (`hover:bg-leaf hover:text-bark`); add `transition-colors` (200–500ms). Keyboard
   `:focus-visible` shows a `leaf` outline (global).
 - **Buttons (CTA)**: hairline border at rest → fill `leaf` (+ `text-bark`) on hover. Mono label,
-  wide tracking, trailing `→`.
+  wide tracking, trailing `→`. Press adds `active:scale-[0.96]` — always that value; anything
+  under `0.95` reads as a bounce. Because `scale` needs `transform` in the transition list, the
+  colour transition is spelled out: `transition-[color,background-color,border-color,transform]`.
+  Nav links stay press-static — colour plus the decode is already enough feedback there.
+- **Hit areas**: 44px minimum, measured not eyeballed. Where the mark must stay small (the 28px
+  player toggle, the mono strip's `(001)` and attribution), keep the visible size and carry the
+  target on a `before`/`after` pseudo-element. Two targets may touch but never overlap.
+- **Icons**: inline SVG on a 16 grid, `currentColor`, stroke ~`1.75` so it reads ~1.5px at 14px
+  and matches the mono labels. Never a text glyph (`▶`, `✕`) — those fall out of Space Mono to
+  whatever the OS supplies, at whatever size it likes. Contextual swaps keep both icons mounted
+  and cross-fade `opacity` / `transform` / `filter` (scale `0.25`→`1`, blur `4px`→`0`,
+  `cubic-bezier(0.2,0,0,1)`); no motion library. The play triangle sits 1px right of centre —
+  centred geometrically it always looks pushed left.
 - **Motion**: animate `transform`/`opacity`/`filter` only (GPU). No `top/left/width` animation.
+  Never `transition-all`; name the properties. Everything decorative also stops under
+  `prefers-reduced-motion` — the boot sweep, the rise, the REC pulse and the hover decode — while
+  the static cue (the `leaf` square, the colour shift) stays.
 - **Layout**: full-screen sections use `min-h-[100dvh]` (not `100vh`). Single-screen landing keeps
   its top / bottom rhythm.
 
 ## Don't
 
 - No second accent color; no red; no cool steel blue; no pure `#000` background or `#fff` text.
+- No border radius. Corners are sharp everywhere, embeds included.
 - Never put `bone` text on a `leaf` fill.
 - No Rock Salt outside the signature; no Cyrillic in the mono voice.
 - Don't restyle the `/admin` panel under this system unless asked — it's a private tool, not a

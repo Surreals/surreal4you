@@ -4,8 +4,12 @@ import ScrambleText from "../ScrambleText";
 
 // Catalogued links — each tagged with a forensic two-digit index.
 const buildLink = ({ name, url, internal }, index, align) => {
+  // The index is a forensic marker, not part of the link's name.
   const tag = (
-    <span className="font-mono text-[10px] tracking-widest text-lichen transition-colors group-hover:text-leaf">
+    <span
+      aria-hidden="true"
+      className="font-mono text-[10px] tracking-widest text-lichen transition-colors group-hover:text-leaf"
+    >
       {String(index + 1).padStart(2, "0")}
     </span>
   );
@@ -23,12 +27,14 @@ const buildLink = ({ name, url, internal }, index, align) => {
       </>
     );
 
+  // py-2 lifts each row to a 44px touch target. The column drops its gap in
+  // exchange, so neighbouring rows meet without ever overlapping.
   const className =
-    "group flex w-auto items-center gap-2 transition-colors hover:text-leaf";
+    "group flex w-auto items-center gap-2 py-2 transition-colors hover:text-leaf";
 
   if (internal || url?.startsWith("/")) {
     return (
-      <Link key={name} href={url} className={className}>
+      <Link key={name} href={url} aria-label={name} className={className}>
         {inner}
       </Link>
     );
@@ -39,6 +45,7 @@ const buildLink = ({ name, url, internal }, index, align) => {
       rel="noopener noreferrer"
       key={name}
       href={url}
+      aria-label={name}
       className={className}
     >
       {inner}
@@ -51,10 +58,10 @@ const Links = ({ links }) => {
   const side = links?.side ?? sideLinks;
   return (
     <div className="flex justify-between gap-4 text-xl font-extrabold uppercase sm:text-2xl">
-      <div className="flex flex-col items-start gap-1 text-left">
+      <div className="flex flex-col items-start text-left">
         {main.map((lnk, i) => buildLink(lnk, i, "left"))}
       </div>
-      <div className="flex flex-col items-end gap-1 text-right">
+      <div className="flex flex-col items-end text-right">
         {side.map((lnk, i) => buildLink(lnk, i, "right"))}
       </div>
     </div>

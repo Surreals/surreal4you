@@ -200,7 +200,10 @@ const Moodboard = () => {
       </Section>
 
       <footer className="flex flex-wrap justify-between gap-2.5 py-10 font-mono text-[11px] uppercase tracking-[0.1em] text-lichen">
-        <Link href="/" className="transition-colors hover:text-leaf">
+        <Link
+          href="/"
+          className="relative transition-colors before:absolute before:-inset-x-2 before:-inset-y-3 before:content-[''] hover:text-leaf"
+        >
           ← srrl
         </Link>
         <span>srrl · visual system</span>

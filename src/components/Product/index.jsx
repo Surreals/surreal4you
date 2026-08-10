@@ -39,12 +39,13 @@ const Product = ({ product, index = 0 }) => {
           href={buyUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-3 inline-flex items-center justify-center border border-line py-2 text-center font-mono text-xs uppercase tracking-[0.2em] text-bone transition-colors hover:border-leaf hover:bg-leaf hover:text-bark"
+          aria-label={`buy ${name}`}
+          className="mt-3 inline-flex min-h-11 items-center justify-center border border-line py-2 text-center font-mono text-xs uppercase tracking-[0.2em] text-bone transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-leaf hover:bg-leaf hover:text-bark active:scale-[0.96]"
         >
           buy
         </a>
       ) : (
-        <span className="mt-3 inline-flex items-center justify-center border border-line py-2 text-center font-mono text-xs uppercase tracking-[0.2em] text-lichen">
+        <span className="mt-3 inline-flex min-h-11 items-center justify-center border border-line py-2 text-center font-mono text-xs uppercase tracking-[0.2em] text-lichen">
           soon
         </span>
       )}

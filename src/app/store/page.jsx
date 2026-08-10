@@ -28,7 +28,12 @@ const Store = async () => {
   return (
     <main className="mx-auto min-h-[100dvh] max-w-6xl px-4 py-8 md:px-8 md:py-16">
       <header className="flex items-baseline justify-between border-b border-line pb-5 font-mono text-xs uppercase tracking-[0.18em] text-lichen">
-        <Link href="/" className="transition-colors hover:text-leaf">
+        {/* The `before` pseudo grows the hit area to ~40px without disturbing
+            the baseline the header aligns on. */}
+        <Link
+          href="/"
+          className="relative transition-colors before:absolute before:-inset-x-2 before:-inset-y-3 before:content-[''] hover:text-leaf"
+        >
           ← srrl
         </Link>
         <span className="text-bone">
@@ -49,7 +54,7 @@ const Store = async () => {
         <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.18em] text-lichen">
           <span className="text-leaf">02</span> / listen while you browse
         </h2>
-        <div className="overflow-hidden rounded-xl border border-line">
+        <div className="overflow-hidden border border-line">
           <SpotifyEmbed />
         </div>
         <p className="mt-4 font-mono text-[11px] uppercase tracking-wide text-lichen">

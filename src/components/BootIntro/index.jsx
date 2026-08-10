@@ -13,13 +13,23 @@ const BootIntro = () => {
       sessionStorage.setItem("srrl-boot", "1");
       return;
     }
+    // Hold the page entrance while the overlay is up, then release it so the
+    // content rises through the fade instead of behind it — see globals.css.
+    const root = document.documentElement;
+    const release = () => delete root.dataset.boot;
+    root.dataset.boot = "1";
+
     setShow(true);
-    const t1 = setTimeout(() => setClosing(true), 1100);
+    const t1 = setTimeout(() => {
+      setClosing(true);
+      release();
+    }, 1100);
     const t2 = setTimeout(() => {
       setShow(false);
       sessionStorage.setItem("srrl-boot", "1");
     }, 1650);
     return () => {
+      release();
       clearTimeout(t1);
       clearTimeout(t2);
     };
