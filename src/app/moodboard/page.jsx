@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Cursor, FilmGrain, Scanline } from "../../components";
 
 export const metadata = {
-  title: "Visual System — Srrl",
+  title: "Visual System — Srrlovych",
   description:
     "SRRL visual system — bark, moss and bone with one leaf-green accent. Surveillance · forensics · overgrowth.",
   alternates: { canonical: "/moodboard" },
@@ -69,7 +69,7 @@ const Moodboard = () => {
           <span>uzh · 48.62n 22.29e</span>
         </div>
         <p className="mt-5 font-display text-5xl leading-none text-bone sm:text-7xl md:text-8xl">
-          Srrl
+          Srrlovych
         </p>
         <p className="mt-3 text-base font-extrabold uppercase tracking-wide md:text-xl">
           forest night — <span className="text-leaf">surveillance · forensics · overgrowth</span>
@@ -126,7 +126,7 @@ const Moodboard = () => {
       <Section n="02" title="Type">
         <div className="grid gap-4 md:grid-cols-3">
           <div className="flex min-h-[150px] flex-col justify-between border border-line p-5">
-            <span className="font-display text-4xl text-bone">Srrl</span>
+            <span className="font-display text-4xl text-bone">Srrlovych</span>
             <span className="font-mono text-[11px] uppercase tracking-wide text-lichen">
               rock salt — <span className="text-bone">signature only</span>
             </span>
@@ -166,7 +166,7 @@ const Moodboard = () => {
             >
               <Image
                 src={p.src}
-                alt={`srrl — ${p.role}`}
+                alt={`srrlovych — ${p.role}`}
                 width={p.wide ? 1280 : 768}
                 height={p.wide ? 560 : 1024}
                 className={`w-full object-cover [filter:grayscale(0.3)_contrast(1.02)] transition-[filter,transform] duration-500 group-hover:scale-[1.02] group-hover:[filter:none] ${
@@ -204,9 +204,9 @@ const Moodboard = () => {
           href="/"
           className="relative transition-colors before:absolute before:-inset-x-2 before:-inset-y-3 before:content-[''] hover:text-leaf"
         >
-          ← srrl
+          ← srrlovych
         </Link>
-        <span>srrl · visual system</span>
+        <span>srrlovych · visual system</span>
       </footer>
       <Cursor />
       <Scanline />

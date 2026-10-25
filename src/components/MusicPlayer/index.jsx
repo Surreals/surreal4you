@@ -80,7 +80,7 @@ const MusicPlayer = () => {
               </span>
             </span>
           </button>
-          <span className="text-bone">Srrl</span>
+          <span className="text-bone">Srrlovych</span>
           <span className="truncate">lalala</span>
           <span className="ml-auto hidden text-lichen sm:inline">spotify</span>
         </div>

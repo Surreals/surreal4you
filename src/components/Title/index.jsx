@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-// Full-bleed "Srrl" signature watermark (handwritten Rock Salt) that drifts
+// Full-bleed "Srrlovych" signature watermark (handwritten Rock Salt) that drifts
 // subtly with the cursor for depth. Static on touch / reduced motion.
 const Title = () => {
   const ref = useRef(null);
@@ -33,9 +33,9 @@ const Title = () => {
     <h1 className="pointer-events-none absolute inset-0 z-0 flex select-none items-center justify-center">
       <span
         ref={ref}
-        className="watermark font-display text-7xl leading-none transition-transform duration-300 ease-out sm:text-8xl md:text-9xl"
+        className="watermark font-display text-5xl leading-none transition-transform duration-300 ease-out sm:text-7xl md:text-8xl lg:text-9xl"
       >
-        Srrl
+        Srrlovych
       </span>
     </h1>
   );

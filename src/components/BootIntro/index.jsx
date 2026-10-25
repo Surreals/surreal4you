@@ -44,7 +44,7 @@ const BootIntro = () => {
       }`}
     >
       <span className="boot-scan pointer-events-none absolute inset-x-0 h-px bg-leaf/70" />
-      <span className="font-display text-5xl leading-none text-bone md:text-7xl">Srrl</span>
+      <span className="font-display text-5xl leading-none text-bone md:text-7xl">Srrlovych</span>
       <span className="font-mono text-[10px] tracking-[0.4em] text-lichen">
         uzh · 48.62n 22.29e
       </span>

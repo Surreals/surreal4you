@@ -24,15 +24,16 @@ const rockSalt = Rock_Salt({
 
 const SITE_URL = "https://surreal4you.com";
 const DESCRIPTION =
-  "Official website of Srrl, a hip-hop artist from Uzhhorod, Ukraine. New album HEHEMONIA out now. Stream Srrl on Spotify, Apple Music, YouTube, Instagram, TikTok, and Telegram.";
+  "Official website of Srrlovych, a hip-hop artist from Uzhhorod, Ukraine. New album HEHEMONIA out now. Stream Srrlovych on Spotify, Apple Music, YouTube, Instagram, TikTok, and Telegram.";
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Srrl - Hip-Hop Artist | Official Website",
+  title: "Srrlovych - Hip-Hop Artist | Official Website",
   description: DESCRIPTION,
-  applicationName: "Srrl",
-  authors: [{ name: "Srrl" }],
+  applicationName: "Srrlovych",
+  authors: [{ name: "Srrlovych" }],
   keywords: [
+    "Srrlovych",
     "Srrl",
     "surrealovych",
     "surreal4you",
@@ -64,23 +65,23 @@ export const metadata = {
     type: "profile",
     username: "surrealovych",
     url: SITE_URL,
-    siteName: "Srrl",
-    title: "Srrl - Hip-Hop Artist | Official Website",
+    siteName: "Srrlovych",
+    title: "Srrlovych - Hip-Hop Artist | Official Website",
     description: DESCRIPTION,
     locale: "en_US",
     images: [
       {
         url: "/og-image.png",
         type: "image/png",
-        alt: "Srrl - Hip-Hop Artist",
+        alt: "Srrlovych - Hip-Hop Artist",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Srrl - Hip-Hop Artist | Official Website",
+    title: "Srrlovych - Hip-Hop Artist | Official Website",
     description: DESCRIPTION,
-    images: [{ url: "/og-image.png", alt: "Srrl - Hip-Hop Artist" }],
+    images: [{ url: "/og-image.png", alt: "Srrlovych - Hip-Hop Artist" }],
   },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
@@ -100,8 +101,8 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "MusicGroup",
   "@id": `${SITE_URL}/#artist`,
-  name: "Srrl",
-  alternateName: "surrealovych",
+  name: "Srrlovych",
+  alternateName: ["Srrl", "surrealovych"],
   description: "Hip-hop artist from Uzhhorod, Ukraine",
   url: `${SITE_URL}/`,
   image: `${SITE_URL}/og-image.png`,

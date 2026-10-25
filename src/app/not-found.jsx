@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FilmGrain } from "../components";
 
 export const metadata = {
-  title: "404 — Srrl",
+  title: "404 — Srrlovych",
   robots: { index: false, follow: false },
 };
 
@@ -17,7 +17,7 @@ const NotFound = () => {
         href="/"
         className="mt-8 inline-flex min-h-11 items-center gap-2 border border-line px-5 py-2.5 font-mono text-xs tracking-[0.2em] text-bone transition-[color,background-color,border-color,transform] duration-200 ease-out hover:border-leaf hover:bg-leaf hover:text-bark active:scale-[0.96]"
       >
-        <span aria-hidden="true">←</span> srrl
+        <span aria-hidden="true">←</span> srrlovych
       </Link>
       <FilmGrain />
     </main>

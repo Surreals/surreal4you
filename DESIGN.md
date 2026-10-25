@@ -45,7 +45,7 @@ Three voices, wired via `next/font` in [`src/app/layout.jsx`](src/app/layout.jsx
 - **Space Mono** (`font-mono`, 400/700) — technical/forensic labels, codes, coordinates, prices,
   section numbers. Always `uppercase` + positive tracking (`tracking-[0.14em]`–`[0.18em]`),
   usually `text-lichen`.
-- **Rock Salt** (`font-display`) — handwritten signature. Use **sparingly** — the SRRL signature
+- **Rock Salt** (`font-display`) — handwritten signature. Use **sparingly** — the Srrlovych signature
   only, never body copy. As the full-bleed watermark it takes the `.watermark` treatment: no fill,
   debossed into the surface with a shadow along the top lip and a highlight along the bottom.
   A translucent fill is wrong here at any opacity — its hard alpha edge always reads as a decal

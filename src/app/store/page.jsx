@@ -8,15 +8,15 @@ import { SPOTIFY_ARTIST_URL } from "../../utils/constants";
 export async function generateMetadata() {
   const { settings } = await getContent();
   return {
-    title: "Store — Srrl",
+    title: "Store — Srrlovych",
     description:
-      "Official Srrl merch. Prints and apparel from the HEHEMONIA era. Also available on the Srrl Spotify artist profile.",
+      "Official Srrlovych merch. Prints and apparel from the HEHEMONIA era. Also available on the Srrlovych Spotify artist profile.",
     alternates: { canonical: "/store" },
     robots: settings.showStore ? undefined : { index: false, follow: false },
     openGraph: {
-      title: "Store — Srrl",
+      title: "Store — Srrlovych",
       description:
-        "Official Srrl merch. Prints and apparel from the HEHEMONIA era.",
+        "Official Srrlovych merch. Prints and apparel from the HEHEMONIA era.",
       url: "/store",
     },
   };
@@ -34,7 +34,7 @@ const Store = async () => {
           href="/"
           className="relative transition-colors before:absolute before:-inset-x-2 before:-inset-y-3 before:content-[''] hover:text-leaf"
         >
-          ← srrl
+          ← srrlovych
         </Link>
         <span className="text-bone">
           <span className="text-leaf">01</span> / store

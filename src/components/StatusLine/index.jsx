@@ -22,7 +22,7 @@ const StatusLine = () => {
     <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-lichen">
       <span className="flex items-center gap-2">
         <span className="size-1.5 animate-pulse bg-leaf" aria-hidden="true" />
-        srrl
+        srrlovych
       </span>
       <span className="flex items-center gap-2">
         <span className="tabular-nums text-bone/80">{clock || "--:--:--"}</span>
