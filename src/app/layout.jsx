@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Archivo, Space_Mono, Rock_Salt } from "next/font/google";
 import "./globals.css";
+import ServiceWorker from "@/components/ServiceWorker";
 
 // SRRL type system — see DESIGN.md
 const archivo = Archivo({
@@ -85,8 +86,10 @@ export const metadata = {
   },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
   },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { title: "Srrlovych", statusBarStyle: "black" },
   other: {
     "geo.region": "UA-21",
     "geo.placename": "Uzhhorod, Ukraine",
@@ -136,6 +139,7 @@ const RootLayout = ({ children }) => {
         />
         <Analytics />
         <SpeedInsights />
+        <ServiceWorker />
       </body>
     </html>
   );

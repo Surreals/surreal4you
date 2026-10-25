@@ -75,6 +75,17 @@ configured in **Spotify for Artists** by linking an approved merch partner
 to the artist profile; the actual profile listing must be enabled in Spotify for
 Artists once a merch partner is connected.
 
+## Installable app (PWA)
+
+The site and the admin panel install from the browser as two separate apps:
+`public/manifest.webmanifest` (linked from the root layout) and `public/admin.webmanifest`
+(linked from `src/app/admin/layout.jsx`, kept outside `/admin/` so the middleware never
+redirects it). Icons live in `public/icons/` — admin variants carry an "ADM" tag.
+`public/sw.js` caches only `public/offline.html` and serves it when a page can't load offline;
+nothing else is cached. It is registered in production only by
+[`src/components/ServiceWorker`](src/components/ServiceWorker/index.jsx). Bump `CACHE` in
+`sw.js` after editing `offline.html`.
+
 ## Deploy
 
 Targets **Vercel** (zero-config Next.js, SSR). Push the repo and import it in Vercel,
