@@ -304,12 +304,6 @@ li {
   opacity: 1;
 }
 
-.feed:not([data-clip]):hover .feed-static,
-.feed:not([data-clip]):focus-visible .feed-static {
-  opacity: 0.16;
-  animation: static 0.3s steps(1) infinite;
-}
-
 /* Signature — the one hand-made thing on the page, sitting on the monitors
    like a station ident. Difference blend keeps it readable on any feed. */
 .signature {
@@ -686,6 +680,247 @@ html[data-xray] .film {
 }
 
 /* ------------------------------------------------------------------------
+ * Day / night are two sites on one station. Both are in the DOM; the theme
+ * attribute (set before paint) decides which one shows, so neither flashes.
+ * ---------------------------------------------------------------------- */
+html[data-theme="day"] .night-only {
+  display: none;
+}
+
+html:not([data-theme="day"]) .day-only {
+  display: none;
+}
+
+html[data-theme="day"] .station {
+  grid-template-rows: auto 1fr auto;
+}
+
+/* The desk sits in the same row as the multiview, so the window layer
+   (a sibling in that row) has the full height under both themes. */
+.desk {
+  position: relative;
+}
+
+.dayhead,
+.dayfoot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.dayhead {
+  padding-top: max(10px, env(safe-area-inset-top));
+}
+
+.dayfoot {
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+/* The desk: folders scattered like a real desktop on wide screens, a plain
+   grid on narrow ones. */
+.desk {
+  position: relative;
+  min-height: 70dvh;
+}
+
+.folder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 112px;
+  padding: 10px 6px;
+  color: var(--ink);
+  font-size: 12px;
+  text-align: center;
+  transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+.folder:hover,
+.folder:focus-visible,
+.folder[data-open="true"] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.folder:hover .folder-icon path,
+.folder[data-open="true"] .folder-icon path {
+  stroke: var(--bg);
+}
+
+.folder:active {
+  transform: scale(0.96);
+}
+
+.folder-icon {
+  width: 56px;
+  height: auto;
+  display: block;
+}
+
+.folder-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 1024px) {
+  .desk {
+    min-height: 0;
+    height: 100%;
+  }
+  .folder {
+    position: absolute;
+    left: var(--fx);
+    top: var(--fy);
+    transform: translate(-50%, 0);
+  }
+  .folder:active {
+    transform: translate(-50%, 0) scale(0.96);
+  }
+}
+
+@media (max-width: 1023px) {
+  .desk {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 24px 16px;
+    justify-items: center;
+    align-content: start;
+  }
+}
+
+/* Camera offline: the test card flickers behind the OSD */
+.feed[data-offline] .feed-img {
+  filter: contrast(1.05) saturate(0.85);
+}
+
+.feed[data-offline] .feed-static {
+  opacity: 0.14;
+  animation: static 0.3s steps(1) infinite;
+}
+
+.feed-video {
+  filter: var(--feed-filter);
+}
+
+.feed:hover .feed-video,
+.feed:focus-visible .feed-video {
+  filter: none;
+}
+
+/* Note ------------------------------------------------------------------- */
+.note {
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 60ch;
+}
+
+.note-p + .note-p {
+  margin-top: 1em;
+}
+
+/* Log composer ------------------------------------------------------------ */
+.composer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 8px;
+  padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: var(--panel-2);
+  font-size: 12px;
+}
+
+.composer input {
+  min-width: 0;
+  min-height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+}
+
+.composer input:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 0;
+}
+
+.composer .ctl[disabled] {
+  color: var(--dim);
+  background: transparent;
+  cursor: default;
+}
+
+.composer-note {
+  grid-column: 1 / -1;
+  padding-top: 4px;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+/* Terminal --------------------------------------------------------------- */
+.terminal {
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  max-height: 60dvh;
+  font-size: 12px;
+  line-height: 1.6;
+  cursor: text;
+}
+
+@media (max-width: 1023px) {
+  .terminal {
+    max-height: none;
+    flex: 1;
+  }
+}
+
+.terminal-out {
+  flex: 1;
+  overflow: auto;
+  padding: 12px 14px 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.terminal-in {
+  display: flex;
+  gap: 8px;
+  padding: 8px 14px 12px;
+  border-top: 1px solid var(--line);
+}
+
+.terminal-in input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+  caret-color: var(--red);
+}
+
+/* "new" dot on a tool */
+.badge {
+  width: 6px;
+  height: 6px;
+  background: var(--red);
+  margin-left: 2px;
+}
+
+.ctl:hover .badge {
+  background: #fff;
+}
+
+/* ------------------------------------------------------------------------
  * Film stock over the public pages (unchanged in spirit from v1): grain that
  * jumps frame to frame and a projector vignette that breathes.
  * ---------------------------------------------------------------------- */
@@ -829,7 +1064,7 @@ html[data-xray] .film {
   .rise,
   .boot-line,
   .feed[data-signal="lost"] .feed-static,
-  .feed:not([data-clip]):hover .feed-static {
+  .feed[data-offline] .feed-static {
     animation: none;
   }
   .window,
@@ -862,13 +1097,25 @@ html[data-xray] .film {
     position: sticky;
     bottom: 0;
     z-index: 5;
+  }
+  /* Both bars scroll sideways rather than widening the page: a scroll
+     container's minimum size is zero, so the grid column stays put. */
+  .dock,
+  .status {
+    min-width: 0;
     flex-wrap: nowrap;
     gap: 8px;
     overflow-x: auto;
     scrollbar-width: none;
   }
-  .dock::-webkit-scrollbar {
+  .dock::-webkit-scrollbar,
+  .status::-webkit-scrollbar {
     display: none;
+  }
+  .status .ctl,
+  .status > span {
+    white-space: nowrap;
+    flex-shrink: 0;
   }
   .dock nav {
     flex-wrap: nowrap;

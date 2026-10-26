@@ -12,6 +12,8 @@ const NAV = [
   { href: "/admin/products", label: "Merch" },
   { href: "/admin/album", label: "Album" },
   { href: "/admin/links", label: "Links" },
+  { href: "/admin/note", label: "Note" },
+  { href: "/admin/guestbook", label: "Guestbook" },
   { href: "/moodboard", label: "Moodboard", external: true },
 ];
 

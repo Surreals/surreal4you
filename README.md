@@ -6,22 +6,33 @@ Built with **Next.js (App Router, SSR)**, React 18 and Tailwind CSS.
 
 ## Pages
 
-- `/` — the **station**: a four-camera surveillance console. Each feed opens a window
-  (music, merch, archive, subject); windows drag on desktop and become sheets on mobile.
-  Live Uzhhorod clock, a self-writing event log, a radar map, day / night by local time,
-  keyboard shortcuts (`1–4`, `l`, `m`, `t`, `Esc`) and a couple of easter eggs.
+- `/` — the **station**: a four-camera surveillance console. Each feed loops a few seconds
+  of video and opens a window (music, merch, archive, subject); windows drag on desktop and
+  become sheets on mobile. Live Uzhhorod clock, a self-writing event log visitors can write
+  into (moderated), the artist's note, a radar map, a terminal, keyboard shortcuts
+  (`1–4`, `n`, `l`, `m`, `` ` ``, `t`, `Esc`) and a couple of easter eggs. By day (07–19
+  Uzhhorod time, or by toggle) the same station is a bare concrete desk with folders.
   See [`DESIGN.md`](DESIGN.md) and the spec in `docs/superpowers/specs/`.
 - `/store` — catalog-only merch store with an embedded Spotify player.
 - `/moodboard` — the visual system reference (see [`DESIGN.md`](DESIGN.md)).
-- `/admin` — admin panel (Google login) to manage merch, its visibility, the album strip and links.
+- `/admin` — admin panel (Google login) to manage merch, its visibility, the album, links,
+  the artist's note and the guestbook queue.
 
 ## Admin panel
 
 Google sign-in (NextAuth v5) restricted to an email allowlist. Edited content
-(products, settings, album, links) and uploaded images are stored in **Vercel Blob**;
+(products, settings, album, links, note) and uploaded images are stored in **Vercel Blob**;
 the public pages read it at request time. Locally, if `BLOB_READ_WRITE_TOKEN`
 is not set, content falls back to a `.data/content.json` file (dev only) and
 image uploads are disabled (use the image-path field instead).
+
+### Guestbook
+
+Visitors can type a line into the station log (`POST /api/guestbook`, 2–80 chars,
+no links, one per minute per IP). Lines land as *pending* in `content/guestbook.json`
+(Blob, or `.data/guestbook.json` locally) and only reach the public log after approval
+in `/admin/guestbook`. Approved lines drip into every visitor's log between the
+station's own entries.
 
 Until an admin saves anything, the site shows the seed content in
 [`src/data/products.js`](src/data/products.js) and [`src/utils/constants.js`](src/utils/constants.js).

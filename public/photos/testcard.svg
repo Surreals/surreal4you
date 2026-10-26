@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <!-- Test card for a camera that is offline. Drawn, not photographed: the
+       station's own stripes, a tube-TV circle, and the bars. -->
+  <defs>
+    <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+      <path d="M100 0H0V100" fill="none" stroke="#f3f1ec" stroke-width="2"/>
+    </pattern>
+    <pattern id="check" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#f3f1ec"/>
+      <rect x="40" y="40" width="40" height="40" fill="#f3f1ec"/>
+    </pattern>
+    <clipPath id="circle"><circle cx="800" cy="450" r="400"/></clipPath>
+  </defs>
+  <rect width="1600" height="900" fill="#3a3a3f"/>
+  <rect width="1600" height="900" fill="url(#grid)" opacity=".45"/>
+  <!-- corner markers -->
+  <g fill="url(#check)">
+    <rect x="60" y="60" width="160" height="120"/>
+    <rect x="1380" y="60" width="160" height="120"/>
+    <rect x="60" y="720" width="160" height="120"/>
+    <rect x="1380" y="720" width="160" height="120"/>
+  </g>
+  <!-- side bars -->
+  <g>
+    <rect x="300" y="60" width="70" height="260" fill="#7fbf7f"/>
+    <rect x="300" y="320" width="70" height="260" fill="#5a7fd6"/>
+    <rect x="300" y="580" width="70" height="260" fill="#d9291f"/>
+    <rect x="1230" y="60" width="70" height="260" fill="#c8c33a"/>
+    <rect x="1230" y="320" width="70" height="260" fill="#8a5bc2"/>
+    <rect x="1230" y="580" width="70" height="260" fill="#d08a2e"/>
+  </g>
+  <circle cx="800" cy="450" r="400" fill="#f3f1ec"/>
+  <g clip-path="url(#circle)">
+    <!-- tape -->
+    <rect x="400" y="50" width="800" height="110" fill="#0c0c0e"/>
+    <g fill="#f3f1ec">
+      <rect x="440" y="50" width="40" height="110"/><rect x="520" y="50" width="40" height="110"/>
+      <rect x="600" y="50" width="40" height="110"/><rect x="680" y="50" width="40" height="110"/>
+      <rect x="880" y="50" width="40" height="110"/><rect x="960" y="50" width="40" height="110"/>
+      <rect x="1040" y="50" width="40" height="110"/><rect x="1120" y="50" width="40" height="110"/>
+    </g>
+    <rect x="730" y="50" width="140" height="110" fill="#0c0c0e"/>
+    <text x="800" y="124" font-family="JetBrains Mono, ui-monospace, monospace" font-size="54" font-weight="700" fill="#f3f1ec" text-anchor="middle">test</text>
+    <!-- colour bars -->
+    <g>
+      <rect x="400" y="190" width="134" height="150" fill="#e6d02a"/>
+      <rect x="534" y="190" width="133" height="150" fill="#2ab6a0"/>
+      <rect x="667" y="190" width="133" height="150" fill="#3aa83a"/>
+      <rect x="800" y="190" width="133" height="150" fill="#c33ab0"/>
+      <rect x="933" y="190" width="133" height="150" fill="#d9291f"/>
+      <rect x="1066" y="190" width="134" height="150" fill="#2a5bd6"/>
+    </g>
+    <!-- centre: frequency lines + greys -->
+    <rect x="400" y="340" width="800" height="200" fill="#0c0c0e"/>
+    <g stroke="#f3f1ec" stroke-width="3">
+      <path d="M560 360v160M580 360v160M600 360v160M620 360v160M640 360v160M660 360v160M680 360v160M700 360v160"/>
+      <path d="M740 360v160M752 360v160M764 360v160M776 360v160M788 360v160M800 360v160M812 360v160M824 360v160M836 360v160M848 360v160M860 360v160"/>
+      <path d="M900 360v160M906 360v160M912 360v160M918 360v160M924 360v160M930 360v160M936 360v160M942 360v160M948 360v160M954 360v160M960 360v160M966 360v160M972 360v160M978 360v160M984 360v160M990 360v160M996 360v160M1002 360v160M1008 360v160M1014 360v160M1020 360v160M1026 360v160M1032 360v160M1038 360v160"/>
+    </g>
+    <rect x="400" y="440" width="800" height="100" fill="#0c0c0e"/>
+    <g>
+      <rect x="400" y="440" width="160" height="100" fill="#1c1c20"/>
+      <rect x="560" y="440" width="160" height="100" fill="#4a4a50"/>
+      <rect x="720" y="440" width="160" height="100" fill="#8e8d93"/>
+      <rect x="880" y="440" width="160" height="100" fill="#c4c2bd"/>
+      <rect x="1040" y="440" width="160" height="100" fill="#f3f1ec"/>
+    </g>
+    <!-- bottom: no signal + red -->
+    <rect x="400" y="560" width="800" height="140" fill="#e6d02a"/>
+    <rect x="760" y="560" width="80" height="140" fill="#d9291f"/>
+    <rect x="470" y="580" width="660" height="80" fill="#0c0c0e"/>
+    <text x="800" y="637" font-family="JetBrains Mono, ui-monospace, monospace" font-size="50" font-weight="700" fill="#f3f1ec" text-anchor="middle">no signal</text>
+    <rect x="400" y="700" width="800" height="200" fill="#f3f1ec"/>
+    <rect x="400" y="700" width="800" height="24" fill="#0c0c0e"/>
+    <rect x="400" y="760" width="800" height="12" fill="#0c0c0e" opacity=".5"/>
+  </g>
+  <circle cx="800" cy="450" r="400" fill="none" stroke="#0c0c0e" stroke-width="10"/>
+  <text x="800" y="870" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" fill="#f3f1ec" text-anchor="middle" opacity=".8">cam-02 · merch · offline</text>
+</svg>

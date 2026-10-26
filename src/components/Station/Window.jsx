@@ -16,9 +16,15 @@ const Window = ({ id, title, width, x, y, focused, closing, onFocus, onClose, on
   const ref = useRef(null);
   const drag = useRef(null);
 
-  // Take focus on open so Esc and the close button are reachable at once.
+  // Take focus on open so Esc and the close button are reachable at once —
+  // unless the content already claimed it (the terminal focuses its input;
+  // child effects run first) or the visitor is typing somewhere, e.g. in the
+  // terminal that just opened this window.
   useEffect(() => {
-    ref.current?.focus({ preventScroll: true });
+    const el = ref.current;
+    const active = document.activeElement;
+    const typing = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
+    if (el && !el.contains(active) && !typing) el.focus({ preventScroll: true });
   }, []);
 
   const onPointerDown = (e) => {

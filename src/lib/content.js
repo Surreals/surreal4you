@@ -7,6 +7,7 @@ import {
   sideLinks,
   album as defaultAlbum,
   settings as defaultSettings,
+  note as defaultNote,
 } from "../utils/constants";
 import { products as defaultProducts } from "../data/products";
 
@@ -21,12 +22,14 @@ export const DEFAULT_CONTENT = {
   album: defaultAlbum,
   links: { main: mainLinks, side: sideLinks },
   settings: defaultSettings,
+  note: defaultNote,
 };
 
 // Coerce arbitrary stored JSON into the shape the UI expects.
 function normalize(raw) {
   const c = raw && typeof raw === "object" ? raw : {};
   const s = c.settings && typeof c.settings === "object" ? c.settings : {};
+  const n = c.note && typeof c.note === "object" ? c.note : {};
   return {
     products: Array.isArray(c.products) ? c.products : DEFAULT_CONTENT.products,
     album: { ...DEFAULT_CONTENT.album, ...(c.album && typeof c.album === "object" ? c.album : {}) },
@@ -38,6 +41,13 @@ function normalize(raw) {
       // Stored content written before this flag existed must not silently
       // publish the store, so anything other than `true` reads as hidden.
       showStore: s.showStore === true,
+    },
+    // The artist's note (the "nu thoughts" folder). Plain text; paragraphs
+    // are blank-line separated.
+    note: {
+      title: typeof n.title === "string" && n.title.trim() ? n.title : DEFAULT_CONTENT.note.title,
+      body: typeof n.body === "string" ? n.body : DEFAULT_CONTENT.note.body,
+      date: typeof n.date === "string" ? n.date : DEFAULT_CONTENT.note.date,
     },
   };
 }

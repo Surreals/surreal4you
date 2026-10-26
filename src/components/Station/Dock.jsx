@@ -24,9 +24,9 @@ const DockLink = ({ link }) => {
 
 // Bottom dock: the player (opens the music window) and every channel the
 // artist is on. Sticky on mobile so the player is always one tap away.
-const Dock = ({ album, links, onOpen, musicOpen, attribution }) => {
+const Dock = ({ album, links, onOpen, musicOpen, attribution, className = "" }) => {
   return (
-    <div className="dock">
+    <div className={`dock ${className}`}>
       <button
         type="button"
         className="ctl"

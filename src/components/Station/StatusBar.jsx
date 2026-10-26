@@ -7,17 +7,24 @@ const Sun = () => (
   </svg>
 );
 
-const Moon = () => (
-  <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-    <path d="M13 10.5A6 6 0 0 1 5.5 3a6 6 0 1 0 7.5 7.5Z" />
-  </svg>
+const Tool = ({ id, label, open, onOpen, badge }) => (
+  <button
+    type="button"
+    className="ctl"
+    onClick={() => onOpen(id)}
+    data-active={open.includes(id)}
+    aria-pressed={open.includes(id)}
+  >
+    {label}
+    {badge ? <span className="badge" aria-label="new" /> : null}
+  </button>
 );
 
-// Top status line: rec, Uzhhorod time, coordinates, and the station controls.
-const StatusBar = ({ clock, signal, theme, onRec, onToggleTheme, onOpen, open }) => {
-  const isDay = theme === "day";
+// Top status line of the night station: rec, Uzhhorod time, coordinates,
+// and the tools. The day desk has its own, quieter header.
+const StatusBar = ({ clock, signal, onRec, onToggleTheme, onOpen, open, noteIsNew }) => {
   return (
-    <div className="status">
+    <div className="status night-only">
       <button
         type="button"
         onClick={onRec}
@@ -35,34 +42,14 @@ const StatusBar = ({ clock, signal, theme, onRec, onToggleTheme, onOpen, open })
         {HQ.city} · {HQ.lat} {HQ.lon}
       </span>
 
-      <span className="ml-auto flex items-center gap-1">
-        <button
-          type="button"
-          className="ctl"
-          onClick={() => onOpen("log")}
-          data-active={open.includes("log")}
-          aria-pressed={open.includes("log")}
-        >
-          log
-        </button>
-        <button
-          type="button"
-          className="ctl"
-          onClick={() => onOpen("map")}
-          data-active={open.includes("map")}
-          aria-pressed={open.includes("map")}
-        >
-          map
-        </button>
-        <button
-          type="button"
-          className="ctl"
-          onClick={onToggleTheme}
-          aria-label={isDay ? "switch to night" : "switch to day"}
-          title={isDay ? "night" : "day"}
-        >
-          {isDay ? <Moon /> : <Sun />}
-          <span className="hidden sm:inline">{isDay ? "night" : "day"}</span>
+      <span className="ml-auto flex items-center gap-0.5">
+        <Tool id="note" label="note" open={open} onOpen={onOpen} badge={noteIsNew} />
+        <Tool id="log" label="log" open={open} onOpen={onOpen} />
+        <Tool id="map" label="map" open={open} onOpen={onOpen} />
+        <Tool id="terminal" label=">_" open={open} onOpen={onOpen} />
+        <button type="button" className="ctl" onClick={onToggleTheme} aria-label="switch to day" title="day">
+          <Sun />
+          <span className="hidden sm:inline">day</span>
         </button>
       </span>
     </div>

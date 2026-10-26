@@ -4,38 +4,41 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { HQ } from "../../lib/feeds";
 
-const canPlayLoops = () =>
-  window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
-  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Loops run unless the visitor asked for less motion or less data.
+const wantsLoops = () =>
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches && !navigator.connection?.saveData;
 
-// One camera tile. The photo is the content; the OSD makes it a monitor. On a
-// desktop pointer, hovering plays a few seconds of the feed "live" — the clip
-// is only fetched on the first hover, never on load.
-const Feed = ({ feed, title, clock, signal, open, onOpen, innerRef, priority }) => {
+// One camera tile. A few seconds of the feed loop over the poster; the poster
+// stays until the clip is really playing, so a browser that cannot decode it
+// just shows the photo. `active` pauses the loops while the desk is up.
+const Feed = ({ feed, title, clock, signal, open, active, onOpen, innerRef, priority }) => {
   const videoRef = useRef(null);
   const [live, setLive] = useState(false);
   const [loops, setLoops] = useState(false);
+  const offline = Boolean(feed.offline);
+  const view = offline ? { ...feed, ...feed.offline } : feed;
 
   useEffect(() => {
-    setLoops(canPlayLoops());
+    setLoops(wantsLoops());
   }, []);
 
-  const start = () => {
+  useEffect(() => {
     const v = videoRef.current;
-    if (!v || !loops) return;
-    if (!v.getAttribute("src")) v.setAttribute("src", feed.clip);
-    v.play()
-      .then(() => setLive(true))
-      .catch(() => {});
-  };
-
-  const stop = () => {
-    const v = videoRef.current;
-    setLive(false);
-    if (!v) return;
-    v.pause();
-    v.currentTime = 0;
-  };
+    if (!v || !loops || !view.clip) return;
+    const play = () => {
+      if (!v.getAttribute("src")) v.setAttribute("src", view.clip);
+      v.play().catch(() => setLive(false));
+    };
+    const pause = () => {
+      v.pause();
+      setLive(false);
+    };
+    const onVisibility = () => (document.hidden || !active ? pause() : play());
+    if (active) play();
+    else pause();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, [loops, active, view.clip]);
 
   return (
     <button
@@ -44,27 +47,23 @@ const Feed = ({ feed, title, clock, signal, open, onOpen, innerRef, priority }) 
       className="feed"
       data-open={open}
       data-signal={signal}
-      data-clip={feed.clip ? "true" : undefined}
+      data-offline={offline || undefined}
       data-live={live}
       onClick={() => onOpen(feed.id)}
-      onMouseEnter={feed.clip ? start : undefined}
-      onMouseLeave={feed.clip ? stop : undefined}
-      onFocus={feed.clip ? start : undefined}
-      onBlur={feed.clip ? stop : undefined}
       aria-label={`${feed.cam} — ${feed.label}: open`}
       aria-expanded={open}
       aria-haspopup="dialog"
       aria-keyshortcuts={feed.key}
     >
       <Image
-        src={feed.image}
-        alt={feed.alt}
+        src={view.image}
+        alt={view.alt}
         fill
         priority={priority}
         sizes="(min-width: 1024px) 50vw, 100vw"
         className="feed-img"
       />
-      {feed.clip && loops ? (
+      {view.clip && loops ? (
         <video
           ref={videoRef}
           className="feed-video"
@@ -74,6 +73,9 @@ const Feed = ({ feed, title, clock, signal, open, onOpen, innerRef, priority }) 
           preload="none"
           aria-hidden="true"
           tabIndex={-1}
+          onPlaying={() => setLive(true)}
+          onPause={() => setLive(false)}
+          onError={() => setLive(false)}
         />
       ) : null}
       <span className="feed-static" aria-hidden="true" />
@@ -82,12 +84,18 @@ const Feed = ({ feed, title, clock, signal, open, onOpen, innerRef, priority }) 
       <span className="feed-osd" aria-hidden="true">
         <span className="feed-row">
           <span>
-            {feed.cam} · {feed.scene}
+            {feed.cam} · {view.scene}
           </span>
           <span className="flex items-center gap-2">
-            {live ? <span className="text-red">live</span> : null}
-            <span className="rec" />
-            <span className="tnum">{signal === "lost" ? "--:--:--" : clock.time}</span>
+            {offline ? (
+              <span className="text-red">no signal</span>
+            ) : (
+              <>
+                {live ? <span className="text-red">live</span> : null}
+                <span className="rec" />
+                <span className="tnum">{signal === "lost" ? "--:--:--" : clock.time}</span>
+              </>
+            )}
           </span>
         </span>
         <span className="feed-title">{title}</span>

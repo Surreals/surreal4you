@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getContent } from "@/lib/content";
+import { readGuestbook } from "@/lib/guestbook";
 
 const StatCard = ({ label, value, href }) => (
   <Link
@@ -12,7 +13,9 @@ const StatCard = ({ label, value, href }) => (
 );
 
 const AdminDashboard = async () => {
-  const { products, album, links, settings } = await getContent();
+  const { products, album, links, settings, note } = await getContent();
+  const { entries } = await readGuestbook();
+  const pendingLines = entries.filter((e) => e.status === "pending").length;
   const linkCount = (links.main?.length ?? 0) + (links.side?.length ?? 0);
   const storeConfigured = process.env.BLOB_READ_WRITE_TOKEN ? "Vercel Blob" : "Local file (dev)";
 
@@ -31,6 +34,8 @@ const AdminDashboard = async () => {
         />
         <StatCard label="Products" value={products.length} href="/admin/products" />
         <StatCard label="Links" value={linkCount} href="/admin/links" />
+        <StatCard label="Guestbook pending" value={pendingLines} href="/admin/guestbook" />
+        <StatCard label="Note" value={note.date} href="/admin/note" />
       </div>
 
       <section>

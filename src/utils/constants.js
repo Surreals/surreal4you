@@ -30,9 +30,22 @@ export const settings = {
     showStore: false,
 }
 
-// Feeds the mono info strip at the bottom of the landing page. Editable from
+// Feeds the ticker, the music camera and the dossier. Editable from
 // /admin/album.
 export const album = {
     title: 'hehemonia',
     status: 'OUT now',
+}
+
+// The artist's note — a folder on the desk, a window on the station. Editable
+// from /admin/note. Plain text, blank line = new paragraph.
+export const note = {
+    title: 'nu thoughts',
+    body: [
+        'the station is on.',
+        'four cameras, one town, one album.',
+        '',
+        'hehemonia is out. more is coming when the fog lifts.',
+    ].join(String.fromCharCode(10)),
+    date: '2026-10-26',
 }
