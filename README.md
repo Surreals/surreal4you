@@ -6,7 +6,11 @@ Built with **Next.js (App Router, SSR)**, React 18 and Tailwind CSS.
 
 ## Pages
 
-- `/` — landing page: signature watermark, status line, links and the bio strip.
+- `/` — the **station**: a four-camera surveillance console. Each feed opens a window
+  (music, merch, archive, subject); windows drag on desktop and become sheets on mobile.
+  Live Uzhhorod clock, a self-writing event log, a radar map, day / night by local time,
+  keyboard shortcuts (`1–4`, `l`, `m`, `t`, `Esc`) and a couple of easter eggs.
+  See [`DESIGN.md`](DESIGN.md) and the spec in `docs/superpowers/specs/`.
 - `/store` — catalog-only merch store with an embedded Spotify player.
 - `/moodboard` — the visual system reference (see [`DESIGN.md`](DESIGN.md)).
 - `/admin` — admin panel (Google login) to manage merch, its visibility, the album strip and links.

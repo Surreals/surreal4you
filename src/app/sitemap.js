@@ -9,8 +9,8 @@ const SITE_URL = "https://surreal4you.com";
  * ships, which is how a sitemap loses its credibility.
  */
 const LAST_MODIFIED = {
-  home: "2026-08-07", // album announcement removed
-  store: "2026-08-07", // palette reworked
+  home: "2026-10-26", // station redesign
+  store: "2026-10-26", // station redesign
 };
 
 // Generated rather than static: /store only belongs in the sitemap while merch
