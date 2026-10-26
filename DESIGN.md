@@ -1,111 +1,116 @@
 ---
-name: srrl-visual-system
+name: srrl-station-system
 description: >
-  Visual system for the SRRL artist site — a night field: bark, moss and bone
-  with one living leaf-green. The throughline motif is SURVEILLANCE — detection
-  frames, blurred plates, night-camera grain. The artist is an object under
-  observation in a strange, slightly unreal world. That is "Surreal".
+  Visual system for the Srrlovych site — a night-watch surveillance station in
+  Uzhhorod. Four camera feeds, draggable windows, a log that writes itself and
+  one caution-tape red. The artist is the subject under observation; the world
+  the cameras see is slightly off. That is "Surreal".
 ---
 
-# SRRL — Visual System
+# SRRL — Station system
 
-> Mood: сюр у природі — спостереження · форензика · заростання.
+> Концепт: пульт нічного відеоспостереження. Камери — двері в розділи. Сюр — у
+> тому, що станція бачить світ трохи не таким, як він є.
 
-## Color
+Спека редизайну: [`docs/superpowers/specs/2026-10-26-station-redesign-design.md`](docs/superpowers/specs/2026-10-26-station-redesign-design.md).
+Живий референс: `/moodboard`.
 
-One dark, slightly green canvas, one family of natural greens/greys, **one** leaf-green accent.
-Never add a second accent — consistency beats variety.
+## Колір
 
-| Token (code)      | Hex                       | Role                                             |
-|-------------------|---------------------------|--------------------------------------------------|
-| `bark`            | `#141811`                 | Page background (charcoal-green, never `#000`)   |
-| `moss`            | `#262b21`                 | Raised surfaces, image wells, placeholders       |
-| `lichen`          | `#7e8a74`                 | Muted text, mono labels                          |
-| `leaf` (DEFAULT)  | `#8fbf6a`                 | **The** accent — detection tags, REC dot, prices, links, CTA fill |
-| `leaf.pale`       | `#c3d9ac`                 | Lightest tint — hover, secondary markers         |
-| `bone`            | `#eef1e8`                 | Primary text (warm off-white)                    |
-| `line`            | `rgba(238,241,232,.12)`   | Hairlines / borders                              |
+Усе через CSS-токени в [`src/app/globals.css`](src/app/globals.css) (ніч за замовчуванням,
+`:root[data-theme="day"]` — день) і Tailwind-імена в [`tailwind.config.js`](tailwind.config.js):
+`bg-bg`, `bg-panel`, `bg-panel-2`, `border-line`, `text-ink`, `text-dim`, `text-red`.
 
-`leaf` is bright, so anything **filled** with it carries `text-bark`, never `text-bone`
-(`bone` on `leaf` is 1.87:1 — unreadable). `bark` on `leaf` is 8.41:1.
+| токен | ніч | день | роль |
+|---|---|---|---|
+| `--bg` | `#0c0c0e` | `#e6e4df` | фон — асфальт / бетон |
+| `--panel` | `#141417` | `#f6f5f2` | вікна, статус, док |
+| `--panel-2` | `#1c1c20` | `#ffffff` | заголовки вікон, підняті ряди |
+| `--line` | `rgba(243,241,236,.14)` | `rgba(12,12,14,.16)` | лінії |
+| `--ink` | `#f3f1ec` | `#121214` | текст, рамки вікон |
+| `--dim` | `#8e8d93` | `#67666c` | другорядний текст |
+| `--red` | `#d9291f` | `#d9291f` | **єдиний акцент** |
 
-Shadows, if any, stay near-black and green-tinted. No cool steel blues, no red, no purple/blue
-"AI gradient".
+Тема визначається до першого кадру скриптом у [`src/app/layout.jsx`](src/app/layout.jsx):
+збережений вибір (`localStorage.srrl-theme`) або час Ужгорода (07:00–19:00 — день).
 
-CSS variables live in [`src/app/globals.css`](src/app/globals.css); Tailwind tokens in
-[`tailwind.config.js`](tailwind.config.js). Use the Tailwind names (`bg-bark`, `text-lichen`,
-`border-line`, `bg-leaf`, `text-leaf`) in components.
+Правила: один акцент; жодного зеленого; білий текст на червоному (`#fff`), ніколи `--ink`
+на червоному в денній темі; нема чистого `#000` фону.
 
-## Typography
+## Стрічка (tape)
 
-Three voices, wired via `next/font` in [`src/app/layout.jsx`](src/app/layout.jsx):
+`--tape` — повторюваний градієнт 135°, червоний / `--ink`, крок 24px. Клас `.tape`.
+Це **єдиний** декоративний прийом, і він з'являється лише як тонка смуга:
 
-- **Archivo** (`font-sans`, variable 100–900) — body + headings. Headings: `font-extrabold`
-  (800), `uppercase`, tight tracking. The workhorse.
-- **Space Mono** (`font-mono`, 400/700) — technical/forensic labels, codes, coordinates, prices,
-  section numbers. Always `uppercase` + positive tracking (`tracking-[0.14em]`–`[0.18em]`),
-  usually `text-lichen`.
-- **Rock Salt** (`font-display`) — handwritten signature. Use **sparingly** — the Srrlovych signature
-  only, never body copy. As the full-bleed watermark it takes the `.watermark` treatment: no fill,
-  debossed into the surface with a shadow along the top lip and a highlight along the bottom.
-  A translucent fill is wrong here at any opacity — its hard alpha edge always reads as a decal
-  sitting on the page.
+- 8px над тікером (і над сторінками `/store`, `/moodboard`);
+- 6px у заголовку вікна, що у фокусі (`.window[data-focused]`);
+- ніколи як фон під текстом.
 
-Cyrillic (e.g. `гегемонія`): Archivo's latin subset falls back to `system-ui`; that is intended.
-Keep Space Mono / Rock Salt text Latin (codes, `OUT NOW`, coordinates) so the mono voice stays
-consistent.
+## Шрифти
 
-## Motifs (the surveillance throughline)
+Підключені через `next/font` у `layout.jsx`:
 
-1. **Old-film stock** — the `<FilmGrain />` component: a fixed, `pointer-events-none` pair of
-   layers over the whole page. Desaturated SVG fractal noise that *jumps* between 10 discrete
-   positions at ~12fps (grain is re-exposed every frame, so it must never slide), plus a radial
-   projector vignette whose opacity wobbles like an unsteady lamp. Breaks digital flatness; reads
-   as projected film rather than a clean screen. Tune with `--grain-opacity` /
-   `--vignette-strength` on `.film`. Both animations stop under `prefers-reduced-motion` while the
-   texture stays. Rendered per public page, never in the root layout — `/admin` must stay clean.
-2. **Detection frame** — a thin `leaf` border offset around a subject (product, plate), with a
-   small Space Mono **corner tag** (e.g. `MM-01`) in `bg-leaf text-bark`. The subject is "tagged".
-3. **Forensic photo treatment** — images render `grayscale(.35) contrast(1.02) brightness(.98)`
-   and resolve to full color on hover (`group-hover:[filter:none]`). The subject "comes into
-   focus" under observation.
-4. **Status / REC line** — Space Mono label strips with a pulsing `leaf` square (REC dot) and
-   real coordinates (Uzhhorod `48.62N 22.29E`).
-5. **Section index** — `leaf` two-digit mono numbers (`01`, `02`) prefix section headers.
+- **Unbounded** (`font-display`, 500/700/900, кирилиця) — лише великі слова: назви камер на
+  OSD, «гегемонія», заголовки сторінок, ціни. Завжди нижній регістр, `tracking-tight`,
+  `leading` 0.9–0.95.
+- **JetBrains Mono** (`font-mono`, 400/700, кирилиця) — весь інший текст: UI, OSD, журнал,
+  досьє, посилання. Базовий розмір 14px / 1.5; лейбли 11–12px. Нижній регістр; без
+  розтягнутого трекінгу і капслоку.
+- **Rock Salt** (`font-sign`) — тільки підпис «Srrlovych»: `.signature` поверх мультив'ю
+  (`mix-blend-mode: difference`) і один рядок на мобільному / `/moodboard`.
 
-## Component rules
+Увесь текст сайту — англійською, нижнім регістром (рішення власника, 2026-10-26). Українською лишається тільки документація.
 
-- **Backgrounds**: page `bg-bark`; image wells / placeholders `bg-moss`.
-- **Borders**: hairlines use `border-line`. The only green borders are detection frames / CTA hover.
-- **Hover/active**: every interactive element shifts color (`hover:text-leaf`) or fills
-  (`hover:bg-leaf hover:text-bark`); add `transition-colors` (200–500ms). Keyboard
-  `:focus-visible` shows a `leaf` outline (global).
-- **Buttons (CTA)**: hairline border at rest → fill `leaf` (+ `text-bark`) on hover. Mono label,
-  wide tracking, trailing `→`. Press adds `active:scale-[0.96]` — always that value; anything
-  under `0.95` reads as a bounce. Because `scale` needs `transform` in the transition list, the
-  colour transition is spelled out: `transition-[color,background-color,border-color,transform]`.
-  Nav links stay press-static — colour plus the decode is already enough feedback there.
-- **Hit areas**: 44px minimum, measured not eyeballed. Where the mark must stay small (the 28px
-  player toggle, the mono strip's `(001)` and attribution), keep the visible size and carry the
-  target on a `before`/`after` pseudo-element. Two targets may touch but never overlap.
-- **Icons**: inline SVG on a 16 grid, `currentColor`, stroke ~`1.75` so it reads ~1.5px at 14px
-  and matches the mono labels. Never a text glyph (`▶`, `✕`) — those fall out of Space Mono to
-  whatever the OS supplies, at whatever size it likes. Contextual swaps keep both icons mounted
-  and cross-fade `opacity` / `transform` / `filter` (scale `0.25`→`1`, blur `4px`→`0`,
-  `cubic-bezier(0.2,0,0,1)`); no motion library. The play triangle sits 1px right of centre —
-  centred geometrically it always looks pushed left.
-- **Motion**: animate `transform`/`opacity`/`filter` only (GPU). No `top/left/width` animation.
-  Never `transition-all`; name the properties. Everything decorative also stops under
-  `prefers-reduced-motion` — the boot sweep, the rise, the REC pulse and the hover decode — while
-  the static cue (the `leaf` square, the colour shift) stays.
-- **Layout**: full-screen sections use `min-h-[100dvh]` (not `100vh`). Single-screen landing keeps
-  its top / bottom rhythm.
+## Станція
 
-## Don't
+[`src/components/Station`](src/components/Station) — єдиний клієнтський оркестратор.
 
-- No second accent color; no red; no cool steel blue; no pure `#000` background or `#fff` text.
-- No border radius. Corners are sharp everywhere, embeds included.
-- Never put `bone` text on a `leaf` fill.
-- No Rock Salt outside the signature; no Cyrillic in the mono voice.
-- Don't restyle the `/admin` panel under this system unless asked — it's a private tool, not a
-  public surface.
+- **Ticker** — стрічка + марки (`.ticker-track`, 48s, пауза при наведенні).
+- **StatusBar** — `rec` (клік = втрата сигналу на 1.8с), час Ужгорода, координати, кнопки
+  `log` / `map` / тема.
+- **Feed** ×4 — фото + OSD (`.feed-osd`): cam-id + локація (`scene`), rec + час, дисплейна назва, дата,
+  координати. Фото камер і плити архіву — кадри з кліпу «Petlura» та обкладинки релізів у `public/photos/`. Накладки: сканлінії + віньєтка (`.feed-scan`), статика при втраті сигналу
+  (`.feed-static`), червона рамка 2px на 6px від краю при hover / focus / відкритому вікні
+  (`.feed-frame`). Фото вночі десатуровані (`--feed-filter`), повний колір при наведенні.
+- **Window** — 2px рамка `--ink`, шарова тінь, заголовок на `--panel-2`. На ≥1024px —
+  абсолютне позиціонування через `--x/--y` + `translate3d`, перетягування за заголовок
+  (pointer events, без ре-рендеру), каскад при відкритті, фокус по кліку. <1024px —
+  повноекранний sheet, сторінка за ним заблокована (`html[data-modal]`).
+- **Dock** — плеєр (відкриває `music`) + усі посилання. На мобільному — sticky, один рядок
+  з горизонтальним скролом.
+- **Log** — події станції (нові зверху, максимум 60). Реальні події (запуск, вікна, тема,
+  сигнал) і `AMBIENT_LOG` з [`src/lib/feeds.js`](src/lib/feeds.js) кожні 18–35с.
+- **Map** — радар (`.radar` + `.radar-sweep`), координати, час.
+- **Boot** — раз на сесію, ~1с, рядки з `BOOT_LINES`; `html[data-boot]` тримає `.rise`.
+
+Клавіатура: `1–4` камери, `l` журнал, `m` карта, `t` тема, `Esc` закрити верхнє вікно,
+набір `srrl` — рентген (`html[data-xray]`, invert + hue-rotate).
+
+## Компоненти
+
+- **Кнопки / посилання** — `.ctl`: 32px, без рамки у спокої, заливка `--red` + білий текст
+  при hover, `scale(.96)` при натисканні, псевдоелемент тягне зону кліку до 44px.
+  `.ctl.border-ink` / `.ctl.border-line` — варіанти з рамкою (CTA, стрімінг).
+- **Plate** — `.plate`: фото в `--panel-2` з 1px лінією, червоний тег `.plate-tag` у
+  лівому верхньому куті (`obj-01`, `sub-01`, `mm-01`). Фото десатуроване до наведення.
+- **Dossier** — `.dossier`: `dl` сіткою `max-content 1fr`, `dt` в `--dim`.
+- **Іконки** — inline SVG на сітці 16, `currentColor`, stroke 1.5–1.75. Без текстових гліфів.
+- **Радіуси** — немає. Тіні — тільки на вікнах, шарові напівпрозорі.
+- **Плівка** — `<FilmGrain />` (`.film`): зерно 12fps + віньєтка; дозується
+  `--grain-opacity` / `--vignette-strength` у токенах теми. Тільки публічні сторінки.
+- **Курсор** — `<Cursor />`: червоний приціл, лише fine pointer.
+
+## Рух
+
+Один оркестрований момент — boot + `.rise` мультив'ю. Далі лише у відповідь на дію:
+вікно 200ms in / 160ms out (`opacity` + `translateY` 8px), hover фото 500–700ms,
+`.ctl` 150ms. Анімуються тільки `transform` / `opacity` / `filter`; ніякого
+`transition: all`. Під `prefers-reduced-motion` тікер, `rec`, радар, зерно, boot і
+статика зупиняються; колір і текст лишаються.
+
+## Не робити
+
+- Другий акцент, зелений, градієнти, радіуси, емодзі-іконки.
+- Стрічка як фон під текстом або більша за смугу.
+- Unbounded для абзаців; Rock Salt поза підписом; капслок-лейбли з трекінгом.
+- Чіпати `/admin` — це приватний інструмент поза цією системою.
