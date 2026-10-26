@@ -287,6 +287,29 @@ li {
   }
 }
 
+/* Live loop on hover: the clip sits over the photo and fades in once it is
+   actually playing. Feeds without a clip scrub the tape instead. */
+.feed-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.feed[data-live="true"] .feed-video {
+  opacity: 1;
+}
+
+.feed:not([data-clip]):hover .feed-static,
+.feed:not([data-clip]):focus-visible .feed-static {
+  opacity: 0.16;
+  animation: static 0.3s steps(1) infinite;
+}
+
 /* Signature — the one hand-made thing on the page, sitting on the monitors
    like a station ident. Difference blend keeps it readable on any feed. */
 .signature {
@@ -805,7 +828,8 @@ html[data-xray] .film {
   .film-vignette,
   .rise,
   .boot-line,
-  .feed[data-signal="lost"] .feed-static {
+  .feed[data-signal="lost"] .feed-static,
+  .feed:not([data-clip]):hover .feed-static {
     animation: none;
   }
   .window,

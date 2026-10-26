@@ -1,6 +1,7 @@
 // The four camera feeds of the station. Each one is a door into a window.
 // `scene` is the OSD location tag; `title` is the big word on the tile
-// (music takes the album title from content instead).
+// (music takes the album title from content instead); `clip` is a few
+// seconds of webm that plays on hover — null falls back to tape static.
 export const FEEDS = [
   {
     id: "music",
@@ -8,7 +9,8 @@ export const FEEDS = [
     label: "music",
     scene: "road · carpathians",
     title: null,
-    image: "/photos/cam-road-sign.webp",
+    image: "/photos/cam-road.webp",
+    clip: "/photos/clip-road.webm",
     alt: "Srrlovych crouches on a mountain road next to a red chevron sign",
     key: "1",
   },
@@ -16,10 +18,11 @@ export const FEEDS = [
     id: "merch",
     cam: "cam-02",
     label: "merch",
-    scene: "road · wide",
+    scene: "stage · blue",
     title: "merch",
-    image: "/photos/cam-road-arms.webp",
-    alt: "Srrlovych stands in the middle of an empty mountain road with his arms out",
+    image: "/photos/cam-stage.webp",
+    clip: "/photos/clip-stage.webm",
+    alt: "Srrlovych on stage under blue light, hair over his face, microphone in hand",
     key: "2",
   },
   {
@@ -29,6 +32,7 @@ export const FEEDS = [
     scene: "parking · night",
     title: "archive",
     image: "/moodboard/car-night.webp",
+    clip: null,
     alt: "A silver Mercedes W211 at night under a street lamp by an apartment block",
     key: "3",
   },
@@ -39,6 +43,7 @@ export const FEEDS = [
     scene: "close-up",
     title: "subject",
     image: "/photos/cam-portrait.webp",
+    clip: "/photos/clip-portrait.webm",
     alt: "Close-up of Srrlovych in sunglasses and a pearl necklace, hills behind",
     key: "4",
   },
