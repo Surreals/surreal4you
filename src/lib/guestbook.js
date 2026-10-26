@@ -6,22 +6,23 @@ import { del, get, list, put } from "@vercel/blob";
 // Visitor lines for the station log.
 //
 // Storage shape (Vercel Blob, private; or files under .data/ in dev):
-//   guestbook/entries/<who>/<id>.json   one blob per line — adding a line
-//                                        never rewrites anyone else's, so
+//   guestbook/pending/<who>/<id>.json    one blob per line — adding a line
+//   guestbook/approved/<who>/<id>.json   never rewrites anyone else's, so
 //                                        visitors cannot race each other or
-//                                        undo a moderation decision
-//   guestbook/approved.json              the public feed, rebuilt only by
+//                                        undo a moderation decision; the
+//                                        status is the folder, so caps are
+//                                        a cheap prefix count
+//   guestbook/feed.json                  the public feed, rebuilt only by
 //                                        admin actions (single writer)
 // Nothing here is reachable by URL: private blobs need the store token.
-const ENTRIES = "guestbook/entries/";
-const APPROVED = "guestbook/approved.json";
-const LOCAL_DIR = path.join(process.cwd(), ".data", "guestbook");
-const LOCAL_APPROVED = path.join(process.cwd(), ".data", "guestbook-approved.json");
+const ROOT = "guestbook/";
+const FEED = "guestbook/feed.json";
+const STATUSES = ["pending", "approved"];
 
 export const MAX_LEN = 80;
 export const MIN_LEN = 2;
-export const MAX_TOTAL = 500; // lines kept in the store, any status
-export const MAX_PER_VISITOR = 10; // lines one visitor hash may hold
+export const MAX_PENDING = 300; // lines waiting for review, in total
+export const MAX_PENDING_PER_VISITOR = 10; // waiting lines one visitor hash may hold
 export const PUBLIC_LIMIT = 40;
 
 const hasBlob = () => Boolean(process.env.BLOB_READ_WRITE_TOKEN);
@@ -113,13 +114,14 @@ async function readMany(paths, concurrency = 8) {
   return out;
 }
 
-const entryPath = (who, id) => `${ENTRIES}${who}/${id}.json`;
+const entryPath = (status, who, id) => `${ROOT}${status}/${who}/${id}.json`;
 
 // --- public API --------------------------------------------------------------
 
 // Every line, newest first. Admin only — it reads one blob per line.
 export async function readGuestbook() {
-  const entries = await readMany(await listPaths(ENTRIES));
+  const paths = (await Promise.all(STATUSES.map((st) => listPaths(`${ROOT}${st}/`)))).flat();
+  const entries = await readMany(paths);
   entries.sort((a, b) => (a.at < b.at ? 1 : -1));
   return { entries };
 }
@@ -146,20 +148,25 @@ export function visitorHash(ip) {
     .slice(0, 8);
 }
 
-// Returns the entry, or a string naming why it was refused.
+// Returns the entry, or a string naming why it was refused. Only lines
+// still waiting count against the caps: approved history never locks the
+// queue, and a visitor whose lines were reviewed can write again.
 export async function addGuestLine(msg, who) {
   if (!safeWho(who)) return "bad visitor";
-  const [mine, all] = await Promise.all([listPaths(`${ENTRIES}${who}/`), listPaths(ENTRIES)]);
-  if (mine.length >= MAX_PER_VISITOR) return "visitor cap";
-  if (all.length >= MAX_TOTAL) return "queue full";
+  const [mine, all] = await Promise.all([
+    listPaths(`${ROOT}pending/${who}/`),
+    listPaths(`${ROOT}pending/`),
+  ]);
+  if (mine.length >= MAX_PENDING_PER_VISITOR) return "visitor cap";
+  if (all.length >= MAX_PENDING) return "queue full";
   const entry = { id: randomUUID(), msg, at: new Date().toISOString(), who, status: "pending" };
-  await writeJson(entryPath(who, entry.id), entry);
+  await writeJson(entryPath("pending", who, entry.id), entry);
   return entry;
 }
 
 // The public feed: approved lines only, as last rebuilt by an admin action.
 export async function approvedLines(limit = PUBLIC_LIMIT) {
-  const data = await readJson(APPROVED).catch(() => null);
+  const data = await readJson(FEED).catch(() => null);
   const lines = Array.isArray(data?.lines) ? data.lines : [];
   return lines
     .filter((l) => l && typeof l.msg === "string")
@@ -170,21 +177,36 @@ export async function approvedLines(limit = PUBLIC_LIMIT) {
 async function rebuildApproved() {
   const { entries } = await readGuestbook();
   const lines = entries.filter((e) => e.status === "approved").slice(0, PUBLIC_LIMIT).map(({ id, msg, at }) => ({ id, msg, at }));
-  await writeJson(APPROVED, { lines, builtAt: new Date().toISOString() });
+  await writeJson(FEED, { lines, builtAt: new Date().toISOString() });
 }
 
+// Find a line by visitor + id whatever folder it is in.
+async function locate(who, id) {
+  for (const st of STATUSES) {
+    const p = entryPath(st, who, id);
+    const e = normalizeEntry(await readJson(p).catch(() => null));
+    if (e) return { p, e: { ...e, status: st } };
+  }
+  return null;
+}
+
+// Moving between folders is write-then-delete; a crash in between leaves a
+// duplicate the admin can delete, never a lost line.
 export async function setGuestStatus(who, id, status) {
   if (!safeWho(who) || !safeId(id)) return;
-  const p = entryPath(who, id);
-  const e = normalizeEntry(await readJson(p).catch(() => null));
-  if (!e) return;
-  e.status = status === "approved" ? "approved" : "pending";
-  await writeJson(p, e);
+  const found = await locate(who, id);
+  if (!found) return;
+  const next = status === "approved" ? "approved" : "pending";
+  if (found.e.status !== next) {
+    await writeJson(entryPath(next, who, id), { ...found.e, status: next });
+    await removeJson(found.p);
+  }
   await rebuildApproved();
 }
 
 export async function deleteGuestLine(who, id) {
   if (!safeWho(who) || !safeId(id)) return;
-  await removeJson(entryPath(who, id));
+  const found = await locate(who, id);
+  if (found) await removeJson(found.p);
   await rebuildApproved();
 }

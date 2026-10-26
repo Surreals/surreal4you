@@ -9,13 +9,12 @@ export const dynamic = "force-dynamic";
 const recent = new Map();
 const WINDOW_MS = 60_000;
 
-// Vercel sets x-real-ip to the connecting client; x-forwarded-for is only a
-// fallback for other hosts and its first hop can be forged.
+// Only headers the platform sets on the way in. x-forwarded-for is never
+// read: its first hop is whatever the client sends. Off Vercel (local dev,
+// another host without these headers) every visitor shares one identity and
+// one set of caps — safe, just strict.
 const ipOf = (req) =>
-  req.headers.get("x-real-ip") ||
-  req.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ||
-  req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-  "";
+  req.headers.get("x-real-ip") || req.headers.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 
 const sweep = (now) => {
   for (const [k, t] of recent) if (now - t > WINDOW_MS) recent.delete(k);
