@@ -1,19 +1,21 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Archivo, Space_Mono, Rock_Salt } from "next/font/google";
+import { Unbounded, JetBrains_Mono, Rock_Salt } from "next/font/google";
 import "./globals.css";
 import ServiceWorker from "@/components/ServiceWorker";
 
-// SRRL type system — see DESIGN.md
-const archivo = Archivo({
-  subsets: ["latin"],
-  variable: "--font-archivo",
+// SRRL station type system — see DESIGN.md. Both working faces carry Cyrillic
+// so «гегемонія» and the log never fall back to the system font.
+const unbounded = Unbounded({
+  subsets: ["latin", "cyrillic"],
+  weight: ["500", "700", "900"],
+  variable: "--font-unbounded",
   display: "swap",
 });
-const spaceMono = Space_Mono({
-  subsets: ["latin"],
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin", "cyrillic"],
   weight: ["400", "700"],
-  variable: "--font-space-mono",
+  variable: "--font-jetbrains",
   display: "swap",
 });
 const rockSalt = Rock_Salt({
@@ -39,6 +41,7 @@ export const metadata = {
     "surrealovych",
     "surreal4you",
     "HEHEMONIA",
+    "гегемонія",
     "hip-hop",
     "rap",
     "Ukraine",
@@ -70,13 +73,7 @@ export const metadata = {
     title: "Srrlovych - Hip-Hop Artist | Official Website",
     description: DESCRIPTION,
     locale: "en_US",
-    images: [
-      {
-        url: "/og-image.png",
-        type: "image/png",
-        alt: "Srrlovych - Hip-Hop Artist",
-      },
-    ],
+    images: [{ url: "/og-image.png", type: "image/png", alt: "Srrlovych - Hip-Hop Artist" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -97,7 +94,8 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#141811",
+  themeColor: "#0c0c0e",
+  viewportFit: "cover",
 };
 
 const jsonLd = {
@@ -110,11 +108,7 @@ const jsonLd = {
   url: `${SITE_URL}/`,
   image: `${SITE_URL}/og-image.png`,
   genre: ["Hip-Hop", "Rap"],
-  foundingLocation: {
-    "@type": "City",
-    name: "Uzhhorod",
-    addressCountry: "UA",
-  },
+  foundingLocation: { "@type": "City", name: "Uzhhorod", addressCountry: "UA" },
   sameAs: [
     "https://open.spotify.com/artist/0cpL1ooyiyxpJ4KRz8ILWW",
     "https://music.apple.com/us/artist/surreal/1631369195",
@@ -125,13 +119,25 @@ const jsonLd = {
   ],
 };
 
+// The theme is resolved before paint from the saved choice or Uzhhorod's
+// clock, so a day-time visitor never sees the night palette flash first.
+const themeScript =
+  "(function(){try{var s=localStorage.getItem('srrl-theme');" +
+  "var h=+new Intl.DateTimeFormat('en-GB',{hour:'2-digit',hour12:false,timeZone:'Europe/Kyiv'}).format(new Date());" +
+  "var t=(s==='day'||s==='night')?s:(h>=7&&h<19?'day':'night');" +
+  "document.documentElement.dataset.theme=t;}catch(e){}})();";
+
 const RootLayout = ({ children }) => {
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${spaceMono.variable} ${rockSalt.variable}`}
+      suppressHydrationWarning
+      className={`${unbounded.variable} ${jetbrains.variable} ${rockSalt.variable}`}
     >
-      <body className="font-sans">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="font-mono">
         {children}
         <script
           type="application/ld+json"

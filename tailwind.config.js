@@ -1,32 +1,27 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      // SRRL station system — see DESIGN.md. Every colour is a CSS variable so
+      // the night / day themes swap in globals.css without touching markup.
       colors: {
-        // SRRL visual system — see DESIGN.md
-        bark: "#141811",
-        moss: "#262b21",
-        lichen: "#7e8a74",
-        leaf: {
-          DEFAULT: "#8fbf6a",
-          pale: "#c3d9ac",
+        bg: "var(--bg)",
+        panel: {
+          DEFAULT: "var(--panel)",
+          2: "var(--panel-2)",
         },
-        bone: "#eef1e8",
-        line: "rgba(238,241,232,0.12)",
+        line: "var(--line)",
+        ink: "var(--ink)",
+        dim: "var(--dim)",
+        red: "var(--red)",
       },
       fontFamily: {
-        sans: ["var(--font-archivo)", "system-ui", "sans-serif"],
-        mono: ["var(--font-space-mono)", "ui-monospace", "monospace"],
-        display: ["var(--font-rock-salt)", "cursive"],
-      },
-      hueRotate: {
-        '-45': '-45deg',
-        45: '45deg',
+        display: ["var(--font-unbounded)", "system-ui", "sans-serif"],
+        mono: ["var(--font-jetbrains)", "ui-monospace", "monospace"],
+        sign: ["var(--font-rock-salt)", "cursive"],
       },
     },
   },
   plugins: [],
-}
+};

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Cursor, FilmGrain, Product, Scanline, SpotifyEmbed } from "../../components";
+import { Cursor, FilmGrain, Product, SpotifyEmbed } from "../../components";
 import { getContent } from "../../lib/content";
 import { SPOTIFY_ARTIST_URL } from "../../utils/constants";
 
@@ -15,8 +15,7 @@ export async function generateMetadata() {
     robots: settings.showStore ? undefined : { index: false, follow: false },
     openGraph: {
       title: "Store — Srrlovych",
-      description:
-        "Official Srrlovych merch. Prints and apparel from the HEHEMONIA era.",
+      description: "Official Srrlovych merch. Prints and apparel from the HEHEMONIA era.",
       url: "/store",
     },
   };
@@ -26,51 +25,43 @@ const Store = async () => {
   const { products } = await getContent();
 
   return (
-    <main className="mx-auto min-h-[100dvh] max-w-6xl px-4 py-8 md:px-8 md:py-16">
-      <header className="flex items-baseline justify-between border-b border-line pb-5 font-mono text-xs uppercase tracking-[0.18em] text-lichen">
-        {/* The `before` pseudo grows the hit area to ~40px without disturbing
-            the baseline the header aligns on. */}
-        <Link
-          href="/"
-          className="relative transition-colors before:absolute before:-inset-x-2 before:-inset-y-3 before:content-[''] hover:text-leaf"
-        >
-          ← srrlovych
+    <main className="min-h-[100dvh]">
+      <div className="tape h-2" aria-hidden="true" />
+      <header className="status">
+        <Link href="/" className="ctl -ml-2">
+          ← станція
         </Link>
-        <span className="text-bone">
-          <span className="text-leaf">01</span> / store
-        </span>
+        <span className="ml-auto text-ink">cam-02 · merch</span>
       </header>
 
-      <section
-        aria-label="Merch"
-        className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 md:mt-16 md:gap-10 lg:grid-cols-3"
-      >
-        {products.map((product, i) => (
-          <Product key={product.id} product={product} index={i} />
-        ))}
-      </section>
-
-      <section aria-label="Listen" className="mt-16 md:mt-24">
-        <h2 className="mb-4 font-mono text-xs uppercase tracking-[0.18em] text-lichen">
-          <span className="text-leaf">02</span> / listen while you browse
-        </h2>
-        <div className="overflow-hidden border border-line">
-          <SpotifyEmbed />
-        </div>
-        <p className="mt-4 font-mono text-[11px] uppercase tracking-wide text-lichen">
-          spotify merch is powered by the same shopify catalog once connected.{" "}
-          <a
-            href={SPOTIFY_ARTIST_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-leaf transition-colors hover:text-bone"
-          >
-            open on spotify →
-          </a>
+      <div className="mx-auto max-w-6xl px-4 py-8 md:px-8 md:py-12">
+        <h1 className="font-display text-[clamp(40px,9vw,112px)] font-black leading-[0.9] tracking-tight">
+          мерч
+        </h1>
+        <p className="mt-3 max-w-[48ch] text-dim">
+          принти та одяг ери «гегемонії». замовлення — у телеграмі; ті самі речі видно і на профілі в
+          spotify.
         </p>
-      </section>
+
+        <section aria-label="Merch" className="mt-10 grid grid-cols-2 gap-6 md:mt-14 md:gap-8 lg:grid-cols-3">
+          {products.map((product, i) => (
+            <Product key={product.id} product={product} index={i} />
+          ))}
+        </section>
+
+        <section aria-label="Listen" className="mt-16 md:mt-24">
+          <h2 className="mb-3 text-dim">cam-01 · слухати, поки дивишся</h2>
+          <div className="border border-line">
+            <SpotifyEmbed />
+          </div>
+          <p className="mt-3 text-[12px] text-dim">
+            <a href={SPOTIFY_ARTIST_URL} target="_blank" rel="noopener noreferrer" className="ctl -ml-2">
+              відкрити в spotify
+            </a>
+          </p>
+        </section>
+      </div>
       <Cursor />
-      <Scanline />
       <FilmGrain />
     </main>
   );

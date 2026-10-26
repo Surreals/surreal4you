@@ -4,21 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#141811">
+<meta name="theme-color" content="#0c0c0e">
 <title>Signal lost — Srrlovych</title>
 <style>
   :root {
-    --bark: #141811;
-    --moss: #262b21;
-    --lichen: #7e8a74;
-    --leaf: #8fbf6a;
-    --bone: #eef1e8;
-    --line: rgba(238, 241, 232, .12);
-    --mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    --sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --bg: #0c0c0e;
+    --panel: #141417;
+    --line: rgba(243, 241, 236, .14);
+    --ink: #f3f1ec;
+    --dim: #8e8d93;
+    --red: #d9291f;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; height: 100%; background: var(--bark); color: var(--bone); }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); }
   body {
     min-height: 100dvh;
     display: flex;
@@ -26,66 +25,53 @@
     padding: max(24px, env(safe-area-inset-top)) 24px max(28px, env(safe-area-inset-bottom));
     max-width: 520px;
     margin: 0 auto;
-    font-family: var(--sans);
+    font: 14px/1.5 var(--mono);
     -webkit-font-smoothing: antialiased;
   }
-  .mono { font-family: var(--mono); text-transform: uppercase; letter-spacing: .16em; }
-  .rec { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--lichen); }
-  .dot { width: 8px; height: 8px; background: var(--leaf); animation: pulse 1.6s steps(2, jump-none) infinite; }
-  @keyframes pulse { 50% { opacity: .25; } }
+  .tape { height: 8px; background: repeating-linear-gradient(135deg, var(--red) 0 12px, var(--ink) 12px 24px); }
+  .rec { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 12px; color: var(--dim); }
+  .dot { width: 8px; height: 8px; background: var(--red); animation: rec 1.2s steps(1) infinite; }
+  @keyframes rec { 50% { opacity: .15; } }
   .frame {
     position: relative;
     margin: auto 0 20px;
     padding: 40px 16px;
-    border: 1px solid var(--leaf);
-    background: var(--moss);
+    border: 2px solid var(--ink);
+    background: var(--panel);
     text-align: center;
   }
-  .tag {
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    padding: 4px 6px;
-    background: var(--leaf);
-    color: var(--bark);
-    font-size: 10px;
-  }
-  h1 {
-    margin: 0;
-    font: 800 clamp(34px, 11vw, 52px)/1 var(--sans);
-    text-transform: uppercase;
-    letter-spacing: -.01em;
-  }
-  p { margin: 0 0 24px; font-size: 15px; line-height: 1.5; color: var(--lichen); }
+  .tag { position: absolute; top: 8px; left: 8px; padding: 2px 6px; background: var(--red); color: #fff; font-size: 10px; }
+  h1 { margin: 0; font-size: clamp(34px, 11vw, 52px); line-height: 1; font-weight: 700; letter-spacing: -.02em; }
+  p { margin: 0 0 24px; color: var(--dim); }
   button {
     appearance: none;
     min-height: 48px;
-    padding: 16px;
-    border: 1px solid var(--line);
+    padding: 12px 16px;
+    border: 1px solid var(--ink);
     border-radius: 0;
     background: transparent;
-    color: var(--bone);
-    font-size: 12px;
+    color: var(--ink);
+    font: inherit;
     cursor: pointer;
-    transition-property: color, background-color, border-color, transform;
-    transition-duration: .3s;
+    transition: color .15s, background-color .15s, transform .15s;
   }
-  button:hover { background: var(--leaf); border-color: var(--leaf); color: var(--bark); }
+  button:hover { background: var(--red); border-color: var(--red); color: #fff; }
   button:active { transform: scale(.96); }
-  button:focus-visible { outline: 2px solid var(--leaf); outline-offset: 3px; }
-  .coords { margin-top: 16px; text-align: center; font-size: 10px; color: var(--lichen); }
+  button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+  .coords { margin-top: 16px; text-align: center; font-size: 11px; color: var(--dim); }
   @media (prefers-reduced-motion: reduce) { .dot { animation: none; } }
 </style>
 </head>
 <body>
-  <div class="rec mono"><span class="dot" aria-hidden="true"></span>Signal lost</div>
+  <div class="tape" aria-hidden="true"></div>
+  <div class="rec"><span class="dot" aria-hidden="true"></span>no signal</div>
   <div class="frame">
-    <span class="tag mono" aria-hidden="true">NO-01</span>
-    <h1>Немає<br>зв'язку</h1>
+    <span class="tag" aria-hidden="true">cam-00</span>
+    <h1>немає<br>зв’язку</h1>
   </div>
-  <p>Об'єкт поза зоною спостереження. Перевірте інтернет — сторінка оновиться сама.</p>
-  <button type="button" class="mono" onclick="location.reload()">Retry →</button>
-  <div class="coords mono">48.62N 22.29E</div>
+  <p>суб’єкт поза зоною спостереження. перевір інтернет — сторінка оновиться сама.</p>
+  <button type="button" onclick="location.reload()">спробувати ще</button>
+  <div class="coords">ужгород · 48.62n 22.29e</div>
   <script>window.addEventListener('online', function () { location.reload(); });</script>
 </body>
 </html>
