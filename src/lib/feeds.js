@@ -107,6 +107,11 @@ export const AMBIENT_LOG = [
   "plate blurred",
   "road sign turned right",
   "clock check · ok",
+  "korzo empty · 03:12",
+  "castle hill · fog",
+  "linden alley · no motion",
+  "bridge lights on",
+  "someone hummed the hook · cam-04",
 ];
 
 export const BOOT_LINES = [

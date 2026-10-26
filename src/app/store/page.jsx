@@ -10,12 +10,12 @@ export async function generateMetadata() {
   return {
     title: "Store — Srrlovych",
     description:
-      "Official Srrlovych merch. Prints and apparel from the HEHEMONIA era. Also available on the Srrlovych Spotify artist profile.",
+      "Srrlovych merch: prints and apparel from the HEHEMONIA era. Orders go through Telegram; the same pieces are listed on the Spotify artist profile.",
     alternates: { canonical: "/store" },
     robots: settings.showStore ? undefined : { index: false, follow: false },
     openGraph: {
       title: "Store — Srrlovych",
-      description: "Official Srrlovych merch. Prints and apparel from the HEHEMONIA era.",
+      description: "Prints and apparel from the HEHEMONIA era. Orders go through Telegram.",
       url: "/store",
     },
   };
@@ -39,8 +39,8 @@ const Store = async () => {
           merch
         </h1>
         <p className="mt-3 max-w-[48ch] text-dim">
-          prints and apparel from the hehemonia era. orders go through telegram; the same pieces show on
-          the spotify profile.
+          prints and apparel from the hehemonia era. pick a piece, write to telegram, srrl answers himself.
+          the same pieces are listed on the spotify profile.
         </p>
 
         <section aria-label="Merch" className="mt-10 grid grid-cols-2 gap-6 md:mt-14 md:gap-8 lg:grid-cols-3">

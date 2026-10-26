@@ -27,7 +27,7 @@ const rockSalt = Rock_Salt({
 
 const SITE_URL = "https://surreal4you.com";
 const DESCRIPTION =
-  "Official website of Srrlovych, a hip-hop artist from Uzhhorod, Ukraine. New album HEHEMONIA out now. Stream Srrlovych on Spotify, Apple Music, YouTube, Instagram, TikTok, and Telegram.";
+  "Srrlovych makes hip-hop in Uzhhorod, Ukraine. The album HEHEMONIA is out on Spotify, Apple Music and YouTube. This site is a night-watch station: four cameras on the music, the merch, the archive and the man himself, plus a log you can write into.";
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
@@ -104,7 +104,7 @@ const jsonLd = {
   "@id": `${SITE_URL}/#artist`,
   name: "Srrlovych",
   alternateName: ["Srrl", "surrealovych"],
-  description: "Hip-hop artist from Uzhhorod, Ukraine",
+  description: "Hip-hop artist from Uzhhorod, Ukraine. Album: HEHEMONIA.",
   url: `${SITE_URL}/`,
   image: `${SITE_URL}/og-image.png`,
   genre: ["Hip-Hop", "Rap"],

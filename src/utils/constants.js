@@ -42,10 +42,10 @@ export const album = {
 export const note = {
     title: 'nu thoughts',
     body: [
-        'the station is on.',
-        'four cameras, one town, one album.',
+        'the station is on. four cameras pointed at one town, and the album plays in every frame.',
         '',
-        'hehemonia is out. more is coming when the fog lifts.',
+        'hehemonia is out. put it on loud; the uzh river has heard worse.',
+        'more when the fog over it lifts.',
     ].join(String.fromCharCode(10)),
     date: '2026-10-26',
 }

@@ -5,7 +5,7 @@ import { PLATES } from "../../lib/feeds";
 
 export const metadata = {
   title: "Visual System — Srrlovych",
-  description: "SRRL station system — asphalt, concrete and one caution-tape red. Surveillance as interface.",
+  description: "The SRRL station system: asphalt, concrete and one caution-tape red. The site is a surveillance console, and the artist is the one being watched.",
   alternates: { canonical: "/moodboard" },
   // Public (no auth) but kept out of search — it's a design reference.
   robots: { index: false, follow: false },
@@ -55,8 +55,9 @@ const Moodboard = () => {
             station · night watch in uzhhorod
           </p>
           <p className="mt-3 max-w-[60ch] text-dim">
-            the artist is the subject under observation. a four-camera console, windows, a log that writes
-            itself and one strip of caution tape. the surreal part: the cameras see a world that is slightly off.
+            the artist is the one under observation. four cameras feed a console, each one opens a window,
+            and the log keeps writing whether anyone reads it or not. the surreal part is that the cameras
+            see uzhhorod slightly wrong: the road sign turns, the pool stays empty, a cat crosses cam-02 at 3am.
           </p>
         </div>
 
