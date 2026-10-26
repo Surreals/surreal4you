@@ -30,6 +30,7 @@ const Row = ({ e }) => (
       {e.status === "approved" ? (
         <form action={hideLine}>
           <input type="hidden" name="id" value={e.id} />
+        <input type="hidden" name="who" value={e.who} />
           <button type="submit" className={btn}>
             Hide
           </button>
@@ -37,6 +38,7 @@ const Row = ({ e }) => (
       ) : (
         <form action={approveLine}>
           <input type="hidden" name="id" value={e.id} />
+        <input type="hidden" name="who" value={e.who} />
           <button type="submit" className={`${btn} bg-black text-white hover:bg-white hover:text-black`}>
             Approve
           </button>
@@ -44,6 +46,7 @@ const Row = ({ e }) => (
       )}
       <form action={removeLine}>
         <input type="hidden" name="id" value={e.id} />
+        <input type="hidden" name="who" value={e.who} />
         <button type="submit" className={btn}>
           Delete
         </button>

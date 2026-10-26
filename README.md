@@ -29,10 +29,12 @@ image uploads are disabled (use the image-path field instead).
 ### Guestbook
 
 Visitors can type a line into the station log (`POST /api/guestbook`, 2–80 chars,
-no links, one per minute per IP). Lines land as *pending* in `content/guestbook.json`
-(Blob, or `.data/guestbook.json` locally) and only reach the public log after approval
-in `/admin/guestbook`. Approved lines drip into every visitor's log between the
-station's own entries.
+no links, one per minute, at most 10 lines per visitor hash, 500 in total). Every line
+is its own **private** blob under `guestbook/entries/<visitor>/<id>.json` (or a file
+under `.data/guestbook/` locally), so visitors never overwrite each other or a moderation
+decision. Nothing is public until approved in `/admin/guestbook`; approving rebuilds
+`guestbook/approved.json`, the only thing the public endpoint reads. Approved lines
+drip into every visitor's log between the station's own entries.
 
 Until an admin saves anything, the site shows the seed content in
 [`src/data/products.js`](src/data/products.js) and [`src/utils/constants.js`](src/utils/constants.js).

@@ -230,7 +230,10 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
           log(d.msg ?? msg.toLowerCase());
           return { ok: true };
         }
-        if (res.status === 429) return { ok: false, error: "too fast · wait a minute" };
+        if (res.status === 429) {
+          const d = await res.json().catch(() => ({}));
+          return { ok: false, error: d.error === "visitor cap" ? "that is enough lines from you" : "too fast · wait a minute" };
+        }
         if (res.status === 422) return { ok: false, error: "line rejected · 2–80 chars, no links" };
         return { ok: false, error: "station busy · try later" };
       } catch {
