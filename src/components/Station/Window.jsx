@@ -79,7 +79,7 @@ const Window = ({ id, title, width, x, y, focused, closing, onFocus, onClose, on
         <span id={`win-${id}-title`} className="text-ink">
           {title}
         </span>
-        <button type="button" className="window-close" onClick={() => onClose(id)} aria-label="закрити">
+        <button type="button" className="window-close" onClick={() => onClose(id)} aria-label="close">
           <Close />
         </button>
       </header>

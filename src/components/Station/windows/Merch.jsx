@@ -7,9 +7,9 @@ const Merch = ({ products, showStore }) => {
   if (!showStore) {
     return (
       <div className="p-5">
-        <p className="font-display text-2xl font-black leading-tight">мерч на підході</p>
+        <p className="font-display text-2xl font-black leading-tight">merch is coming</p>
         <p className="mt-2 max-w-[40ch] text-dim">
-          cam-02 стежить за складом. щойно щось з’явиться — тут буде перший кадр.
+          cam-02 is watching the warehouse. the first frame lands here as soon as something arrives.
         </p>
       </div>
     );
@@ -24,7 +24,7 @@ const Merch = ({ products, showStore }) => {
       </div>
       <p className="mt-4 text-dim">
         <Link href="/store" className="ctl -ml-2 border-line">
-          повний каталог
+          full catalog
         </Link>
       </p>
     </div>

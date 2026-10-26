@@ -12,9 +12,9 @@ const NotFound = () => {
       <p className="font-display text-[clamp(72px,20vw,200px)] font-black leading-none tracking-tight text-red">
         404
       </p>
-      <p className="mt-4 text-dim">камера не знайдена · сигнал втрачено</p>
+      <p className="mt-4 text-dim">camera not found · signal lost</p>
       <Link href="/" className="ctl mt-8 min-h-11 border-ink px-5">
-        ← станція
+        ← station
       </Link>
       <FilmGrain />
     </main>

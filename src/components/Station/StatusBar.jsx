@@ -59,10 +59,10 @@ const StatusBar = ({ clock, signal, theme, onRec, onToggleTheme, onOpen, open })
           className="ctl"
           onClick={onToggleTheme}
           aria-label={isDay ? "switch to night" : "switch to day"}
-          title={isDay ? "ніч" : "день"}
+          title={isDay ? "night" : "day"}
         >
           {isDay ? <Moon /> : <Sun />}
-          <span className="hidden sm:inline">{isDay ? "ніч" : "день"}</span>
+          <span className="hidden sm:inline">{isDay ? "night" : "day"}</span>
         </button>
       </span>
     </div>

@@ -67,8 +67,8 @@ const Station = ({ album, links, settings, products, attribution }) => {
 
   // Boot entries + ambient lines every 18–35s.
   useEffect(() => {
-    log("станція запущена");
-    const t = setTimeout(() => log("4 камери онлайн"), 900);
+    log("station online");
+    const t = setTimeout(() => log("4 cameras online"), 900);
     let id;
     const schedule = () => {
       id = setTimeout(() => {
@@ -103,7 +103,7 @@ const Station = ({ album, links, settings, products, attribution }) => {
       try {
         localStorage.setItem("srrl-theme", next);
       } catch {}
-      log(next === "day" ? "денний режим" : "нічний режим");
+      log(next === "day" ? "day mode" : "night mode");
       return next;
     });
   }, [log]);
@@ -116,17 +116,14 @@ const Station = ({ album, links, settings, products, attribution }) => {
     });
   }, []);
 
-  const closeWindow = useCallback(
-    (id) => {
-      setOpen((list) => list.map((w) => (w.id === id ? { ...w, closing: true } : w)));
-      setTimeout(() => {
-        setOpen((list) => list.filter((w) => w.id !== id));
-        const opener = openerRef.current;
-        if (opener && opener.dataset.win === id) opener.focus({ preventScroll: true });
-      }, 170);
-    },
-    [],
-  );
+  const closeWindow = useCallback((id) => {
+    setOpen((list) => list.map((w) => (w.id === id ? { ...w, closing: true } : w)));
+    setTimeout(() => {
+      setOpen((list) => list.filter((w) => w.id !== id));
+      const opener = openerRef.current;
+      if (opener && opener.dataset.win === id) opener.focus({ preventScroll: true });
+    }, 170);
+  }, []);
 
   const openWindow = useCallback(
     (id) => {
@@ -150,7 +147,7 @@ const Station = ({ album, links, settings, products, attribution }) => {
       }
       openerRef.current = feedRefs.current[id] ?? null;
       setOpen((list) => [...list, { id, x, y }]);
-      log(`відкрито: ${spec.title}`);
+      log(`opened: ${spec.title}`);
     },
     [open, closeWindow, focusWindow, log],
   );
@@ -162,10 +159,10 @@ const Station = ({ album, links, settings, products, attribution }) => {
   const dropSignal = useCallback(() => {
     if (signal === "lost") return;
     setSignal("lost");
-    log("сигнал втрачено");
+    log("signal lost");
     setTimeout(() => {
       setSignal("ok");
-      log("сигнал відновлено");
+      log("signal restored");
     }, 1800);
   }, [signal, log]);
 
@@ -196,10 +193,10 @@ const Station = ({ album, links, settings, products, attribution }) => {
           const root = document.documentElement;
           if (root.dataset.xray) {
             delete root.dataset.xray;
-            log("рентген вимкнено");
+            log("x-ray off");
           } else {
             root.dataset.xray = "1";
-            log("рентген увімкнено");
+            log("x-ray on");
           }
           typed.current = "";
         }
@@ -215,8 +212,8 @@ const Station = ({ album, links, settings, products, attribution }) => {
     "srrlovych",
     HQ.city,
     `${HQ.lat} ${HQ.lon}`,
-    "4 камери онлайн",
-    "запис триває",
+    "4 cameras online",
+    "recording",
   ];
 
   const render = (id) => {
@@ -261,6 +258,7 @@ const Station = ({ album, links, settings, products, attribution }) => {
             <Feed
               key={f.id}
               feed={f}
+              title={f.title ?? album.title}
               clock={clock}
               signal={signal}
               open={openIds.includes(f.id)}

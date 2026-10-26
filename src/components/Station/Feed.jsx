@@ -2,7 +2,7 @@ import Image from "next/image";
 import { HQ } from "../../lib/feeds";
 
 // One camera tile. The photo is the content; the OSD makes it a monitor.
-const Feed = ({ feed, clock, signal, open, onOpen, innerRef, priority }) => {
+const Feed = ({ feed, title, clock, signal, open, onOpen, innerRef, priority }) => {
   return (
     <button
       ref={innerRef}
@@ -11,7 +11,7 @@ const Feed = ({ feed, clock, signal, open, onOpen, innerRef, priority }) => {
       data-open={open}
       data-signal={signal}
       onClick={() => onOpen(feed.id)}
-      aria-label={`${feed.cam} — ${feed.label}: відкрити`}
+      aria-label={`${feed.cam} — ${feed.label}: open`}
       aria-expanded={open}
       aria-haspopup="dialog"
       aria-keyshortcuts={feed.key}
@@ -30,14 +30,14 @@ const Feed = ({ feed, clock, signal, open, onOpen, innerRef, priority }) => {
       <span className="feed-osd" aria-hidden="true">
         <span className="feed-row">
           <span>
-            {feed.cam} · {feed.label}
+            {feed.cam} · {feed.scene}
           </span>
           <span className="flex items-center gap-2">
             <span className="rec" />
             <span className="tnum">{signal === "lost" ? "--:--:--" : clock.time}</span>
           </span>
         </span>
-        <span className="feed-title">{feed.title}</span>
+        <span className="feed-title">{title}</span>
         <span className="feed-row">
           <span>{clock.date}</span>
           <span>

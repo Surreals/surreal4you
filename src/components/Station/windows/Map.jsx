@@ -9,20 +9,20 @@ const Map = ({ clock }) => {
         <span className="radar-dot" />
       </div>
       <dl className="dossier content-start">
-        <dt>місце</dt>
-        <dd>{HQ.city}, закарпаття</dd>
-        <dt>координати</dt>
+        <dt>place</dt>
+        <dd>{HQ.city}, zakarpattia</dd>
+        <dt>coordinates</dt>
         <dd>
           {HQ.lat} {HQ.lon}
         </dd>
-        <dt>час</dt>
+        <dt>time</dt>
         <dd className="tnum">{clock.time}</dd>
-        <dt>дата</dt>
+        <dt>date</dt>
         <dd className="tnum">{clock.date}</dd>
-        <dt>зона</dt>
+        <dt>zone</dt>
         <dd>{HQ.tz}</dd>
-        <dt>стан</dt>
-        <dd className="text-red">суб’єкт у радіусі</dd>
+        <dt>state</dt>
+        <dd className="text-red">subject within range</dd>
       </dl>
     </div>
   );

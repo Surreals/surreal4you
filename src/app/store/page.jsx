@@ -29,18 +29,18 @@ const Store = async () => {
       <div className="tape h-2" aria-hidden="true" />
       <header className="status">
         <Link href="/" className="ctl -ml-2">
-          ← станція
+          ← station
         </Link>
         <span className="ml-auto text-ink">cam-02 · merch</span>
       </header>
 
       <div className="mx-auto max-w-6xl px-4 py-8 md:px-8 md:py-12">
         <h1 className="font-display text-[clamp(40px,9vw,112px)] font-black leading-[0.9] tracking-tight">
-          мерч
+          merch
         </h1>
         <p className="mt-3 max-w-[48ch] text-dim">
-          принти та одяг ери «гегемонії». замовлення — у телеграмі; ті самі речі видно і на профілі в
-          spotify.
+          prints and apparel from the hehemonia era. orders go through telegram; the same pieces show on
+          the spotify profile.
         </p>
 
         <section aria-label="Merch" className="mt-10 grid grid-cols-2 gap-6 md:mt-14 md:gap-8 lg:grid-cols-3">
@@ -50,13 +50,13 @@ const Store = async () => {
         </section>
 
         <section aria-label="Listen" className="mt-16 md:mt-24">
-          <h2 className="mb-3 text-dim">cam-01 · слухати, поки дивишся</h2>
+          <h2 className="mb-3 text-dim">cam-01 · listen while you browse</h2>
           <div className="border border-line">
             <SpotifyEmbed />
           </div>
           <p className="mt-3 text-[12px] text-dim">
             <a href={SPOTIFY_ARTIST_URL} target="_blank" rel="noopener noreferrer" className="ctl -ml-2">
-              відкрити в spotify
+              open on spotify
             </a>
           </p>
         </section>

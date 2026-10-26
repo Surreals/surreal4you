@@ -12,22 +12,22 @@ export const metadata = {
 };
 
 const PALETTE = [
-  { name: "bg", night: "#0c0c0e", day: "#e6e4df", role: "фон · асфальт / бетон" },
-  { name: "panel", night: "#141417", day: "#f6f5f2", role: "вікна, док" },
-  { name: "panel-2", night: "#1c1c20", day: "#ffffff", role: "ряди, підняті поверхні" },
-  { name: "ink", night: "#f3f1ec", day: "#121214", role: "текст" },
-  { name: "dim", night: "#8e8d93", day: "#67666c", role: "другорядний текст" },
-  { name: "red", night: "#d9291f", day: "#d9291f", role: "акцент · стрічка, rec, ціни" },
+  { name: "bg", night: "#0c0c0e", day: "#e6e4df", role: "background · asphalt / concrete" },
+  { name: "panel", night: "#141417", day: "#f6f5f2", role: "windows, dock" },
+  { name: "panel-2", night: "#1c1c20", day: "#ffffff", role: "rows, raised surfaces" },
+  { name: "ink", night: "#f3f1ec", day: "#121214", role: "text" },
+  { name: "dim", night: "#8e8d93", day: "#67666c", role: "secondary text" },
+  { name: "red", night: "#d9291f", day: "#d9291f", role: "accent · tape, rec, prices" },
 ];
 
 const RULES = [
-  "один акцент — червоний. зеленого нема.",
-  "стрічка — тільки смугою: тікер, рамка камери, заголовок вікна у фокусі.",
-  "без радіусів. 1px лінії, 2px рамки вікон.",
-  "фото десатуровані вночі; повний колір при наведенні.",
-  "unbounded — лише великі слова. jetbrains mono — все інше, нижній регістр.",
-  "rock salt — тільки підпис.",
-  "рух лише у відповідь на дію, крім одного boot.",
+  "one accent — red. no green.",
+  "tape only as a strip: ticker, camera frame, the focused window bar.",
+  "no radius. 1px lines, 2px window frames.",
+  "photos desaturate at night; full colour on hover.",
+  "unbounded — big words only. jetbrains mono — everything else, lowercase.",
+  "rock salt — the signature only.",
+  "motion only answers an action, except one boot.",
 ];
 
 const Section = ({ title, children }) => (
@@ -43,7 +43,7 @@ const Moodboard = () => {
       <div className="tape h-2" aria-hidden="true" />
       <header className="status">
         <Link href="/" className="ctl -ml-2">
-          ← станція
+          ← station
         </Link>
         <span className="ml-auto text-ink">visual system</span>
       </header>
@@ -52,15 +52,15 @@ const Moodboard = () => {
         <div className="border-b border-line pb-8 pt-10">
           <p className="font-sign text-5xl leading-none sm:text-7xl">Srrlovych</p>
           <p className="mt-4 font-display text-2xl font-black leading-tight md:text-4xl">
-            станція · нічне спостереження в ужгороді
+            station · night watch in uzhhorod
           </p>
           <p className="mt-3 max-w-[60ch] text-dim">
-            артист — об’єкт спостереження. пульт з чотирьох камер, вікна, журнал, що пише сам себе, і одна
-            сигнальна стрічка. сюр у тому, що камери бачать світ трохи не таким, як він є.
+            the artist is the subject under observation. a four-camera console, windows, a log that writes
+            itself and one strip of caution tape. the surreal part: the cameras see a world that is slightly off.
           </p>
         </div>
 
-        <Section title="палітра">
+        <Section title="palette">
           <div className="grid gap-px border border-line bg-line sm:grid-cols-2">
             {PALETTE.map((c) => (
               <div key={c.name} className="grid grid-cols-[72px_72px_1fr] items-stretch bg-panel">
@@ -77,31 +77,31 @@ const Moodboard = () => {
           </div>
         </Section>
 
-        <Section title="шрифти">
+        <Section title="type">
           <div className="grid gap-4 md:grid-cols-3">
             <div className="flex min-h-[150px] flex-col justify-between border border-line p-5">
-              <span className="font-display text-4xl font-black leading-none">гегемонія</span>
-              <span className="text-[12px] text-dim">unbounded 900 — великі слова</span>
+              <span className="font-display text-4xl font-black leading-none">hehemonia</span>
+              <span className="text-[12px] text-dim">unbounded 900 — big words</span>
             </div>
             <div className="flex min-h-[150px] flex-col justify-between border border-line p-5">
               <span className="text-2xl">05:12:33 · cam-01</span>
-              <span className="text-[12px] text-dim">jetbrains mono — ui, журнал, osd</span>
+              <span className="text-[12px] text-dim">jetbrains mono — ui, log, osd</span>
             </div>
             <div className="flex min-h-[150px] flex-col justify-between border border-line p-5">
               <span className="font-sign text-4xl">Srrlovych</span>
-              <span className="text-[12px] text-dim">rock salt — лише підпис</span>
+              <span className="text-[12px] text-dim">rock salt — signature only</span>
             </div>
           </div>
         </Section>
 
-        <Section title="стрічка">
+        <Section title="tape">
           <div className="tape h-3" aria-hidden="true" />
           <p className="mt-3 max-w-[60ch] text-dim">
-            репетитивний градієнт 135° червоний / ink, крок 24px. ніколи не фон під текстом.
+            repeating 135° gradient, red / ink, 24px step. never a background under text.
           </p>
         </Section>
 
-        <Section title="кадри">
+        <Section title="plates">
           <div className="grid grid-cols-2 gap-px bg-line p-px sm:grid-cols-4">
             {PLATES.map((p) => (
               <figure key={p.src} className="plate aspect-square border-0">
@@ -112,7 +112,7 @@ const Moodboard = () => {
           </div>
         </Section>
 
-        <Section title="правила">
+        <Section title="rules">
           <ul className="grid gap-3 md:grid-cols-2">
             {RULES.map((r) => (
               <li key={r} className="border-l-2 border-red pl-3 text-[13px] text-dim">
@@ -124,7 +124,7 @@ const Moodboard = () => {
 
         <footer className="flex justify-between py-8 text-[12px] text-dim">
           <Link href="/" className="ctl -ml-2">
-            ← станція
+            ← station
           </Link>
           <span>srrlovych · visual system</span>
         </footer>

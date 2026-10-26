@@ -33,6 +33,6 @@ export const settings = {
 // Feeds the mono info strip at the bottom of the landing page. Editable from
 // /admin/album.
 export const album = {
-    title: 'гегемонія',
+    title: 'hehemonia',
     status: 'OUT now',
 }

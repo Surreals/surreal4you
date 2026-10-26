@@ -12,29 +12,29 @@ const Subject = ({ album, links }) => {
   return (
     <div className="grid gap-5 p-4 sm:grid-cols-[180px_1fr] sm:p-5">
       <div className="plate aspect-[3/4]">
-        <Image src="/moodboard/night.webp" alt="Srrlovych" fill sizes="180px" className="object-cover" />
+        <Image src="/photos/cam-portrait.webp" alt="Srrlovych" fill sizes="180px" className="object-cover" />
         <span className="plate-tag">sub-01</span>
       </div>
       <dl className="dossier content-start">
-        <dt>ім’я</dt>
+        <dt>name</dt>
         <dd className="font-display text-base font-bold">Srrlovych</dd>
-        <dt>також</dt>
+        <dt>aka</dt>
         <dd>srrl · surrealovych</dd>
-        <dt>вік</dt>
+        <dt>age</dt>
         <dd className="tnum">{age}</dd>
-        <dt>місто</dt>
+        <dt>city</dt>
         <dd>
           {HQ.city} · {HQ.lat} {HQ.lon}
         </dd>
-        <dt>жанр</dt>
+        <dt>genre</dt>
         <dd>hip-hop</dd>
-        <dt>альбом</dt>
+        <dt>album</dt>
         <dd>
           {album.title} · <span className="text-red">{(album.status ?? "").toLowerCase()}</span>
         </dd>
-        <dt>статус</dt>
-        <dd>під наглядом</dd>
-        <dt>канали</dt>
+        <dt>status</dt>
+        <dd>under observation</dd>
+        <dt>channels</dt>
         <dd className="-ml-2 flex flex-wrap">
           {channels.map((l) => (
             <a key={l.name} href={l.url} target="_blank" rel="noopener noreferrer" className="ctl">

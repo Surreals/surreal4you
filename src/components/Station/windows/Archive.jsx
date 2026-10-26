@@ -17,7 +17,7 @@ const Archive = () => {
             {String(active + 1).padStart(2, "0")} / {String(PLATES.length).padStart(2, "0")} · {plate.tag}
           </span>
           <button type="button" className="ctl -mr-2" onClick={() => setActive(null)}>
-            назад
+            back
           </button>
         </div>
         <div className="plate">
@@ -37,10 +37,10 @@ const Archive = () => {
             className="ctl -ml-2"
             onClick={() => setActive((active - 1 + PLATES.length) % PLATES.length)}
           >
-            ← попередній
+            ← prev
           </button>
           <button type="button" className="ctl -mr-2" onClick={() => setActive((active + 1) % PLATES.length)}>
-            наступний →
+            next →
           </button>
         </div>
       </div>
@@ -55,7 +55,7 @@ const Archive = () => {
           type="button"
           className="plate aspect-square border-0"
           onClick={() => setActive(i)}
-          aria-label={`відкрити: ${p.tag}`}
+          aria-label={`open: ${p.tag}`}
         >
           <Image src={p.src} alt="" fill sizes="(min-width: 1024px) 200px, 50vw" className="object-cover" />
           <span className="plate-tag">{p.tag}</span>

@@ -31,13 +31,13 @@ const Product = ({ product, index = 0, compact = false }) => {
           href={buyUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`купити: ${name}`}
+          aria-label={`buy: ${name}`}
           className="ctl mt-3 min-h-11 justify-center border-ink"
         >
-          купити
+          buy
         </a>
       ) : (
-        <span className="ctl mt-3 min-h-11 justify-center border-line text-dim">скоро</span>
+        <span className="ctl mt-3 min-h-11 justify-center border-line text-dim">soon</span>
       )}
     </div>
   );

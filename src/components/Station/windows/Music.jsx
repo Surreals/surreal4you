@@ -10,15 +10,15 @@ const Music = ({ album, links }) => {
     <div className="p-4 sm:p-5">
       <div className="grid gap-4 sm:grid-cols-[160px_1fr] sm:items-end">
         <div className="plate aspect-square">
-          <Image src="/hehemonia.png" alt="гегемонія — обкладинка" fill sizes="160px" className="object-cover" />
-          <span className="plate-tag">obj-01</span>
+          <Image src="/hehemonia.png" alt={`${album.title} — cover`} fill sizes="160px" className="object-cover" />
+          <span className="plate-tag">rel-01</span>
         </div>
         <div>
           <h2 className="font-display text-[clamp(34px,6vw,56px)] font-black leading-[0.95] tracking-tight">
             {album.title}
           </h2>
           <p className="mt-2 text-dim">
-            альбом · <span className="text-red">{(album.status ?? "").toLowerCase()}</span>
+            album · <span className="text-red">{(album.status ?? "").toLowerCase()}</span>
           </p>
           <ul className="mt-3 flex flex-wrap gap-1">
             {streaming.map((l) => (
