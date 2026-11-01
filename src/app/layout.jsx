@@ -27,7 +27,7 @@ const rockSalt = Rock_Salt({
 });
 
 const DESCRIPTION =
-  "Srrlovych makes hip-hop in Uzhhorod, Ukraine. The album HEHEMONIA is out on Spotify, Apple Music and YouTube. This site is a night-watch station: four cameras on the music, the merch, the archive and the man himself, plus a log you can write into.";
+  "Srrlovych makes hip-hop in Uzhhorod, Ukraine. HEHEMONIA is out on Spotify, Apple Music and YouTube. The site is a night-watch station with a log you can write into.";
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),

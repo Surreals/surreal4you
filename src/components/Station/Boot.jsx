@@ -5,7 +5,10 @@ import { BOOT_LINES } from "../../lib/feeds";
 
 // Station boot on the first visit of a session: six lines in ~0.8s, then the
 // cover fades and the feeds rise through it. Skipped under reduced motion.
-const Boot = () => {
+const Boot = ({ merchOffline = false }) => {
+  const bootLines = merchOffline
+    ? BOOT_LINES.map((l) => (l === "cam-02 ok" ? "cam-02 no signal" : l))
+    : BOOT_LINES;
   const [lines, setLines] = useState(0);
   const [show, setShow] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -35,7 +38,7 @@ const Boot = () => {
 
   return (
     <div className="boot" data-closing={closing} aria-hidden="true">
-      {BOOT_LINES.slice(0, lines).map((l) => (
+      {bootLines.slice(0, lines).map((l) => (
         <div key={l} className="boot-line">
           {l}
         </div>

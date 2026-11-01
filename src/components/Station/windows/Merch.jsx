@@ -10,7 +10,7 @@ const Merch = ({ products, showStore }) => {
         <p className="font-display text-2xl font-black leading-tight">merch is coming</p>
         <p className="mt-2 max-w-[40ch] text-dim">
           cam-02 points at the warehouse door. the moment a box comes through it, the first print shows up
-          here and on the spotify profile.
+          here.
         </p>
       </div>
     );
