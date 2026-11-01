@@ -3,6 +3,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Unbounded, JetBrains_Mono, Rock_Salt } from "next/font/google";
 import "./globals.css";
 import ServiceWorker from "@/components/ServiceWorker";
+import { SITE_URL } from "@/lib/jsonLd";
 
 // SRRL station type system — see DESIGN.md. Both working faces carry Cyrillic
 // so «гегемонія» and the log never fall back to the system font.
@@ -25,7 +26,6 @@ const rockSalt = Rock_Salt({
   display: "swap",
 });
 
-const SITE_URL = "https://surreal4you.com";
 const DESCRIPTION =
   "Srrlovych makes hip-hop in Uzhhorod, Ukraine. The album HEHEMONIA is out on Spotify, Apple Music and YouTube. This site is a night-watch station: four cameras on the music, the merch, the archive and the man himself, plus a log you can write into.";
 
@@ -98,26 +98,8 @@ export const viewport = {
   viewportFit: "cover",
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "MusicGroup",
-  "@id": `${SITE_URL}/#artist`,
-  name: "Srrlovych",
-  alternateName: ["Srrl", "surrealovych"],
-  description: "Hip-hop artist from Uzhhorod, Ukraine. Album: HEHEMONIA.",
-  url: `${SITE_URL}/`,
-  image: `${SITE_URL}/og-image.png`,
-  genre: ["Hip-Hop", "Rap"],
-  foundingLocation: { "@type": "City", name: "Uzhhorod", addressCountry: "UA" },
-  sameAs: [
-    "https://open.spotify.com/artist/0cpL1ooyiyxpJ4KRz8ILWW",
-    "https://music.apple.com/us/artist/surreal/1631369195",
-    "https://www.youtube.com/channel/UCK4Jk9WTq1hlpt5s6nWnuZA",
-    "https://www.instagram.com/surrealovych/",
-    "https://www.tiktok.com/@surrealovych",
-    "https://t.me/surreal4you",
-  ],
-};
+// The MusicGroup JSON-LD lives on the home page (src/app/page.jsx): it is
+// built from the same admin-editable links the station shows.
 
 // The theme is resolved before paint from the saved choice or Uzhhorod's
 // clock, so a day-time visitor never sees the night palette flash first.
@@ -139,10 +121,6 @@ const RootLayout = ({ children }) => {
       </head>
       <body className="font-mono">
         {children}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
         <Analytics />
         <SpeedInsights />
         <ServiceWorker />
