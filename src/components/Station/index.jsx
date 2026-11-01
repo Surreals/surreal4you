@@ -86,7 +86,10 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
   // (fetched once) take every other slot while there are any left.
   useEffect(() => {
     log("station online");
-    const t = setTimeout(() => log("4 cameras online"), 900);
+    const t = setTimeout(
+      () => log(settings.showStore ? "4 cameras online" : "3 cameras online · cam-02 offline"),
+      900,
+    );
     fetch("/api/guestbook")
       .then((r) => (r.ok ? r.json() : { lines: [] }))
       .then((d) => {
@@ -106,7 +109,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
       clearTimeout(t);
       clearTimeout(id);
     };
-  }, [log]);
+  }, [log, settings.showStore]);
 
   // An open sheet locks the page behind it (mobile only, see globals.css).
   useEffect(() => {
@@ -410,7 +413,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
         className="night-only"
       />
       <DayFoot links={links} attribution={attribution} />
-      <Boot />
+      <Boot merchOffline={!settings.showStore} />
     </div>
   );
 };
