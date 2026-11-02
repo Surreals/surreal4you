@@ -1,29 +1,29 @@
 // The four camera feeds of the station. Each one is a door into a window.
 // `scene` is the OSD location tag; `title` is the big word on the tile
 // (music takes the album title from content instead); `clip` is a few
-// seconds of webm cut from the Petlura video that loops on the tile.
+// seconds of webm that loops on the tile: CHILL for cams 01–03, Petlura for cam-04.
 // `offline` is what the tile shows while that section is switched off.
 export const FEEDS = [
   {
     id: "music",
     cam: "cam-01",
     label: "music",
-    scene: "road · carpathians",
+    scene: "stands · stadium",
     title: null,
-    image: "/photos/cam-road.webp",
-    clip: "/photos/clip-road.webm",
-    alt: "Srrlovych crouches on a mountain road next to a red chevron sign",
+    image: "/photos/cam-stands.webp",
+    clip: "/photos/clip-stands.webm",
+    alt: "Srrlovych in a black tank top on grey stadium seats, one yellow seat beside him",
     key: "1",
   },
   {
     id: "merch",
     cam: "cam-02",
     label: "merch",
-    scene: "stage · blue",
+    scene: "court · net",
     title: "merch",
-    image: "/photos/cam-stage.webp",
-    clip: "/photos/clip-stage.webm",
-    alt: "Srrlovych on stage under blue light, hair over his face, microphone in hand",
+    image: "/photos/cam-net.webp",
+    clip: "/photos/clip-net.webm",
+    alt: "Srrlovych lying by the net of a dark indoor tennis court, tennis balls around him",
     key: "2",
     offline: {
       scene: "offline",
@@ -36,11 +36,11 @@ export const FEEDS = [
     id: "archive",
     cam: "cam-03",
     label: "archive",
-    scene: "studio · dark",
+    scene: "court · indoor",
     title: "archive",
-    image: "/photos/cam-studio.webp",
-    clip: "/photos/clip-studio.webm",
-    alt: "A dark rehearsal room seen from a high corner, one figure moving",
+    image: "/photos/cam-court.webp",
+    clip: "/photos/clip-court.webm",
+    alt: "An indoor tennis court under pink light, two figures at the net",
     key: "3",
   },
   {
@@ -105,7 +105,7 @@ export const AMBIENT_LOG = [
   "cat crossed cam-02",
   "pool still empty",
   "plate blurred",
-  "road sign turned right",
+  "ball rolled off the court · cam-03",
   "clock check · ok",
   "korzo empty · 03:12",
   "castle hill · fog",

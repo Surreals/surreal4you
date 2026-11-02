@@ -57,7 +57,7 @@ const Moodboard = () => {
           <p className="mt-3 max-w-[60ch] text-dim">
             the artist is the one under observation. four cameras feed a console, each one opens a window,
             and the log keeps writing whether anyone reads it or not. the surreal part is that the cameras
-            see uzhhorod slightly wrong: the road sign turns, the pool stays empty, a cat crosses cam-02 at 3am.
+            see uzhhorod slightly wrong: a tennis ball rolls off the court on its own, the pool stays empty, a cat crosses cam-02 at 3am.
           </p>
         </div>
 
