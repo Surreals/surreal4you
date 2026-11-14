@@ -8,25 +8,25 @@ const WINDOW_IDS = ["music", "merch", "archive", "subject", "note", "log", "map"
 
 const HELP = [
   "commands:",
-  "  cams                 list cameras",
+  "  cams                 the four cameras",
   "  open <window>        music · merch · archive · subject · note · log · map",
   "  close [window|all]   close a window (default: the top one)",
   "  log [n]              last n log entries",
   "  note                 read the note",
   "  whois srrl           the dossier",
   "  links                every channel",
-  "  theme [day|night]    switch the station",
+  "  theme [day|night]    change the light",
   "  signal               drop the signal for a moment",
   "  xray                 toggle x-ray",
   "  time                 uzhhorod clock",
   "  clear · exit",
 ];
 
-// A console into the station. Every command maps onto something the station
+// A console in the booth. Every command maps onto something the station
 // can already do; the terminal only gives it a second, quieter door.
 const Terminal = ({ api }) => {
   const [lines, setLines] = useState(() => [
-    { t: "out", s: "srrl station · shell 0.1" },
+    { t: "out", s: "booth · shell 0.1" },
     { t: "out", s: "type help" },
   ]);
   const [value, setValue] = useState("");
@@ -63,7 +63,7 @@ const Terminal = ({ api }) => {
       case "cams":
         print(
           ...FEEDS.map(
-            (f) => `  ${f.cam}  ${f.label.padEnd(8)} ${api.offline(f.id) ? "offline" : f.scene}`,
+            (f) => `  ${f.cam}  ${f.place.padEnd(8)} ${api.offline(f.id) ? "no signal" : f.scene}`,
           ),
         );
         break;
@@ -93,12 +93,13 @@ const Terminal = ({ api }) => {
       case "whois":
         if (!arg || /srrl|surreal/.test(arg)) {
           print(
-            "  name     srrlovych",
+            "  name     SRRLOVYCH",
             "  aka      srrl · surrealovych",
             `  city     ${HQ.city} · ${HQ.lat} ${HQ.lon}`,
             "  genre    hip-hop",
             `  album    ${api.album().title} · ${(api.album().status ?? "").toLowerCase()}`,
             "  status   under observation",
+            "  seen     under the lamp",
           );
         } else print(`whois: no record for "${arg}"`);
         break;
@@ -138,10 +139,10 @@ const Terminal = ({ api }) => {
         api.close("terminal");
         break;
       case "sudo":
-        print("nice try. the station runs on trust.");
+        print("nice try. the booth locks from the inside.");
         break;
       case "ls":
-        print("  music  merch  archive  subject  note.txt  log  map");
+        print("  stands  kiosk  garage  lamp  booth  board  mast");
         break;
       case "pwd":
         print(`  /uzhhorod/${HQ.lat}_${HQ.lon}`);

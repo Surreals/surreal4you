@@ -42,7 +42,7 @@ function normalize(raw) {
       // publish the store, so anything other than `true` reads as hidden.
       showStore: s.showStore === true,
     },
-    // The artist's note (the "nu thoughts" folder). Plain text; paragraphs
+    // The artist's note (the sheet on the board). Plain text; paragraphs
     // are blank-line separated.
     note: {
       title: typeof n.title === "string" && n.title.trim() ? n.title : DEFAULT_CONTENT.note.title,

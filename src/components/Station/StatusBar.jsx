@@ -1,12 +1,5 @@
 import { HQ } from "../../lib/feeds";
 
-const Sun = () => (
-  <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-    <circle cx="8" cy="8" r="3" />
-    <path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.5 1.5M11.5 11.5 13 13M3 13l1.5-1.5M11.5 4.5 13 3" />
-  </svg>
-);
-
 const Tool = ({ id, label, open, onOpen, badge }) => (
   <button
     type="button"
@@ -20,11 +13,12 @@ const Tool = ({ id, label, open, onOpen, badge }) => (
   </button>
 );
 
-// Top status line of the night station: rec, Uzhhorod time, coordinates,
-// and the tools. The day desk has its own, quieter header.
-const StatusBar = ({ clock, signal, onRec, onToggleTheme, onOpen, open, noteIsNew }) => {
+// The one line above the block: the name, rec, Uzhhorod time and the tools.
+const StatusBar = ({ clock, signal, theme, onRec, onToggleTheme, onOpen, open, noteIsNew }) => {
+  const next = theme === "day" ? "night" : "day";
   return (
-    <div className="status night-only">
+    <div className="status">
+      <span className="font-display text-base font-black leading-none tracking-tight text-ink">SRRLOVYCH</span>
       <button
         type="button"
         onClick={onRec}
@@ -37,7 +31,6 @@ const StatusBar = ({ clock, signal, onRec, onToggleTheme, onOpen, open, noteIsNe
       </button>
 
       <span className="tnum text-ink">{clock.time}</span>
-      <span className="hidden sm:inline">{clock.date}</span>
       <span className="hidden md:inline">
         {HQ.city} · {HQ.lat} {HQ.lon}
       </span>
@@ -47,9 +40,8 @@ const StatusBar = ({ clock, signal, onRec, onToggleTheme, onOpen, open, noteIsNe
         <Tool id="log" label="log" open={open} onOpen={onOpen} />
         <Tool id="map" label="map" open={open} onOpen={onOpen} />
         <Tool id="terminal" label=">_" open={open} onOpen={onOpen} />
-        <button type="button" className="ctl" onClick={onToggleTheme} aria-label="switch to day" title="day">
-          <Sun />
-          <span className="hidden sm:inline">day</span>
+        <button type="button" className="ctl" onClick={onToggleTheme} aria-label={`switch to ${next}`}>
+          {next}
         </button>
       </span>
     </div>

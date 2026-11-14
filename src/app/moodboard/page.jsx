@@ -1,11 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Cursor, FilmGrain } from "../../components";
+import { FilmGrain } from "../../components";
 import { PLATES } from "../../lib/feeds";
 
 export const metadata = {
-  title: "Visual System — Srrlovych",
-  description: "The SRRL station system: asphalt, concrete and one caution-tape red. The site is a surveillance console, and the artist is the one being watched.",
+  title: "Visual System — SRRLOVYCH",
+  description: "The SRRL station system: asphalt, concrete and one caution-tape red. The site is one watched block of Uzhhorod, and the artist is the one being watched.",
   alternates: { canonical: "/moodboard" },
   // Public (no auth) but kept out of search — it's a design reference.
   robots: { index: false, follow: false },
@@ -22,11 +22,10 @@ const PALETTE = [
 
 const RULES = [
   "one accent — red. no green.",
-  "tape only as a strip: ticker, camera frame, the focused window bar.",
+  "tape only as a strip: above the status line, on the focused window bar.",
   "no radius. 1px lines, 2px window frames.",
-  "photos desaturate at night; full colour on hover.",
-  "unbounded — big words only. jetbrains mono — everything else, lowercase.",
-  "rock salt — the signature only.",
+  "plates desaturate at night; full colour on hover. the block itself is never filtered.",
+  "inter tight 900 — the name and big words. jetbrains mono — everything else, lowercase.",
   "motion only answers an action, except one boot.",
 ];
 
@@ -40,24 +39,24 @@ const Section = ({ title, children }) => (
 const Moodboard = () => {
   return (
     <main className="min-h-[100dvh]">
-      <div className="tape h-2" aria-hidden="true" />
       <header className="status">
         <Link href="/" className="ctl -ml-2">
-          ← station
+          ← the block
         </Link>
         <span className="ml-auto text-ink">visual system</span>
       </header>
 
       <div className="mx-auto max-w-5xl px-5 md:px-8">
         <div className="border-b border-line pb-8 pt-10">
-          <p className="font-sign text-5xl leading-none sm:text-7xl">Srrlovych</p>
+          <p className="font-display text-5xl font-black leading-none tracking-tight sm:text-7xl">SRRLOVYCH</p>
           <p className="mt-4 font-display text-2xl font-black leading-tight md:text-4xl">
-            station · night watch in uzhhorod
+            one block · night watch in uzhhorod
           </p>
           <p className="mt-3 max-w-[60ch] text-dim">
-            the artist is the one under observation. four cameras feed a console, each one opens a window,
-            and the log keeps writing whether anyone reads it or not. the surreal part is that the cameras
-            see uzhhorod slightly wrong: a tennis ball rolls off the court on its own, the pool stays empty, a cat crosses cam-02 at 3am.
+            the artist is the one under observation. one block of the town stands cut out like a model:
+            seven things on it, each one opens a window, and the log keeps writing whether anyone reads it
+            or not. the surreal part is that the block is slightly wrong: the street lamp shines upward, a
+            tennis ball rolls off the edge on its own, a cat crosses cam-02 at 3am.
           </p>
         </div>
 
@@ -79,18 +78,14 @@ const Moodboard = () => {
         </Section>
 
         <Section title="type">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="flex min-h-[150px] flex-col justify-between border border-line p-5">
               <span className="font-display text-4xl font-black leading-none">hehemonia</span>
-              <span className="text-[12px] text-dim">unbounded 900 — big words</span>
+              <span className="text-[12px] text-dim">inter tight 900 — the name, big words</span>
             </div>
             <div className="flex min-h-[150px] flex-col justify-between border border-line p-5">
               <span className="text-2xl">05:12:33 · cam-01</span>
               <span className="text-[12px] text-dim">jetbrains mono — ui, log, osd</span>
-            </div>
-            <div className="flex min-h-[150px] flex-col justify-between border border-line p-5">
-              <span className="font-sign text-4xl">Srrlovych</span>
-              <span className="text-[12px] text-dim">rock salt — signature only</span>
             </div>
           </div>
         </Section>
@@ -125,12 +120,11 @@ const Moodboard = () => {
 
         <footer className="flex justify-between py-8 text-[12px] text-dim">
           <Link href="/" className="ctl -ml-2">
-            ← station
+            ← the block
           </Link>
-          <span>srrlovych · visual system</span>
+          <span>SRRLOVYCH · visual system</span>
         </footer>
       </div>
-      <Cursor />
       <FilmGrain />
     </main>
   );

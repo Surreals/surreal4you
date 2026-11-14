@@ -5,7 +5,7 @@
 /* ------------------------------------------------------------------------
  * SRRL station system — see DESIGN.md
  *
- * Night is the default. Day is the same page under concrete daylight; the
+ * Night is the default. Day is the same block under concrete daylight; the
  * root <script> in layout.jsx sets data-theme before first paint.
  * ---------------------------------------------------------------------- */
 :root {
@@ -18,7 +18,7 @@
   --red: #d9291f;
   --shadow: 0 1px 0 rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.55), 0 40px 80px rgba(0, 0, 0, 0.45);
   --tape: repeating-linear-gradient(135deg, var(--red) 0 12px, var(--ink) 12px 24px);
-  /* camera look: night feeds are desaturated and slightly lifted, like IR */
+  /* camera look: night plates are desaturated and slightly lifted, like IR */
   --feed-filter: grayscale(0.55) contrast(1.05) brightness(0.92);
   --grain-opacity: 0.09;
   --vignette-strength: 0.42;
@@ -92,7 +92,7 @@ li {
 .station {
   position: relative;
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: auto 1fr auto;
   min-height: 100dvh;
   isolation: isolate;
 }
@@ -104,147 +104,285 @@ li {
   }
 }
 
-/* Ticker ------------------------------------------------------------- */
-.ticker {
-  overflow: hidden;
-  border-bottom: 1px solid var(--line);
-  white-space: nowrap;
-}
-
-.ticker-track {
-  display: inline-flex;
-  gap: 0;
-  animation: ticker 48s linear infinite;
-  will-change: transform;
-}
-
-.ticker:hover .ticker-track {
-  animation-play-state: paused;
-}
-
-@keyframes ticker {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-/* Multiview ------------------------------------------------------------ */
-.multiview {
+/* The block ------------------------------------------------------------ */
+/* One picture, sized to fit the row whole on wide screens (container units
+   keep its 3:2 without knowing the row height). Narrow screens pan it. */
+.scene-wrap {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--line);
-  border-block: 1px solid var(--line);
-}
-
-@media (min-width: 1024px) {
-  .multiview {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    min-height: 0;
-  }
-}
-
-.feed {
-  position: relative;
-  display: block;
-  width: 100%;
+  place-items: center;
+  height: 100%;
   overflow: hidden;
-  background: var(--panel);
-  text-align: left;
-  color: var(--ink);
-  aspect-ratio: 4 / 3;
-  cursor: pointer;
+  container-type: size;
 }
 
-@media (min-width: 1024px) {
-  .feed {
-    aspect-ratio: auto;
-    min-height: 0;
+.scene {
+  position: relative;
+  width: min(100cqw, 150cqh);
+  aspect-ratio: 3 / 2;
+}
+
+/* The picture's background is the page colour; the mask hides the seam. */
+.scene-img {
+  object-fit: cover;
+  mask-image: radial-gradient(ellipse 56% 56% at center, #000 82%, transparent 100%);
+  transition: opacity 120ms ease;
+}
+
+@media (max-width: 1023px) {
+  .scene-wrap {
+    display: block;
+    place-items: normal; /* Chromium centres block children too, which hides the left half */
+    height: min(64dvh, 560px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    container-type: normal;
+    scrollbar-width: none;
+  }
+  .scene-wrap::-webkit-scrollbar {
+    display: none;
+  }
+  .scene {
+    width: auto;
     height: 100%;
   }
 }
 
-.feed-img {
-  object-fit: cover;
-  filter: var(--feed-filter);
-  transform: scale(1.02);
-  transition: filter 500ms ease, transform 700ms cubic-bezier(0.2, 0, 0, 1);
-}
-
-.feed:hover .feed-img,
-.feed:focus-visible .feed-img {
-  filter: none;
-  transform: scale(1);
-}
-
-/* Scanlines + vignette make a photo read as a monitor, not a picture. */
-.feed-scan {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image: repeating-linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 0 2px,
-      rgba(0, 0, 0, 0.14) 2px 3px
-    ),
-    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.35) 100%);
-}
-
-.feed-osd {
-  position: absolute;
-  inset: 0;
-  padding: 10px 12px;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  font-size: 11px;
-  line-height: 1.3;
-  letter-spacing: 0.02em;
-  color: #f3f1ec;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8), 0 0 6px rgba(0, 0, 0, 0.6);
-  pointer-events: none;
-}
-
-.feed-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.feed-title {
-  align-self: end;
-  font-family: var(--font-unbounded), system-ui, sans-serif;
-  font-weight: 900;
-  font-size: clamp(28px, 5vw, 56px);
-  line-height: 0.95;
-  letter-spacing: -0.02em;
-  text-transform: lowercase;
-  margin-bottom: 6px;
-  opacity: 0.94;
-}
-
-/* Active frame — a red line resting 6px inside the edge, plus corner ticks */
-.feed-frame {
-  position: absolute;
-  inset: 6px;
-  border: 2px solid var(--red);
+/* No signal: the block drops to static for a moment */
+.scene[data-signal="lost"] .scene-img {
   opacity: 0;
-  transition: opacity 200ms ease;
-  pointer-events: none;
 }
 
-.feed:hover .feed-frame,
-.feed:focus-visible .feed-frame,
-.feed[data-open="true"] .feed-frame {
+.scene-static {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  transition: opacity 120ms ease;
+}
+
+.scene[data-signal="lost"] .scene-static {
+  opacity: 0.5;
+  animation: static 0.3s steps(1) infinite;
+}
+
+@keyframes static {
+  50% {
+    transform: translate(-4%, 3%);
+  }
+}
+
+/* Spots: a red mark with the name of the thing; the button around it is the
+   44px touch target. */
+.spot {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+}
+
+.spot:hover,
+.spot:focus-visible,
+.spot[data-open="true"] {
+  z-index: 3;
+}
+
+.spot-dot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  background: var(--red);
+  outline: 1px solid rgba(0, 0, 0, 0.6);
+  transition: transform 150ms ease;
+}
+
+.spot-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--red);
+  animation: ping 2.4s ease-out infinite;
+}
+
+@keyframes ping {
+  from {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(3.4);
+    opacity: 0;
+  }
+}
+
+.spot:hover .spot-dot,
+.spot[data-open="true"] .spot-dot {
+  transform: scale(1.4);
+}
+
+.spot:active .spot-dot {
+  transform: scale(0.9);
+}
+
+.spot-label {
+  position: absolute;
+  top: calc(50% + 11px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1px 6px;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: var(--ink);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.spot:hover .spot-label,
+.spot:focus-visible .spot-label,
+.spot[data-open="true"] .spot-label {
+  background: var(--red);
+  color: #fff;
+}
+
+/* What the camera at this spot sees. Hover and keyboard only; a tap goes
+   straight into the window. */
+.spot-card {
+  position: absolute;
+  left: 50%;
+  bottom: calc(50% + 14px);
+  width: 224px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 6px);
+  transition: opacity 160ms ease, transform 160ms ease, visibility 0s 160ms;
+  pointer-events: none;
+  text-align: left;
+  color: var(--ink);
+  background: var(--panel);
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow);
+}
+
+.spot[data-below] .spot-card {
+  bottom: auto;
+  top: calc(50% + 34px);
+}
+
+.spot:hover .spot-card,
+.spot:focus-visible .spot-card {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition-delay: 0s;
+}
+
+/* Nothing to preview once the window itself is open, or on touch. */
+.spot[data-open="true"] .spot-card {
+  display: none;
+}
+
+@media (hover: none) {
+  .spot-card {
+    display: none;
+  }
+}
+
+.spot-cam {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--panel-2);
+}
+
+.spot-cam video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.spot-cam video[data-live] {
   opacity: 1;
 }
 
-.feed[data-open="true"] .feed-img {
-  filter: var(--feed-filter) brightness(0.6);
+/* Scanlines + vignette make a frame read as a monitor, not a picture. */
+.scan {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0 2px, rgba(0, 0, 0, 0.14) 2px 3px),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.35) 100%);
+}
+
+.spot-osd {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 8px;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.spot-osd span {
+  white-space: nowrap;
+}
+
+.spot-osd span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink);
+}
+
+/* The current release and the one line of copy sit in the empty corners of
+   the picture on wide screens, above and below it on narrow ones. */
+.era {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 20px 16px 12px;
+}
+
+.era-title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: clamp(36px, 4.4vw, 64px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+}
+
+.lede {
+  padding: 12px 16px 20px;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+@media (min-width: 1024px) {
+  .era,
+  .lede {
+    position: absolute;
+    z-index: 2;
+    padding: 0;
+  }
+  .era {
+    left: 20px;
+    bottom: 20px;
+  }
+  .lede {
+    right: 20px;
+    top: 20px;
+    text-align: right;
+  }
 }
 
 .rec {
@@ -258,73 +396,6 @@ li {
 @keyframes rec {
   50% {
     opacity: 0.15;
-  }
-}
-
-/* No signal: the feed drops to static for a moment */
-.feed[data-signal="lost"] .feed-img,
-.feed[data-signal="lost"] .feed-title {
-  opacity: 0;
-}
-
-.feed-static {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  transition: opacity 120ms ease;
-}
-
-.feed[data-signal="lost"] .feed-static {
-  opacity: 0.9;
-  animation: static 0.3s steps(1) infinite;
-}
-
-@keyframes static {
-  50% {
-    transform: translate(-4%, 3%);
-  }
-}
-
-/* Live loop on hover: the clip sits over the photo and fades in once it is
-   actually playing. Feeds without a clip scrub the tape instead. */
-.feed-video {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 300ms ease;
-  pointer-events: none;
-}
-
-.feed[data-live="true"] .feed-video {
-  opacity: 1;
-}
-
-/* Signature — the one hand-made thing on the page, sitting on the monitors
-   like a station ident. Difference blend keeps it readable on any feed. */
-.signature {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  z-index: 2;
-  color: #fff;
-  mix-blend-mode: difference;
-  font-family: var(--font-rock-salt), cursive;
-  font-size: clamp(40px, 6.5vw, 110px);
-  line-height: 1;
-  user-select: none;
-}
-
-@media (max-width: 1023px) {
-  .signature {
-    display: none;
   }
 }
 
@@ -680,7 +751,7 @@ html[data-xray] .film {
 }
 
 /* ------------------------------------------------------------------------
- * Day / night are two sites on one station. Both are in the DOM; the theme
+ * Day / night: both pictures of the block are in the DOM; the theme
  * attribute (set before paint) decides which one shows, so neither flashes.
  * ---------------------------------------------------------------------- */
 html[data-theme="day"] .night-only {
@@ -689,129 +760,6 @@ html[data-theme="day"] .night-only {
 
 html:not([data-theme="day"]) .day-only {
   display: none;
-}
-
-html[data-theme="day"] .station {
-  grid-template-rows: auto 1fr auto;
-}
-
-/* The desk sits in the same row as the multiview, so the window layer
-   (a sibling in that row) has the full height under both themes. */
-.desk {
-  position: relative;
-}
-
-.dayhead,
-.dayfoot {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 10px 16px;
-  font-size: 12px;
-  color: var(--dim);
-}
-
-.dayhead {
-  padding-top: max(10px, env(safe-area-inset-top));
-}
-
-.dayfoot {
-  padding-bottom: max(12px, env(safe-area-inset-bottom));
-}
-
-/* The desk: folders scattered like a real desktop on wide screens, a plain
-   grid on narrow ones. */
-.desk {
-  position: relative;
-  min-height: 70dvh;
-}
-
-.folder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  width: 112px;
-  padding: 10px 6px;
-  color: var(--ink);
-  font-size: 12px;
-  text-align: center;
-  transition: background-color 150ms ease, color 150ms ease, transform 150ms ease;
-}
-
-.folder:hover,
-.folder:focus-visible,
-.folder[data-open="true"] {
-  background: var(--ink);
-  color: var(--bg);
-}
-
-.folder:hover .folder-icon path,
-.folder[data-open="true"] .folder-icon path {
-  stroke: var(--bg);
-}
-
-.folder:active {
-  transform: scale(0.96);
-}
-
-.folder-icon {
-  width: 56px;
-  height: auto;
-  display: block;
-}
-
-.folder-label {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@media (min-width: 1024px) {
-  .desk {
-    min-height: 0;
-    height: 100%;
-  }
-  .folder {
-    position: absolute;
-    left: var(--fx);
-    top: var(--fy);
-    transform: translate(-50%, 0);
-  }
-  .folder:active {
-    transform: translate(-50%, 0) scale(0.96);
-  }
-}
-
-@media (max-width: 1023px) {
-  .desk {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    padding: 24px 16px;
-    justify-items: center;
-    align-content: start;
-  }
-}
-
-/* Camera offline: the test card flickers behind the OSD */
-.feed[data-offline] .feed-img {
-  filter: contrast(1.05) saturate(0.85);
-}
-
-.feed[data-offline] .feed-static {
-  opacity: 0.14;
-  animation: static 0.3s steps(1) infinite;
-}
-
-.feed-video {
-  filter: var(--feed-filter);
-}
-
-.feed:hover .feed-video,
-.feed:focus-visible .feed-video {
-  filter: none;
 }
 
 /* Note ------------------------------------------------------------------- */
@@ -1011,67 +959,37 @@ html[data-theme="day"] .station {
   }
 }
 
-/* Crosshair cursor (desktop only — toggled from JS) ------------------------ */
-.custom-cursor,
-.custom-cursor * {
-  cursor: none !important;
+/* Cursor: a Counter-Strike crosshair, pale; red with a centre dot over
+   anything clickable. Native CSS cursors,
+   so nothing lags and touch never sees them. Public pages only: they are the
+   ones that mount the film grain. */
+html:has(.film) {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cg fill='%23f3f1ec' stroke='%230c0c0e' stroke-width='1'%3E%3Crect x='11' y='2.5' width='2' height='6'/%3E%3Crect x='11' y='15.5' width='2' height='6'/%3E%3Crect x='2.5' y='11' width='6' height='2'/%3E%3Crect x='15.5' y='11' width='6' height='2'/%3E%3C/g%3E%3C/svg%3E") 12 12, auto;
 }
 
-.custom-cursor .reticle {
-  display: block;
-}
-
-.reticle {
-  transition: opacity 0.2s ease;
-  will-change: transform;
-}
-
-.reticle-box {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 28px;
-  height: 28px;
-  margin: -14px 0 0 -14px;
-  border: 1px solid var(--red);
-  opacity: 0.9;
-  transition: transform 0.18s ease, border-color 0.18s ease;
-}
-
-.reticle-dot {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 3px;
-  height: 3px;
-  margin: -1.5px 0 0 -1.5px;
-  background: var(--red);
-}
-
-.reticle[data-active="true"] .reticle-box {
-  transform: scale(1.5);
+html:has(.film) :is(a, button, [role="button"]) {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cg fill='%23d9291f' stroke='%230c0c0e' stroke-width='1'%3E%3Crect x='11' y='2.5' width='2' height='6'/%3E%3Crect x='11' y='15.5' width='2' height='6'/%3E%3Crect x='2.5' y='11' width='6' height='2'/%3E%3Crect x='15.5' y='11' width='6' height='2'/%3E%3Crect x='11' y='11' width='2' height='2'/%3E%3C/g%3E%3C/svg%3E") 12 12, pointer;
 }
 
 /* ------------------------------------------------------------------------
  * Reduced motion: everything decorative stops; the static cue stays.
  * ---------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
-  .ticker-track,
+  .spot-dot::after,
   .rec,
   .radar-sweep,
   .film-grain,
   .film-vignette,
   .rise,
   .boot-line,
-  .feed[data-signal="lost"] .feed-static,
-  .feed[data-offline] .feed-static {
+  .scene[data-signal="lost"] .scene-static {
     animation: none;
   }
   .window,
   .window[data-closing="true"] {
     animation-duration: 1ms;
   }
-  .feed-img,
+  .spot-card,
   .plate img {
     transition: none;
   }
@@ -1090,8 +1008,7 @@ html[data-theme="day"] .station {
   border-color: var(--line);
 }
 
-/* Mobile: the dock is one scrollable row that stays within reach while the
-   feeds scroll past; an open sheet locks the page behind it. */
+/* Mobile: the dock is one scrollable row that stays within reach; an open sheet locks the page behind it. */
 @media (max-width: 1023px) {
   .dock {
     position: sticky;

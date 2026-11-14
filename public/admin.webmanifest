@@ -1,7 +1,7 @@
 {
   "id": "/admin",
-  "name": "Srrlovych Admin",
-  "short_name": "Srrlovych Admin",
+  "name": "SRRLOVYCH Admin",
+  "short_name": "SRRLOVYCH Admin",
   "start_url": "/admin",
   "scope": "/admin",
   "display": "standalone",

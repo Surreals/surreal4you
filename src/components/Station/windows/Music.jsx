@@ -3,7 +3,7 @@ import SpotifyEmbed from "../../SpotifyEmbed";
 
 const STREAMING = ["SPOTIFY", "APPLE", "YOUTUBE"];
 
-// cam-01: the album. Cover, the title as a wall of type, and the player.
+// The stands: the album. Cover, the title as a wall of type, and the player.
 const Music = ({ album, links }) => {
   const streaming = links.main.filter((l) => STREAMING.includes(l.name.toUpperCase()));
   return (

@@ -1,15 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AMBIENT_LOG, FEEDS, HQ } from "../../lib/feeds";
+import { AMBIENT_LOG, HQ, SPOTS } from "../../lib/feeds";
 import { useClock } from "./useClock";
-import Ticker from "./Ticker";
 import StatusBar from "./StatusBar";
-import Feed from "./Feed";
+import Scene from "./Scene";
 import Window from "./Window";
 import Dock from "./Dock";
 import Boot from "./Boot";
-import { DayHead, Desk, DayFoot } from "./DayDesk";
 import Music from "./windows/Music";
 import Merch from "./windows/Merch";
 import Archive from "./windows/Archive";
@@ -20,32 +18,35 @@ import Note from "./windows/Note";
 import Terminal from "./windows/Terminal";
 
 const WINDOWS = {
-  music: { title: "cam-01 · music", width: 600 },
-  merch: { title: "cam-02 · merch", width: 760 },
-  archive: { title: "cam-03 · archive", width: 820 },
-  subject: { title: "cam-04 · subject", width: 560 },
-  note: { title: "note", width: 520 },
-  log: { title: "log", width: 460 },
-  map: { title: "map", width: 480 },
+  music: { title: "stands · music", width: 600 },
+  merch: { title: "kiosk · merch", width: 760 },
+  archive: { title: "garage · archive", width: 820 },
+  subject: { title: "lamp · subject", width: 560 },
+  note: { title: "board · note", width: 520 },
+  log: { title: "booth · log", width: 460 },
+  map: { title: "mast · map", width: 480 },
   terminal: { title: "terminal", width: 640 },
 };
 
 const KEYS = {
-  l: "log",
-  m: "map",
-  n: "note",
   "`": "terminal",
   "~": "terminal",
-  ...Object.fromEntries(FEEDS.map((f) => [f.key, f.id])),
+  ...Object.fromEntries(SPOTS.map((s) => [s.key, s.id])),
 };
 const SECRET = "srrl";
 const NEW_FOR_DAYS = 7;
 
 let seq = 0;
 
-// The station: four feeds, a stack of windows, a clock and a log that writes
-// itself. All interaction state lives here; the pieces stay dumb. The day
-// desk is the same station under daylight: cameras off, folders on.
+const Play = () => (
+  <svg viewBox="0 0 16 16" className="size-3.5" fill="currentColor" aria-hidden="true">
+    <path d="M5.5 4 12.5 8 5.5 12Z" />
+  </svg>
+);
+
+// The station: one block, a stack of windows, a clock and a log that writes
+// itself. All interaction state lives here; the pieces stay dumb. Day and
+// night are the same block under different light.
 const Station = ({ album, links, settings, products, note, attribution }) => {
   const clock = useClock(HQ.tz);
   const [open, setOpen] = useState([]); // [{ id, x, y, closing }] — last is on top
@@ -85,9 +86,9 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
   // Boot entries, then ambient lines every 18–35s. Approved visitor lines
   // (fetched once) take every other slot while there are any left.
   useEffect(() => {
-    log("station online");
+    log("the block is lit");
     const t = setTimeout(
-      () => log(settings.showStore ? "4 cameras online" : "3 cameras online · cam-02 offline"),
+      () => log(settings.showStore ? "4 cameras online" : "3 cameras online · cam-02 no signal"),
       900,
     );
     fetch("/api/guestbook")
@@ -130,7 +131,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
       try {
         localStorage.setItem("srrl-theme", next);
       } catch {}
-      log(next === "day" ? "day mode · cameras asleep" : "night mode · cameras on");
+      log(next === "day" ? "daylight · everything looks normal" : "night · the lamp points up");
       setTheme(next);
     },
     [log],
@@ -188,7 +189,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
       }
       openerRef.current = feedRefs.current[id] ?? null;
       setOpen((list) => [...list, { id, x, y }]);
-      log(`opened: ${spec.title}`);
+      log(`entered: ${spec.title}`);
     },
     [open, closeWindow, focusWindow, log],
   );
@@ -246,7 +247,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
     [log],
   );
 
-  // Keyboard: digits open feeds, letters the tools, t the theme, Esc closes
+  // Keyboard: digits open the cameras, letters the tools, t the theme, Esc closes
   // the top window. Typing the artist's tag toggles x-ray.
   useEffect(() => {
     const onKey = (e) => {
@@ -280,20 +281,10 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
   }, [openWindow, closeTop, toggleTheme, toggleXray]);
 
   const openIds = open.map((w) => w.id);
-  const isDay = theme === "day";
   const noteIsNew = (() => {
     const d = Date.parse(note?.date ?? "");
     return Number.isFinite(d) && Date.now() - d < NEW_FOR_DAYS * 86400000;
   })();
-  const ticker = [
-    `${album.title} — ${(album.status ?? "").toLowerCase()}`,
-    "srrlovych",
-    HQ.city,
-    `${HQ.lat} ${HQ.lon}`,
-    settings.showStore ? "4 cameras online" : "3 cameras online · cam-02 offline",
-    "recording",
-  ];
-
   const terminalApi = {
     open: openWindow,
     close: (id) => (id ? closeWindow(id) : closeTop()),
@@ -336,51 +327,45 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
 
   return (
     <div className="station">
-      <Ticker items={ticker} className="night-only" />
       <StatusBar
         clock={clock}
         signal={signal}
+        theme={theme}
         open={openIds}
         onRec={dropSignal}
         onToggleTheme={toggleTheme}
         onOpen={openWindow}
         noteIsNew={noteIsNew}
       />
-      <DayHead clock={clock} onToggleTheme={toggleTheme} />
 
-      <div className="relative min-h-0">
-        <h1 className="sr-only">Srrlovych — hip-hop artist from Uzhhorod</h1>
-        <Desk note={note} open={openIds} onOpen={openWindow} />
-        <div className="night-only lg:h-full">
-          <p className="font-sign py-5 text-center text-4xl text-ink lg:hidden" aria-hidden="true">
-            Srrlovych
-          </p>
-          <div className="multiview rise lg:h-full">
-            {FEEDS.map((f, i) => {
-              const offline = f.id === "merch" && !settings.showStore;
-              return (
-                <Feed
-                  key={f.id}
-                  feed={offline ? f : { ...f, offline: undefined }}
-                  title={f.title ?? album.title}
-                  clock={clock}
-                  signal={signal}
-                  open={openIds.includes(f.id)}
-                  active={!isDay}
-                  onOpen={openWindow}
-                  priority={i < 2}
-                  innerRef={(el) => {
-                    feedRefs.current[f.id] = el;
-                    if (el) el.dataset.win = f.id;
-                  }}
-                />
-              );
-            })}
-            <span className="signature" aria-hidden="true">
-              Srrlovych
-            </span>
-          </div>
+      <div className="relative min-h-0 min-w-0">
+        <h1 className="sr-only">SRRLOVYCH — hip-hop from Uzhhorod</h1>
+        <div className="era">
+          <p className="era-title">{album.title}</p>
+          <button
+            type="button"
+            className="ctl border-ink"
+            onClick={() => openWindow("music")}
+            aria-pressed={openIds.includes("music")}
+          >
+            <Play />
+            {(album.status ?? "").toLowerCase()} · listen
+          </button>
         </div>
+        <Scene
+          album={album}
+          note={note}
+          open={openIds}
+          signal={signal}
+          merchOffline={!settings.showStore}
+          onOpen={openWindow}
+          spotRefs={feedRefs}
+        />
+        <p className="lede">
+          seven things stand on this block.
+          <br />
+          one of them is watching back.
+        </p>
 
         {/* Window layer: ignores the pointer; windows take it back. */}
         <div ref={layerRef} className="pointer-events-none absolute inset-0 z-30 lg:overflow-hidden">
@@ -404,15 +389,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
         </div>
       </div>
 
-      <Dock
-        album={album}
-        links={links}
-        onOpen={openWindow}
-        musicOpen={openIds.includes("music")}
-        attribution={attribution}
-        className="night-only"
-      />
-      <DayFoot links={links} attribution={attribution} />
+      <Dock links={links} attribution={attribution} />
       <Boot merchOffline={!settings.showStore} />
     </div>
   );

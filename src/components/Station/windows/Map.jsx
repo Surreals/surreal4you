@@ -1,6 +1,6 @@
 import { HQ } from "../../../lib/feeds";
 
-// Where the station is. A radar rather than a map: the point is the sweep.
+// The mast: where the block is. A radar rather than a map: the point is the sweep.
 const Map = ({ clock }) => {
   return (
     <div className="grid gap-5 p-4 sm:grid-cols-[200px_1fr] sm:p-5">

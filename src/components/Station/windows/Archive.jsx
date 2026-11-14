@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { PLATES } from "../../../lib/feeds";
 
-// cam-03: evidence plates. Click a plate to pull it up; the grid stays behind.
+// The garage: evidence plates. Click a plate to pull it up; the grid stays behind.
 const Archive = () => {
   const [active, setActive] = useState(null);
   const plate = active === null ? null : PLATES[active];

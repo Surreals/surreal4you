@@ -1,16 +1,16 @@
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Unbounded, JetBrains_Mono, Rock_Salt } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import ServiceWorker from "@/components/ServiceWorker";
 import { SITE_URL } from "@/lib/jsonLd";
 
 // SRRL station type system — see DESIGN.md. Both working faces carry Cyrillic
 // so «гегемонія» and the log never fall back to the system font.
-const unbounded = Unbounded({
+const display = Inter_Tight({
   subsets: ["latin", "cyrillic"],
   weight: ["500", "700", "900"],
-  variable: "--font-unbounded",
+  variable: "--font-display",
   display: "swap",
 });
 const jetbrains = JetBrains_Mono({
@@ -19,23 +19,18 @@ const jetbrains = JetBrains_Mono({
   variable: "--font-jetbrains",
   display: "swap",
 });
-const rockSalt = Rock_Salt({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-rock-salt",
-  display: "swap",
-});
 
 const DESCRIPTION =
-  "Srrlovych makes hip-hop in Uzhhorod, Ukraine. HEHEMONIA is out on Spotify, Apple Music and YouTube. The site is a night-watch station with a log you can write into.";
+  "SRRLOVYCH. hip-hop from uzhhorod, ukraine. hehemonia is out on spotify, apple music and youtube. one block of the town is under observation, and the log takes your line.";
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "Srrlovych - Hip-Hop Artist | Official Website",
+  title: "SRRLOVYCH · hip-hop from uzhhorod",
   description: DESCRIPTION,
-  applicationName: "Srrlovych",
-  authors: [{ name: "Srrlovych" }],
+  applicationName: "SRRLOVYCH",
+  authors: [{ name: "SRRLOVYCH" }],
   keywords: [
+    "SRRLOVYCH",
     "Srrlovych",
     "Srrl",
     "surrealovych",
@@ -69,24 +64,24 @@ export const metadata = {
     type: "profile",
     username: "surrealovych",
     url: SITE_URL,
-    siteName: "Srrlovych",
-    title: "Srrlovych - Hip-Hop Artist | Official Website",
+    siteName: "SRRLOVYCH",
+    title: "SRRLOVYCH · hip-hop from uzhhorod",
     description: DESCRIPTION,
     locale: "en_US",
-    images: [{ url: "/og-image.png", type: "image/png", alt: "Srrlovych - Hip-Hop Artist" }],
+    images: [{ url: "/og-image.png", type: "image/png", alt: "SRRLOVYCH" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Srrlovych - Hip-Hop Artist | Official Website",
+    title: "SRRLOVYCH · hip-hop from uzhhorod",
     description: DESCRIPTION,
-    images: [{ url: "/og-image.png", alt: "Srrlovych - Hip-Hop Artist" }],
+    images: [{ url: "/og-image.png", alt: "SRRLOVYCH" }],
   },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
   },
   manifest: "/manifest.webmanifest",
-  appleWebApp: { title: "Srrlovych", statusBarStyle: "black" },
+  appleWebApp: { title: "SRRLOVYCH", statusBarStyle: "black" },
   other: {
     "geo.region": "UA-21",
     "geo.placename": "Uzhhorod, Ukraine",
@@ -114,7 +109,7 @@ const RootLayout = ({ children }) => {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${unbounded.variable} ${jetbrains.variable} ${rockSalt.variable}`}
+      className={`${display.variable} ${jetbrains.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

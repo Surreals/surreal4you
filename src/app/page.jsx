@@ -1,4 +1,4 @@
-import { Cursor, FilmGrain, Station, TrackingCleaner } from "../components";
+import { FilmGrain, Station, TrackingCleaner } from "../components";
 import { getContent } from "../lib/content";
 import { isStoreLink } from "../lib/store";
 import { artistJsonLd } from "../lib/jsonLd";
@@ -33,7 +33,6 @@ const Home = async () => {
           </a>
         }
       />
-      <Cursor />
       <FilmGrain />
       <TrackingCleaner />
     </main>

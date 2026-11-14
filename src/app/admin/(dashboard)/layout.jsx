@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { auth, isAdminEmail, signOut } from "@/auth";
 
 export const metadata = {
-  title: "Admin — Srrlovych",
+  title: "Admin — SRRLOVYCH",
   robots: { index: false, follow: false },
 };
 
@@ -35,7 +35,7 @@ const DashboardLayout = async ({ children }) => {
                 title="Open site in a new tab"
                 className="hover:underline"
               >
-                Srrlovych
+                SRRLOVYCH
               </a>{" "}
               · Admin
             </span>

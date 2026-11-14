@@ -1,4 +1,4 @@
-// The artist's note. A text file left on the desk: title, date, paragraphs.
+// The artist's note. The sheet pinned to the board: title, date, paragraphs.
 const Note = ({ note }) => {
   const paragraphs = (note.body ?? "")
     .split(/\n\s*\n/)
@@ -22,7 +22,7 @@ const Note = ({ note }) => {
           </p>
         ))
       ) : (
-        <p className="note-p text-dim">nothing written yet.</p>
+        <p className="note-p text-dim">the sheet is blank.</p>
       )}
       <p className="mt-6 text-dim">— srrl</p>
     </div>

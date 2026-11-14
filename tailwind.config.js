@@ -17,9 +17,8 @@ export default {
         red: "var(--red)",
       },
       fontFamily: {
-        display: ["var(--font-unbounded)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "system-ui", "sans-serif"],
         mono: ["var(--font-jetbrains)", "ui-monospace", "monospace"],
-        sign: ["var(--font-rock-salt)", "cursive"],
       },
     },
   },

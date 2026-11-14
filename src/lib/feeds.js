@@ -1,60 +1,66 @@
-// The four camera feeds of the station. Each one is a door into a window.
-// `scene` is the OSD location tag; `title` is the big word on the tile
-// (music takes the album title from content instead); `clip` is a few
-// seconds of webm that loops on the tile: CHILL for cams 01–03, Petlura for cam-04.
-// `offline` is what the tile shows while that section is switched off.
-export const FEEDS = [
+// The block: one generated scene (public/scene) with seven things standing on
+// it. Each spot is a door into a window. `x`/`y` are the spot centre in
+// percent of the scene image; `place` is the word printed next to it.
+// Four spots carry a camera: `scene` is its OSD tag, `clip` a few seconds of
+// webm that plays in the hover card (CHILL for cams 01–03, Petlura for
+// cam-04). `offline` is what a camera shows while its section is switched off.
+export const SPOTS = [
   {
     id: "music",
-    cam: "cam-01",
+    place: "stands",
     label: "music",
+    x: 30,
+    y: 30,
+    key: "1",
+    cam: "cam-01",
     scene: "stands · stadium",
-    title: null,
     image: "/photos/cam-stands.webp",
     clip: "/photos/clip-stands.webm",
-    alt: "Srrlovych in a black tank top on grey stadium seats, one yellow seat beside him",
-    key: "1",
   },
   {
     id: "merch",
-    cam: "cam-02",
+    place: "kiosk",
     label: "merch",
+    x: 62,
+    y: 24,
+    key: "2",
+    cam: "cam-02",
     scene: "court · net",
-    title: "merch",
     image: "/photos/cam-net.webp",
     clip: "/photos/clip-net.webm",
-    alt: "Srrlovych lying by the net of a dark indoor tennis court, tennis balls around him",
-    key: "2",
-    offline: {
-      scene: "offline",
-      image: "/photos/testcard.svg",
-      clip: null,
-      alt: "Test card: no signal",
-    },
+    offline: { scene: "no signal", image: "/photos/testcard.svg", clip: null },
   },
   {
     id: "archive",
-    cam: "cam-03",
+    place: "garage",
     label: "archive",
+    x: 78,
+    y: 48,
+    key: "3",
+    cam: "cam-03",
     scene: "court · indoor",
-    title: "archive",
     image: "/photos/cam-court.webp",
     clip: "/photos/clip-court.webm",
-    alt: "An indoor tennis court under pink light, two figures at the net",
-    key: "3",
   },
   {
     id: "subject",
-    cam: "cam-04",
+    place: "lamp",
     label: "subject",
+    x: 33,
+    y: 66,
+    key: "4",
+    cam: "cam-04",
     scene: "close-up",
-    title: "subject",
     image: "/photos/cam-portrait.webp",
     clip: "/photos/clip-portrait.webm",
-    alt: "Close-up of Srrlovych in sunglasses and a pearl necklace, hills behind",
-    key: "4",
   },
+  { id: "log", place: "booth", label: "log", x: 50, y: 48, key: "l" },
+  { id: "note", place: "board", label: "note", x: 62, y: 72, key: "n" },
+  { id: "map", place: "mast", label: "map", x: 16, y: 46, key: "m" },
 ];
+
+// The four cameras, for the terminal.
+export const FEEDS = SPOTS.filter((s) => s.cam);
 
 // Plates in the archive window. Tags read like evidence labels: sub = the
 // subject, obj = an object, rel = a release.
@@ -85,53 +91,42 @@ export const PLATES = [
 export const HQ = { city: "uzhhorod", lat: "48.62n", lon: "22.29e", tz: "Europe/Kyiv" };
 
 // Lines the log writes on its own between real events. Lowercase, short,
-// slightly off — the station is watching a world that is not quite right.
+// slightly off: the block is watched, and it is not quite right.
 export const AMBIENT_LOG = [
-  "motion detected · cam-03",
+  "motion · garage",
   "w211 left the lot",
+  "w211 is back. nobody drove it",
   "signal stable",
   "frame dropped · recovered",
   "someone is watching",
   "hehemonia · replaying",
   "fog over the uzh river",
   "tape rewound",
-  "subject in frame · cam-01",
+  "subject under the lamp",
   "subject left the frame",
-  "street lamp flickered · cam-03",
+  "the lamp points up again",
   "caution tape still tight",
   "nothing happened",
   "recording continues",
-  "operator absent",
+  "booth empty · monitors on",
   "cat crossed cam-02",
-  "pool still empty",
-  "plate blurred",
-  "ball rolled off the court · cam-03",
+  "shutter moved · kiosk",
+  "paper on the board changed",
+  "one seat is yellow. nobody chose it",
+  "ball rolled off the block",
+  "beacon blinked twice",
   "clock check · ok",
   "korzo empty · 03:12",
   "castle hill · fog",
-  "linden alley · no motion",
   "bridge lights on",
   "someone hummed the hook · cam-04",
 ];
 
 export const BOOT_LINES = [
-  "srrl station",
+  "SRRLOVYCH",
   "cam-01 ok",
   "cam-02 ok",
   "cam-03 ok",
   "cam-04 ok",
-  "uzh · 48.62n 22.29e",
-];
-
-// Folders on the day desk, in reading order. Positions are percentages of
-// the desk; they only apply on wide screens.
-export const DESK = [
-  { id: "music", label: "music", x: 10, y: 10 },
-  { id: "merch", label: "merch", x: 72, y: 8 },
-  { id: "note", label: null, x: 46, y: 30, accent: true }, // label = note title
-  { id: "archive", label: "archive", x: 24, y: 48 },
-  { id: "subject", label: "subject", x: 84, y: 40 },
-  { id: "log", label: "log", x: 8, y: 68 },
-  { id: "map", label: "map", x: 60, y: 62 },
-  { id: "terminal", label: "terminal", x: 88, y: 70 },
+  "one block · uzh · 48.62n 22.29e",
 ];

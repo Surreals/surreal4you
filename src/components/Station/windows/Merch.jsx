@@ -1,16 +1,15 @@
 import Link from "next/link";
 import Product from "../../Product";
 
-// cam-02: the catalog. While merch is unpublished the window keeps the secret
+// The kiosk: the catalog. While merch is unpublished the window keeps the secret
 // — the same rule that strips /store from the landing page links.
 const Merch = ({ products, showStore }) => {
   if (!showStore) {
     return (
       <div className="p-5">
-        <p className="font-display text-2xl font-black leading-tight">merch is coming</p>
+        <p className="font-display text-2xl font-black leading-tight">the kiosk is shut</p>
         <p className="mt-2 max-w-[40ch] text-dim">
-          cam-02 points at the warehouse door. the moment a box comes through it, the first print shows up
-          here.
+          something is being printed behind the shutter. when it lifts, the first piece shows up here.
         </p>
       </div>
     );

@@ -4,7 +4,7 @@ import { HQ } from "../../../lib/feeds";
 
 const BIRTH = "2000-10-14";
 
-// cam-04: the dossier. Who the station is watching.
+// The lamp: the dossier. Who the block is watching.
 const Subject = ({ album, links }) => {
   const age = calculateAge(BIRTH);
   const channels = [...links.main, ...links.side].filter((l) => !l.url.startsWith("/"));
@@ -12,12 +12,12 @@ const Subject = ({ album, links }) => {
   return (
     <div className="grid gap-5 p-4 sm:grid-cols-[180px_1fr] sm:p-5">
       <div className="plate aspect-[3/4]">
-        <Image src="/photos/cam-portrait.webp" alt="Srrlovych" fill sizes="180px" className="object-cover" />
+        <Image src="/photos/cam-portrait.webp" alt="SRRLOVYCH" fill sizes="180px" className="object-cover" />
         <span className="plate-tag">sub-01</span>
       </div>
       <dl className="dossier content-start">
         <dt>name</dt>
-        <dd className="font-display text-base font-bold">Srrlovych</dd>
+        <dd className="font-display text-base font-bold">SRRLOVYCH</dd>
         <dt>aka</dt>
         <dd>srrl · surrealovych</dd>
         <dt>age</dt>
@@ -34,6 +34,8 @@ const Subject = ({ album, links }) => {
         </dd>
         <dt>status</dt>
         <dd>under observation</dd>
+        <dt>last seen</dt>
+        <dd>under the lamp</dd>
         <dt>channels</dt>
         <dd className="-ml-2 flex flex-wrap">
           {channels.map((l) => (

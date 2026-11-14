@@ -45,7 +45,7 @@ const Log = ({ entries, onSend }) => {
             setValue(e.target.value);
             if (state.kind !== "idle") setState({ kind: "idle" });
           }}
-          placeholder="leave a line in the log"
+          placeholder="leave a line. the booth reads everything"
           aria-label="leave a line in the log"
           autoComplete="off"
         />

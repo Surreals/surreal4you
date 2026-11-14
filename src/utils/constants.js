@@ -37,15 +37,15 @@ export const album = {
     status: 'OUT now',
 }
 
-// The artist's note — a folder on the desk, a window on the station. Editable
+// The artist's note: the sheet pinned to the board on the block. Editable
 // from /admin/note. Plain text, blank line = new paragraph.
 export const note = {
-    title: 'nu thoughts',
+    title: 'pinned',
     body: [
-        'the station is on. four cameras pointed at one town, and the album plays in every frame.',
+        'one block. four cameras. the album plays in every frame.',
         '',
         'hehemonia is out. put it on loud; the uzh river has heard worse.',
-        'more when the fog over it lifts.',
+        'more when the fog lifts.',
     ].join(String.fromCharCode(10)),
     date: '2026-10-26',
 }
