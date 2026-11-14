@@ -3,7 +3,7 @@
 export const metadata = {
   manifest: "/admin.webmanifest",
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [{ url: "/icon.png", type: "image/png", sizes: "32x32" }],
     apple: [{ url: "/icons/admin-apple-touch-icon.png", sizes: "180x180" }],
   },
   appleWebApp: { title: "SRRLOVYCH Admin", statusBarStyle: "default" },

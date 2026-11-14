@@ -37,7 +37,7 @@ export function artistJsonLd(links) {
     alternateName: ["Srrlovych", "Srrl", "surrealovych"],
     description: "Hip-hop artist from Uzhhorod, Ukraine. Album: HEHEMONIA.",
     url: `${SITE_URL}/`,
-    image: `${SITE_URL}/og-image.png`,
+    image: `${SITE_URL}/og-image.jpg`,
     genre: ["Hip-Hop", "Rap"],
     foundingLocation: { "@type": "City", name: "Uzhhorod", addressCountry: "UA" },
     sameAs: sameAsFromLinks(links),

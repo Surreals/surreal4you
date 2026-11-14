@@ -68,16 +68,19 @@ export const metadata = {
     title: "SRRLOVYCH · hip-hop from uzhhorod",
     description: DESCRIPTION,
     locale: "en_US",
-    images: [{ url: "/og-image.png", type: "image/png", alt: "SRRLOVYCH" }],
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630, type: "image/jpeg", alt: "SRRLOVYCH" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "SRRLOVYCH · hip-hop from uzhhorod",
     description: DESCRIPTION,
-    images: [{ url: "/og-image.png", alt: "SRRLOVYCH" }],
+    images: [{ url: "/og-image.jpg", alt: "SRRLOVYCH" }],
   },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+    ],
     apple: [{ url: "/icons/apple-touch-icon.png", sizes: "180x180" }],
   },
   manifest: "/manifest.webmanifest",

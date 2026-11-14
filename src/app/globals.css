@@ -114,11 +114,14 @@ li {
   height: 100%;
   overflow: hidden;
   container-type: size;
+  /* fixed tracks: an auto track would grow with the oversized picture and pin it to the top */
+  grid-template: 100% / 100%;
 }
 
 .scene {
   position: relative;
-  width: min(100cqw, 150cqh);
+  /* 1.12: the picture has an empty margin around the block; crop most of it */
+  width: calc(min(100cqw, 150cqh) * 1.12);
   aspect-ratio: 3 / 2;
 }
 

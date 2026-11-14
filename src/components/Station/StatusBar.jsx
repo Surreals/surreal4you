@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { HQ } from "../../lib/feeds";
 
 const Tool = ({ id, label, open, onOpen, badge }) => (
@@ -13,12 +14,15 @@ const Tool = ({ id, label, open, onOpen, badge }) => (
   </button>
 );
 
-// The one line above the block: the name, rec, Uzhhorod time and the tools.
+// The one line above the block: the mask and the name, rec, Uzhhorod time and the tools.
 const StatusBar = ({ clock, signal, theme, onRec, onToggleTheme, onOpen, open, noteIsNew }) => {
   const next = theme === "day" ? "night" : "day";
   return (
     <div className="status">
-      <span className="font-display text-base font-black leading-none tracking-tight text-ink">SRRLOVYCH</span>
+      <span className="flex items-center gap-2 font-display text-base font-black leading-none tracking-tight text-ink">
+        <Image src="/brand/logo-64.png" alt="" width={22} height={22} />
+        SRRLOVYCH
+      </span>
       <button
         type="button"
         onClick={onRec}
