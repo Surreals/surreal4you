@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 const MAX = 80;
 
@@ -10,6 +10,22 @@ const MAX = 80;
 const Log = ({ entries, onSend }) => {
   const [value, setValue] = useState("");
   const [state, setState] = useState({ kind: "idle" });
+  const listRef = useRef(null);
+  const topId = entries[0]?.id;
+  const seen = useRef(topId);
+
+  // A new line pushes the list down one row and fades in, instead of the
+  // whole list jumping. Not on open: the window is already arriving.
+  useLayoutEffect(() => {
+    if (seen.current === topId) return;
+    seen.current = topId;
+    const ol = listRef.current;
+    const li = ol?.firstElementChild;
+    if (!li || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timing = { duration: 250, easing: "cubic-bezier(0.23, 1, 0.32, 1)" }; // --ease-out
+    ol.animate([{ transform: `translateY(-${li.offsetHeight}px)` }, { transform: "none" }], timing);
+    li.animate([{ opacity: 0 }, { opacity: 1 }], timing);
+  }, [topId]);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -28,7 +44,7 @@ const Log = ({ entries, onSend }) => {
   return (
     <div className="flex flex-col">
       <div className="p-4 sm:p-5">
-        <ol className="log" aria-live="polite">
+        <ol ref={listRef} className="log" aria-live="polite">
           {entries.map((e) => (
             <li key={e.id}>
               <time className="tnum">{e.t}</time>

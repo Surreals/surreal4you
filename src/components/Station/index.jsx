@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { AMBIENT_LOG, HQ, SPOTS } from "../../lib/feeds";
 import { useClock } from "./useClock";
 import StatusBar from "./StatusBar";
@@ -35,6 +36,7 @@ const KEYS = {
 };
 const SECRET = "srrl";
 const NEW_FOR_DAYS = 7;
+const CLOSE_MS = 320; // outlasts the longest way out (the 300ms sheet) in globals.css
 
 let seq = 0;
 
@@ -58,6 +60,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
   const layerRef = useRef(null);
   const typed = useRef("");
   const guests = useRef([]);
+  const closeTimers = useRef({});
   const openRef = useRef(open);
   openRef.current = open;
 
@@ -125,21 +128,36 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
     setTheme(document.documentElement.dataset.theme === "day" ? "day" : "night");
   }, []);
 
+  // The button crossfades the whole frame (a hard jump between dark and light
+  // is the one change here that hurts the eyes); the key and the terminal
+  // switch at once, like every other shortcut.
   const applyTheme = useCallback(
-    (next) => {
-      document.documentElement.dataset.theme = next;
+    (next, fade = false) => {
       try {
         localStorage.setItem("srrl-theme", next);
       } catch {}
       log(next === "day" ? "daylight · everything looks normal" : "night · the lamp points up");
-      setTheme(next);
+      const flip = () => {
+        document.documentElement.dataset.theme = next;
+        flushSync(() => setTheme(next));
+      };
+      if (!fade || !document.startViewTransition) return flip();
+      document.startViewTransition(async () => {
+        flip();
+        // hold the old frame until the other picture of the block is ready, half a second at most
+        const img = document.querySelector(`.scene > .${next}-only`);
+        if (img) await Promise.race([img.decode().catch(() => {}), new Promise((r) => setTimeout(r, 500))]);
+      });
     },
     [log],
   );
 
-  const toggleTheme = useCallback(() => {
-    applyTheme(theme === "day" ? "night" : "day");
-  }, [theme, applyTheme]);
+  const toggleTheme = useCallback(
+    (fade) => {
+      applyTheme(theme === "day" ? "night" : "day", fade === true);
+    },
+    [theme, applyTheme],
+  );
 
   const focusWindow = useCallback((id) => {
     setOpen((list) => {
@@ -149,31 +167,45 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
     });
   }, []);
 
-  const closeWindow = useCallback((id) => {
-    setOpen((list) => list.map((w) => (w.id === id ? { ...w, closing: true } : w)));
-    setTimeout(() => {
+  // `quick` is a key or a typed command: no way-out animation, the window is
+  // just gone.
+  const closeWindow = useCallback((id, quick = false) => {
+    const done = () => {
       setOpen((list) => list.filter((w) => w.id !== id));
       const opener = openerRef.current;
       if (opener && opener.dataset.win === id) opener.focus({ preventScroll: true });
-    }, 170);
+    };
+    clearTimeout(closeTimers.current[id]);
+    if (quick) return done();
+    setOpen((list) => list.map((w) => (w.id === id ? { ...w, closing: true, quick: false } : w)));
+    closeTimers.current[id] = setTimeout(done, CLOSE_MS);
   }, []);
 
-  const closeTop = useCallback(() => {
-    const top = [...openRef.current].reverse().find((w) => !w.closing);
-    if (top) closeWindow(top.id);
-  }, [closeWindow]);
+  const closeTop = useCallback(
+    (quick) => {
+      const top = [...openRef.current].reverse().find((w) => !w.closing);
+      if (top) closeWindow(top.id, quick);
+    },
+    [closeWindow],
+  );
 
   const closeAll = useCallback(() => {
-    openRef.current.forEach((w) => closeWindow(w.id));
+    openRef.current.forEach((w) => closeWindow(w.id, true));
   }, [closeWindow]);
 
   const openWindow = useCallback(
-    (id) => {
+    (id, quick = false) => {
       const current = open.find((w) => w.id === id);
+      if (current?.closing) {
+        // Caught on its way out: it turns round from where it is.
+        clearTimeout(closeTimers.current[id]);
+        setOpen((list) => [...list.filter((w) => w.id !== id), { ...current, closing: false, quick }]);
+        return;
+      }
       if (current) {
         // Second press on an open window closes it; a click on a buried one
         // brings it up.
-        if (open[open.length - 1]?.id === id) closeWindow(id);
+        if (open[open.length - 1]?.id === id) closeWindow(id, quick);
         else focusWindow(id);
         return;
       }
@@ -188,7 +220,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
         y = Math.max(12, Math.min(y, layer.clientHeight * 0.35));
       }
       openerRef.current = feedRefs.current[id] ?? null;
-      setOpen((list) => [...list, { id, x, y }]);
+      setOpen((list) => [...list, { id, x, y, quick }]);
       log(`entered: ${spec.title}`);
     },
     [open, closeWindow, focusWindow, log],
@@ -256,7 +288,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
       const typing = tag === "INPUT" || tag === "TEXTAREA" || e.target?.isContentEditable;
       const k = e.key.toLowerCase();
       if (k === "escape") {
-        closeTop();
+        closeTop(true);
         return;
       }
       if (typing) return;
@@ -266,7 +298,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
       }
       if (KEYS[k]) {
         e.preventDefault();
-        openWindow(KEYS[k]);
+        openWindow(KEYS[k], true);
       }
       if (k.length === 1) {
         typed.current = (typed.current + k).slice(-SECRET.length);
@@ -286,8 +318,8 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
     return Number.isFinite(d) && Date.now() - d < NEW_FOR_DAYS * 86400000;
   })();
   const terminalApi = {
-    open: openWindow,
-    close: (id) => (id ? closeWindow(id) : closeTop()),
+    open: (id) => openWindow(id, true),
+    close: (id) => (id ? closeWindow(id, true) : closeTop(true)),
     closeAll,
     entries: () => entries,
     note: () => note,
@@ -333,7 +365,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
         theme={theme}
         open={openIds}
         onRec={dropSignal}
-        onToggleTheme={toggleTheme}
+        onToggleTheme={() => toggleTheme(true)}
         onOpen={openWindow}
         noteIsNew={noteIsNew}
       />
@@ -341,10 +373,10 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
       <div className="relative min-h-0 min-w-0">
         <h1 className="sr-only">SRRLOVYCH — hip-hop from Uzhhorod</h1>
         <div className="era">
-          <p className="era-title">{album.title}</p>
+          <p className="era-title rise">{album.title}</p>
           <button
             type="button"
-            className="ctl border-ink"
+            className="ctl border-ink rise"
             onClick={() => openWindow("music")}
             aria-pressed={openIds.includes("music")}
           >
@@ -361,10 +393,8 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
           onOpen={openWindow}
           spotRefs={feedRefs}
         />
-        <p className="lede">
-          seven things stand on this block.
-          <br />
-          one of them is watching back.
+        <p className="lede rise">
+          <span className="text-ink">click the ground to walk.</span>
         </p>
 
         {/* Window layer: ignores the pointer; windows take it back. */}
@@ -379,6 +409,8 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
               y={w.y}
               focused={i === open.length - 1}
               closing={Boolean(w.closing)}
+              quick={Boolean(w.quick)}
+              origin={feedRefs.current[w.id]}
               onFocus={focusWindow}
               onClose={closeWindow}
               onMove={moveWindow}

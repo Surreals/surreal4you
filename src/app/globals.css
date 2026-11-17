@@ -22,6 +22,10 @@
   --feed-filter: grayscale(0.55) contrast(1.05) brightness(0.92);
   --grain-opacity: 0.09;
   --vignette-strength: 0.42;
+  /* motion: entering / leaving, moving on screen, sheets. See DESIGN.md "Рух" */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 :root[data-theme="day"] {
@@ -181,7 +185,7 @@ li {
    44px touch target. */
 .spot {
   position: absolute;
-  z-index: 1;
+  z-index: 3; /* over the walker (1) and the cut-outs that hide him (2) */
   display: grid;
   place-items: center;
   width: 44px;
@@ -189,10 +193,10 @@ li {
   margin: -22px 0 0 -22px;
 }
 
-.spot:hover,
 .spot:focus-visible,
+.spot[data-near],
 .spot[data-open="true"] {
-  z-index: 3;
+  z-index: 4;
 }
 
 .spot-dot {
@@ -201,7 +205,7 @@ li {
   height: 10px;
   background: var(--red);
   outline: 1px solid rgba(0, 0, 0, 0.6);
-  transition: transform 150ms ease;
+  transition: transform 160ms var(--ease-out);
 }
 
 .spot-dot::after {
@@ -209,7 +213,8 @@ li {
   position: absolute;
   inset: 0;
   border: 1px solid var(--red);
-  animation: ping 2.4s ease-out infinite;
+  /* each spot gets its own phase (Scene.jsx), so the block does not blink like a metronome */
+  animation: ping 2.4s ease-out var(--ping, 0s) infinite;
 }
 
 @keyframes ping {
@@ -223,34 +228,14 @@ li {
   }
 }
 
-.spot:hover .spot-dot,
+.spot:focus-visible .spot-dot,
+.spot[data-near] .spot-dot,
 .spot[data-open="true"] .spot-dot {
   transform: scale(1.4);
 }
 
 .spot:active .spot-dot {
   transform: scale(0.9);
-}
-
-.spot-label {
-  position: absolute;
-  top: calc(50% + 11px);
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 1px 6px;
-  font-size: 11px;
-  line-height: 1.4;
-  white-space: nowrap;
-  color: var(--ink);
-  background: color-mix(in srgb, var(--bg) 80%, transparent);
-  transition: color 150ms ease, background-color 150ms ease;
-}
-
-.spot:hover .spot-label,
-.spot:focus-visible .spot-label,
-.spot[data-open="true"] .spot-label {
-  background: var(--red);
-  color: #fff;
 }
 
 /* What the camera at this spot sees. Hover and keyboard only; a tap goes
@@ -262,8 +247,10 @@ li {
   width: 224px;
   opacity: 0;
   visibility: hidden;
-  transform: translate(-50%, 6px);
-  transition: opacity 160ms ease, transform 160ms ease, visibility 0s 160ms;
+  /* grows out of the red mark under it, and leaves faster than it came */
+  transform: translateX(-50%) scale(0.96);
+  transform-origin: 50% calc(100% + 14px);
+  transition: opacity 120ms var(--ease-out), transform 120ms var(--ease-out), visibility 0s 120ms;
   pointer-events: none;
   text-align: left;
   color: var(--ink);
@@ -275,14 +262,33 @@ li {
 .spot[data-below] .spot-card {
   bottom: auto;
   top: calc(50% + 34px);
+  transform-origin: 50% -34px;
 }
 
-.spot:hover .spot-card,
-.spot:focus-visible .spot-card {
+.spot:focus-visible .spot-card,
+.spot[data-near] .spot-card {
   opacity: 1;
   visibility: visible;
-  transform: translate(-50%, 0);
+  transform: translateX(-50%) scale(1);
+  transition-duration: 160ms, 160ms, 0s;
   transition-delay: 0s;
+}
+
+/* A tap fires a phantom hover that then sticks; only a real pointer hovers. */
+@media (hover: hover) and (pointer: fine) {
+  .spot:hover {
+    z-index: 4;
+  }
+  .spot:hover .spot-dot {
+    transform: scale(1.4);
+  }
+  .spot:hover .spot-card {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+    transition-duration: 160ms, 160ms, 0s;
+    transition-delay: 0s;
+  }
 }
 
 /* Nothing to preview once the window itself is open, or on touch. */
@@ -343,6 +349,150 @@ li {
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--ink);
+}
+
+/* The walker: the subject from under the lamp, loose on the block. The
+   outer box sits on his feet (left/top set per frame by Walker.jsx); the
+   sheet is 6 frames x 2 rows, 160x320 cells, feet 10px above the cell
+   bottom. Sized to the 120px figure the picture had. */
+.walker {
+  position: absolute;
+  z-index: 1;
+  width: 4.46%;
+  aspect-ratio: 1 / 2;
+  transform: translate(-50%, -96.9%);
+  pointer-events: none;
+}
+
+.walker::before {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 0;
+  height: 6%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.45), transparent);
+}
+
+.walker-body {
+  position: absolute;
+  inset: 0;
+  background: url("/scene/walker.png") 0 0 / 600% 200% no-repeat;
+}
+
+/* Things on the block, cut out of the picture; on only while the walker is
+   behind them. */
+.occluder {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.occluder[data-on] {
+  visibility: visible;
+}
+
+/* Sits on the walker's feet (moved with him); the hint hangs under them, so
+   it never lands on the spot's camera card above. */
+.walker-tag {
+  position: absolute;
+  z-index: 3;
+  width: 0;
+  height: 0;
+}
+
+.walker-hint {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 2px 4px 2px 8px;
+  font-size: 11px;
+  white-space: nowrap;
+  color: #fff;
+  background: var(--red);
+  pointer-events: auto;
+}
+
+.walker-hint kbd {
+  padding: 0 5px;
+  font: inherit;
+  color: var(--red);
+  background: #fff;
+}
+
+@media (hover: none) {
+  .walker-hint kbd {
+    display: none;
+  }
+  .walker-hint {
+    padding-right: 8px;
+  }
+}
+
+.walker-hint {
+  transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+
+@starting-style {
+  .walker-hint {
+    opacity: 0;
+    transform: translate(-50%, -4px);
+  }
+}
+
+.walker-hint:active {
+  transform: translateX(-50%) scale(0.97);
+}
+
+/* Where a click on the ground sends him: the spots' red square, once. */
+.walk-mark {
+  position: absolute;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 1px solid var(--red);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The lamp on the mast blinks twice, then waits. Night only: by day it is off. */
+.beacon {
+  position: absolute;
+  left: 18.9%;
+  top: 21.6%;
+  width: 3.6%;
+  aspect-ratio: 1;
+  margin: -1.8% 0 0 -1.8%;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255, 96, 72, 0.95), rgba(217, 41, 31, 0.45) 45%, transparent);
+  animation: beacon 5.6s ease-out infinite;
+}
+
+.scene[data-signal="lost"] .beacon {
+  display: none;
+}
+
+@keyframes beacon {
+  0%,
+  10%,
+  22%,
+  100% {
+    opacity: 0;
+  }
+  2%,
+  12% {
+    opacity: 1;
+  }
 }
 
 /* The current release and the one line of copy sit in the empty corners of
@@ -435,7 +585,7 @@ li {
   padding: 0 8px;
   color: var(--ink);
   border: 1px solid transparent;
-  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, transform 150ms ease;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, transform 160ms var(--ease-out);
 }
 
 .ctl::after {
@@ -445,13 +595,18 @@ li {
   inset: -6px 0;
 }
 
-.ctl:hover {
+/* The fill answers the press itself, so a finger gets it too; hover is for a real pointer. */
+.ctl:active {
   background: var(--red);
   color: #fff;
+  transform: scale(0.97);
 }
 
-.ctl:active {
-  transform: scale(0.96);
+@media (hover: hover) and (pointer: fine) {
+  .ctl:hover {
+    background: var(--red);
+    color: #fff;
+  }
 }
 
 .ctl[aria-pressed="true"],
@@ -470,30 +625,35 @@ li {
   color: var(--ink);
   border: 2px solid var(--ink);
   box-shadow: var(--shadow);
-  animation: window-in 200ms cubic-bezier(0.2, 0, 0, 1) both;
+  /* Transitions, not keyframes: a window closed half-way through opening
+     (or the other way round) turns back from where it is. It grows out of its
+     thing on the block and shrinks back into it; Window.jsx aims the origin. */
+  --rest: translate3d(var(--x, 0px), var(--y, 0px), 0) scale(1);
+  --away: translate3d(var(--x, 0px), var(--y, 0px), 0) scale(0.96);
+  transform: var(--rest);
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
   will-change: transform;
 }
 
-@keyframes window-in {
-  from {
+@starting-style {
+  .window {
     opacity: 0;
-    transform: translate3d(var(--x, 0px), calc(var(--y, 0px) + 8px), 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(var(--x, 0px), var(--y, 0px), 0);
+    transform: var(--away);
   }
 }
 
 .window[data-closing="true"] {
-  animation: window-out 160ms ease-out both;
+  opacity: 0;
+  transform: var(--away);
+  transition-duration: 150ms;
+  pointer-events: none;
 }
 
-@keyframes window-out {
-  to {
-    opacity: 0;
-    transform: translate3d(var(--x, 0px), calc(var(--y, 0px) + 6px), 0);
-  }
+/* Under the pointer the window is the pointer: no easing while it is held.
+   Keys open and close at once: a shortcut is pressed too often to wait for. */
+.window[data-dragging="true"],
+.window[data-quick="true"] {
+  transition: none;
 }
 
 .window-bar {
@@ -545,9 +705,16 @@ li {
   transition: background-color 150ms ease, color 150ms ease;
 }
 
-.window-close:hover {
+.window-close:active {
   background: var(--red);
   color: #fff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .window-close:hover {
+    background: var(--red);
+    color: #fff;
+  }
 }
 
 .window-body {
@@ -565,11 +732,14 @@ li {
     max-height: none;
     border: 0;
     box-shadow: none;
-    transform: none !important;
-    animation: sheet-in 220ms cubic-bezier(0.2, 0, 0, 1) both;
+    /* a sheet: up from the bottom edge and back down through it */
+    --rest: translate3d(0, 0, 0);
+    --away: translate3d(0, 100%, 0);
+    transition: transform 500ms var(--ease-drawer);
   }
   .window[data-closing="true"] {
-    animation: sheet-out 160ms ease-out both;
+    opacity: 1;
+    transition-duration: 300ms;
   }
   .window-bar {
     padding-top: env(safe-area-inset-top);
@@ -582,18 +752,6 @@ li {
   .window-body {
     flex: 1;
     padding-bottom: env(safe-area-inset-bottom);
-  }
-  @keyframes sheet-in {
-    from {
-      opacity: 0;
-      transform: translate3d(0, 12px, 0);
-    }
-  }
-  @keyframes sheet-out {
-    to {
-      opacity: 0;
-      transform: translate3d(0, 8px, 0);
-    }
   }
 }
 
@@ -624,6 +782,10 @@ li {
   grid-template-columns: max-content 1fr;
   gap: 12px;
   padding: 2px 0;
+}
+
+.log li {
+  transition: color 300ms ease;
 }
 
 .log li:first-child {
@@ -683,13 +845,39 @@ li {
 
 .plate img {
   filter: var(--feed-filter);
-  transition: filter 500ms ease, transform 700ms cubic-bezier(0.2, 0, 0, 1);
+  transition: filter 300ms ease, transform 300ms var(--ease-out);
 }
 
-.plate:hover img,
 .plate:focus-within img {
   filter: none;
   transform: scale(1.02);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .plate:hover img {
+    filter: none;
+    transform: scale(1.02);
+  }
+}
+
+button.plate {
+  transition: transform 160ms var(--ease-out);
+}
+
+button.plate:active {
+  transform: scale(0.97);
+}
+
+/* A plate pulled up from the grid grows out of the tile that was clicked. */
+.plate-view {
+  transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+
+@starting-style {
+  .plate-view {
+    opacity: 0;
+    transform: scale(0.94);
+  }
 }
 
 .plate-tag {
@@ -715,7 +903,7 @@ li {
   background: var(--bg);
   color: var(--ink);
   font-size: 12px;
-  transition: opacity 400ms ease;
+  transition: opacity 400ms var(--ease-out);
 }
 
 .boot[data-closing="true"] {
@@ -736,15 +924,48 @@ html[data-boot] .rise {
   animation-play-state: paused;
 }
 
+/* The one staged entrance: the block leads, the release name and its button
+   follow, the line of copy only fades. Each sets its own --d / --rise / --t. */
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(var(--rise, 12px));
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
   }
 }
 
 .rise {
-  animation: rise 600ms cubic-bezier(0.2, 0, 0, 1) both;
+  animation: rise var(--t, 700ms) var(--ease-out) var(--d, 0ms) backwards;
+}
+
+.era-title.rise {
+  --d: 90ms;
+  --rise: 10px;
+  --t: 600ms;
+}
+
+.era .ctl.rise {
+  --d: 150ms;
+  --rise: 6px;
+  --t: 500ms;
+}
+
+.lede.rise {
+  --d: 190ms;
+  --rise: 0px;
+  --t: 500ms;
+}
+
+/* Day / night by the button: the whole frame crossfades instead of snapping. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 400ms;
+  animation-timing-function: ease;
 }
 
 /* Easter egg: x-ray --------------------------------------------------------- */
@@ -983,16 +1204,27 @@ html:has(.film) :is(a, button, [role="button"]) {
   .radar-sweep,
   .film-grain,
   .film-vignette,
-  .rise,
+  .beacon,
   .boot-line,
   .scene[data-signal="lost"] .scene-static {
     animation: none;
   }
-  .window,
+  /* Gentler, not gone: things still fade, nothing travels. */
+  .rise {
+    animation: fade 200ms ease backwards;
+  }
+  .window {
+    --away: var(--rest);
+    transition: opacity 200ms ease;
+  }
   .window[data-closing="true"] {
-    animation-duration: 1ms;
+    opacity: 0;
   }
   .spot-card,
+  .walker-hint,
+  .plate-view {
+    transition-property: opacity, visibility;
+  }
   .plate img {
     transition: none;
   }
