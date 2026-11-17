@@ -11,7 +11,7 @@
 export const SCENE_W = 1536;
 export const SCENE_H = 1024;
 
-const EDGE = [
+export const EDGE = [
   [205, 478],
   [345, 410],
   [640, 310],
