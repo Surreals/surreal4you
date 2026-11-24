@@ -47,7 +47,7 @@ Copy [`.env.example`](.env.example) to `.env.local` and fill in:
 
 - `AUTH_SECRET` — `npx auth secret`
 - `AUTH_GOOGLE_ID` / `AUTH_GOOGLE_SECRET` — Google OAuth client. Redirect URI:
-  `https://surreal4you.com/api/auth/callback/google` (and the `localhost:3000`
+  `https://www.surrealovych.com/api/auth/callback/google` (and the `localhost:3000`
   variant for dev).
 - `ADMIN_EMAILS` — comma-separated allowlist of admin Google accounts.
 - `BLOB_READ_WRITE_TOKEN` — auto-injected on Vercel once a Blob store is connected;
@@ -108,5 +108,5 @@ nothing else is cached. It is registered in production only by
 ## Deploy
 
 Targets **Vercel** (zero-config Next.js, SSR). Push the repo and import it in Vercel,
-then point `surreal4you.com` at the deployment. `@vercel/analytics` and
+then point `www.surrealovych.com` at the deployment. `@vercel/analytics` and
 `@vercel/speed-insights` are already wired in.

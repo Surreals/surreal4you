@@ -1,4 +1,4 @@
-export const SITE_URL = "https://surreal4you.com";
+export const SITE_URL = "https://www.surrealovych.com";
 
 // Share-tracking params that make the same profile look like different URLs.
 const TRACKING_PARAMS = ["si", "igsh", "utm_source", "utm_medium", "utm_campaign"];

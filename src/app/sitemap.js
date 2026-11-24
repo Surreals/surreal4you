@@ -1,6 +1,6 @@
 import { getContent } from "../lib/content";
 
-const SITE_URL = "https://surreal4you.com";
+const SITE_URL = "https://www.surrealovych.com";
 
 /**
  * Hand-maintained, like the static sitemap.xml this replaced: bump a route's
