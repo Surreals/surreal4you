@@ -71,20 +71,6 @@ const box = (m, L, F, R, h, plainBack = false) => {
   quad(m, br, plainBack ? side : move(br, sub(f, r)));
 };
 
-// A flat cut-out standing on the ground line a-b, with a second sheet across
-// it wearing the same picture so the thing does not vanish seen edge-on.
-const card = (m, [ax, ay], [bx, by], h, { base = 0, cross = true } = {}) => {
-  const sheet = [at(ax, ay, base), at(bx, by, base), at(bx, by, base + h), at(ax, ay, base + h)];
-  quad(m, sheet);
-  if (!cross) return;
-  const [a, b, top] = sheet;
-  const mx = (a[0] + b[0]) / 2;
-  const mz = (a[2] + b[2]) / 2;
-  const hx = (b[2] - a[2]) / 2;
-  const hz = (a[0] - b[0]) / 2;
-  quad(m, [[mx - hx, a[1], mz - hz], [mx + hx, a[1], mz + hz], [mx + hx, top[1], mz + hz], [mx - hx, top[1], mz - hz]], sheet);
-};
-
 // The top edge of the slab, clockwise from its left tip, with the height of
 // the stone side under each corner.
 const SLAB = [
@@ -104,14 +90,21 @@ const CAR = [[0, 30], [0.05, 40], [0.3, 46], [0.5, 82], [0.8, 82], [0.95, 48], [
 // What the cut-outs keep of the picture.
 const shape = (id) => THINGS.find((t) => t.id === id).shape;
 const BEAM = [[399, 507], [435, 507], [445, 465], [388, 465]]; // the lamp's beam where it is painted across the ground
+const GLARE = [[384, 468], [450, 468], [470, 299], [360, 334]]; // and across the stands
+const CAMERAS = [
+  [[683, 350], [722, 350], [726, 372], [726, 445], [731, 447], [731, 454], [708, 454], [708, 424], [713, 420], [713, 380], [683, 380]], // on the booth
+  [[1070, 250], [1107, 250], [1115, 266], [1117, 355], [1100, 355], [1102, 276], [1070, 276]], // on the garage
+];
 const CUTS = [
   shape("lamp"),
   shape("board"),
   [[285, 214], [301, 214], [305, 250], [325, 440], [330, 545], [266, 545], [278, 250]], // mast
-  [[590, 126], [674, 126], [674, 182], [640, 182], [640, 300], [618, 300], [618, 182], [590, 182]], // floodlight
-  [[683, 350], [722, 350], [726, 372], [726, 450], [713, 450], [713, 380], [683, 380]], // camera on the booth
-  [[1070, 250], [1107, 250], [1115, 266], [1115, 353], [1102, 353], [1102, 276], [1070, 276]], // camera on the garage
+  [[590, 126], [674, 126], [674, 182], [640, 182], [640, 336], [618, 336], [618, 182], [590, 182]], // floodlight
+  ...CAMERAS,
 ];
+// The car's outline. Its solid is a rough hull, and whatever of the hull falls
+// outside this line is left clear, so no asphalt or brick rides on the car.
+const CAR_CUT = [[936, 554], [939, 537], [982, 507], [987, 500], [1016, 476], [1058, 467], [1111, 470], [1155, 486], [1166, 490], [1170, 512], [1161, 532], [1143, 551], [1085, 571], [1046, 588], [1032, 586], [1022, 583], [946, 571]];
 
 const model = () => {
   const m = { top: bin(), sides: bin(), things: bin(), car: bin(), garage: bin(), cards: bin() };
@@ -155,26 +148,36 @@ const model = () => {
     CAR.slice(1).forEach(([t1, h1], i) => {
       const [t0, h0] = CAR[i];
       quad(m.car, [pt(t0, 0, 0), pt(t1, 0, 0), pt(t1, 0, h1), pt(t0, 0, h0)]);
-      const far = [pt(t0, 1, 0), pt(t1, 1, 0), pt(t1, 1, h1), pt(t0, 1, h0)];
-      quad(m.car, far, move(far, sub(f, pt(0, 1, 0))));
+      quad(m.car, [pt(t0, 1, 0), pt(t1, 1, 0), pt(t1, 1, h1), pt(t0, 1, h0)]);
       quad(m.car, [pt(t0, 0, h0), pt(t1, 0, h1), pt(t1, 1, h1), pt(t0, 1, h0)]); // bonnet, glass, roof, boot
     });
     quad(m.car, [pt(0, 0, 0), pt(0, 1, 0), pt(0, 1, 30), pt(0, 0, 30)]);
-    const tail = [pt(1, 0, 0), pt(1, 1, 0), pt(1, 1, 44), pt(1, 0, 44)];
-    quad(m.car, tail, move(tail, sub(f, pt(1, 0, 0))));
+    quad(m.car, [pt(1, 0, 0), pt(1, 1, 0), pt(1, 1, 44), pt(1, 0, 44)]);
   }
 
-  card(m.cards, [397, 707], [437, 707], 202); // lamp
-  card(m.cards, [899, 767], [1022, 784], 182, { cross: false }); // notice board: flat as it is
-  card(m.cards, [262, 525], [330, 525], 340); // mast
-  card(m.cards, [575, 312], [700, 312], 207); // floodlight
-  card(m.cards, [683, 602], [726, 602], 102, { base: 152 }); // camera on the booth roof
-  card(m.cards, [1070, 511], [1115, 511], 105, { base: 158 }); // camera on the garage roof
+  quad(m.cards, [at(899, 767), at(1022, 784), at(1022, 784, 182), at(899, 767, 182)]); // notice board: flat as it is
+
+  // The thin things are flat cut-outs, each turning on its foot to face whoever
+  // looks: [foot x, foot y, half width, height, height of the roof it stands on].
+  m.turning = [
+    [417, 717, 20, 212], // lamp
+    [294, 525, 36, 340], // mast
+    [629, 336, 45, 210], // floodlight
+    [719.5, 606, 37, 104, 152], // camera on the booth
+    [1108.5, 513, 39, 105, 158], // camera on the garage
+  ].map(([x, y, half, h, base = 0]) => {
+    const foot = at(x, y, base);
+    const sheet = [at(x - half, y, base), at(x + half, y, base), at(x + half, y, base + h), at(x - half, y, base + h)];
+    const part = bin();
+    quad(part, move(sheet, sub([0, 0, 0], foot)), sheet);
+    return { part, foot };
+  });
   return m;
 };
 
-// The four pictures the model wears, made from one painting.
-const pictures = (img, m, night) => {
+// The four pictures the model wears, made from the painting. `day` is the day
+// painting, which the night one borrows from where the lamp's beam is in the way.
+const pictures = (img, day, m, night) => {
   const sheet = (w, h, draw) => {
     const c = document.createElement("canvas");
     c.width = w;
@@ -186,54 +189,97 @@ const pictures = (img, m, night) => {
     pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y)));
     g.closePath();
   };
-  // paint over everything a solid hides from the painter
+  const fill = (g, pts) => {
+    g.beginPath();
+    path(g, pts);
+    g.fill();
+    g.stroke();
+  };
+  // everything a solid hides from the painter
   const cover = (g, { pos }) => {
-    for (let i = 0; i < pos.length; i += 9) {
-      g.beginPath();
-      path(g, [0, 3, 6].map((k) => seen(pos.slice(i + k, i + k + 3))));
-      g.fill();
-      g.stroke();
+    for (let i = 0; i < pos.length; i += 9) fill(g, [0, 3, 6].map((k) => seen(pos.slice(i + k, i + k + 3))));
+  };
+  // `src` with what `rub` draws taken out and the holes closed from what lies
+  // around them: the picture is halved until the holes shut, then the sizes
+  // are laid back over one another, smallest first.
+  const heal = (src, rub) => {
+    const sizes = [
+      sheet(W, H, (g) => {
+        g.drawImage(src, 0, 0);
+        g.globalCompositeOperation = "destination-out";
+        g.lineWidth = 3;
+        rub(g);
+      }),
+    ];
+    for (let w = W / 2; w >= 6; w /= 2) {
+      const last = sizes[sizes.length - 1];
+      sizes.push(sheet(w, (w * H) / W, (g) => g.drawImage(last, 0, 0, w, (w * H) / W)));
     }
+    return sheet(W, H, (g) => sizes.reverse().forEach((s) => g.drawImage(s, 0, 0, W, H)));
   };
 
-  // as painted; the empty margin takes a wall grey so an edge that overshoots is not black
-  const solid = sheet(W, H, (g) => {
-    g.fillStyle = night ? "#2b2b2e" : "#8a8986";
-    g.fillRect(0, 0, W, H);
-    g.drawImage(img, 0, 0);
-  });
+  // At night the lamp's beam is painted across the stands and would stay there
+  // when the lamp moves away: take that strip from the day, dimmed to the night wall.
+  const painted = night
+    ? sheet(W, H, (g) => {
+        g.drawImage(img, 0, 0);
+        g.beginPath();
+        path(g, GLARE);
+        g.clip();
+        g.drawImage(day, 0, 0);
+        g.globalCompositeOperation = "multiply";
+        g.fillStyle = "#a8a8aa";
+        g.fill();
+      })
+    : img;
+  // the solids, without the cameras painted across two of the roofs
+  const solid = heal(painted, (g) => CAMERAS.forEach((pts) => fill(g, pts)));
   // the garage without the car parked across its door
-  const garage = sheet(W, H, (g) => {
-    g.drawImage(solid, 0, 0);
-    g.fillStyle = g.strokeStyle = "#0e0e10";
-    g.lineWidth = 2;
-    cover(g, m.car);
-  });
-  // The ground: where a thing stood in the way the painter left no asphalt, so
-  // lay a patch of clean asphalt from the open middle, mirrored to tile.
-  const tile = sheet(240, 160, (g) => {
+  const garage = heal(solid, (g) => cover(g, m.car));
+  // The ground, without anything that stood on it. The closed holes come out
+  // smooth, so the grain of the open asphalt is pressed back into them.
+  const stood = (g) => {
+    g.lineWidth = 3;
+    [m.things, m.car, m.garage].forEach((part) => cover(g, part));
+    [...THINGS.map((t) => t.shape), ...CUTS, ...(night ? [BEAM] : [])].forEach((pts) => fill(g, pts));
+  };
+  const grain = sheet(240, 160, (g) => {
     [[1, 1], [-1, 1], [1, -1], [-1, -1]].forEach(([sx, sy]) => {
       g.setTransform(sx, 0, 0, sy, 120, 80);
       g.drawImage(img, 450, 570, 120, 80, 0, 0, 120, 80);
     });
+    g.resetTransform();
+    g.fillStyle = "rgba(255, 255, 255, 0.18)"; // lifted to a middle grey, which "overlay" leaves as it was
+    g.fillRect(0, 0, 240, 160);
   });
   const ground = sheet(W, H, (g) => {
-    g.drawImage(solid, 0, 0);
-    g.fillStyle = g.strokeStyle = g.createPattern(tile, "repeat");
-    g.lineWidth = 2;
-    [m.things, m.car, m.garage].forEach((part) => cover(g, part));
-    [...CUTS, ...(night ? [BEAM] : [])].forEach((pts) => {
-      g.beginPath();
-      path(g, pts);
-      g.fill();
-      g.stroke();
-    });
+    g.drawImage(heal(img, stood), 0, 0);
+    g.globalCompositeOperation = "overlay";
+    g.drawImage(
+      sheet(W, H, (p) => {
+        stood(p);
+        p.globalCompositeOperation = "source-in";
+        p.fillStyle = p.createPattern(grain, "repeat");
+        p.fillRect(0, 0, W, H);
+      }),
+      0,
+      0,
+    );
   });
-  // only the cut-outs, the rest clear
+  // only the cut-outs and the car, the rest clear
   const cuts = sheet(W, H, (g) => {
+    g.save();
     g.beginPath();
     CUTS.forEach((pts) => path(g, pts));
     g.clip();
+    g.drawImage(img, 0, 0);
+    g.drawImage(img, 618, 262, 22, 38, 618, 298, 22, 38); // the floodlight's pole, carried on down where the stands hid it
+    g.restore();
+    g.beginPath();
+    path(g, CAR_CUT);
+    g.clip();
+    g.fillStyle = "#0e0e10"; // the night painting has holes in the car's glass and wheel arches
+    g.fill();
     g.drawImage(img, 0, 0);
   });
   return { solid, garage, ground, cuts };
@@ -306,14 +352,21 @@ const Diorama = () => {
       geo.setAttribute("position", new Float32BufferAttribute(part.pos, 3));
       geo.setAttribute("uv", new Float32BufferAttribute(part.uv, 2));
       geometries.push(geo);
-      scene.add(new Mesh(geo, mat));
+      const mesh = new Mesh(geo, mat);
+      scene.add(mesh);
+      return mesh;
     };
     add(parts.top, mats.ground);
     add(parts.sides, mats.solid);
     add(parts.things, mats.solid);
-    add(parts.car, mats.solid);
+    add(parts.car, mats.cuts);
     add(parts.garage, mats.garage);
     add(parts.cards, mats.cuts);
+    const turning = parts.turning.map(({ part, foot }) => {
+      const mesh = add(part, mats.cuts);
+      mesh.position.set(...foot);
+      return mesh;
+    });
 
     // Night only: the mast's beacon blinks and the lamp throws its beam up.
     const night = new Group();
@@ -337,14 +390,19 @@ const Diorama = () => {
 
     const textures = {};
     let gone = false;
+    const load = async (t) => {
+      const img = new Image();
+      img.src = `/scene/${t}.webp`;
+      await img.decode();
+      return img;
+    };
     const show = async (t) => {
       if (!textures[t]) {
-        const img = new Image();
-        img.src = `/scene/${t}.webp`;
-        await img.decode();
+        const day = await load("day");
+        const img = t === "day" ? day : await load(t);
         if (gone) return;
         textures[t] = Object.fromEntries(
-          Object.entries(pictures(img, parts, t === "night")).map(([key, c]) => {
+          Object.entries(pictures(img, day, parts, t === "night")).map(([key, c]) => {
             const tex = new CanvasTexture(c);
             tex.colorSpace = SRGBColorSpace;
             tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -410,6 +468,7 @@ const Diorama = () => {
       camera.lookAt(0, 0, 0);
       camera.zoom = view.zoom;
       camera.updateProjectionMatrix();
+      turning.forEach((mesh) => (mesh.rotation.y = view.az));
       // two short flashes every 5.6s, like the beacon on the home page
       const p = (t % 5600) / 5600;
       beacon.material.opacity = calm ? 0.6 : 0.3 + 0.7 * Math.max(Math.exp(-(((p - 0.03) / 0.018) ** 2)), Math.exp(-(((p - 0.13) / 0.018) ** 2)));
