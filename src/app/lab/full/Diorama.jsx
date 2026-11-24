@@ -12,6 +12,7 @@ import {
   Mesh,
   MeshBasicMaterial,
   OrthographicCamera,
+  RepeatWrapping,
   Scene,
   Sprite,
   SpriteMaterial,
@@ -23,7 +24,8 @@ import { THINGS } from "../../../lib/walk";
 // A trial: the block as a paper model. Every thing is a plain solid (a box, a
 // wedge, a flat cut-out) measured off the painting, and the painting is thrown
 // back onto those solids from where its painter stood. Seen from there the
-// model is the painting, pixel for pixel; turn it and the solids show.
+// model is the painting again; turn it and the solids show. Only the barrier
+// tape is not painted on: it is strung anew from post to post.
 //
 // All measurements below are pixels of the picture (public/scene/*.webp).
 
@@ -93,15 +95,40 @@ const shape = (id) => THINGS.find((t) => t.id === id).shape;
 const BEAM = [[399, 507], [435, 507], [445, 465], [388, 465]]; // the lamp's beam where it is painted across the ground
 const GLARE = [[384, 468], [450, 468], [470, 299], [360, 334]]; // and across the stands
 const CAMERAS = [
-  [[683, 350], [722, 350], [726, 372], [726, 445], [731, 447], [731, 454], [708, 454], [708, 424], [713, 420], [713, 380], [683, 380]], // on the booth
+  [[682, 365], [710, 351], [721, 353], [723, 364], [726, 372], [726, 445], [731, 447], [731, 454], [708, 454], [708, 424], [713, 420], [713, 385], [706, 379], [685, 378]], // on the booth
   [[1070, 250], [1107, 250], [1115, 266], [1117, 355], [1100, 355], [1102, 276], [1070, 276]], // on the garage
 ];
-const CUTS = [
-  shape("lamp"),
-  shape("board"),
+const RAIL = [[355, 337], [573, 267], [573, 231], [355, 301]]; // the rail along the back of the stands
+// The cut-outs the painting shows against the sky. Its night has dark haze
+// round the lights, so there they keep only what the day painting shows.
+const SKY_CUTS = [
   [[285, 214], [301, 214], [305, 250], [325, 440], [330, 545], [266, 545], [278, 250]], // mast
   [[590, 126], [674, 126], [674, 182], [640, 182], [640, 336], [618, 336], [618, 182], [590, 182]], // floodlight
-  ...CAMERAS,
+  CAMERAS[1],
+  RAIL,
+];
+// And those it shows against the ground. The lamp stops at the middle of its
+// foot: the front of the foot plate lies on the asphalt and stays there.
+const GROUND_CUTS = [
+  [[399, 507], [435, 507], [423, 533], [423, 690], [431, 700], [431, 709], [401, 709], [401, 700], [409, 690], [409, 533]], // lamp
+  shape("board"),
+  CAMERAS[0],
+];
+
+// The barrier tape. The model strings its own, so the painted one is taken
+// out. The feet of the posts, round the block from its left tip; the two
+// marked `true` stand behind the garage and the stands and were never painted.
+const POSTS = [
+  [186, 498], [258, 580], [320, 651], [404, 754], [588, 785], [810, 820], [1005, 846],
+  [1130, 730], [1212, 653], [1297, 572], [1362, 506], [1290, 402, true], [729, 298], [457, 398, true],
+];
+const POST = 45; // their height
+// the middle of the tape where the painting shows it: along the front edges, and in three pieces along the back
+const TAPED = [
+  POSTS.slice(0, 11).map(([x, y]) => [x, y - POST + 4]),
+  [[186, 457], [355, 407]],
+  [[640, 300], [729, 267], [802, 287]],
+  [[994, 323], [1102, 345]],
 ];
 // The car's outline. Its solid is a rough hull, and whatever of the hull falls
 // outside this line is left clear, so no asphalt or brick rides on the car.
@@ -138,6 +165,7 @@ const model = () => {
     const end = [b, r, r0, b1];
     quad(m.things, end, move(end, sub(f, r)));
     quad(m.things, [l, b, b1, l1], side(5)); // the back, which the painter never saw: the slab's stone
+    quad(m.cards, [at(355, 437, 100), at(573, 367.4, 100), at(573, 367.4, 136), at(355, 437, 136)]); // the rail on top of it
   }
 
   {
@@ -161,12 +189,28 @@ const model = () => {
     quad(m.car, [pt(1, 0, 0), pt(1, 1, 0), pt(1, 1, 44), pt(1, 0, 44)], [nose[1], nose[0], nose[3], nose[2]]);
   }
 
+  // The barrier tape, strung from post to post; `u` counts its stripes.
+  m.tape = bin();
+  m.posts = bin();
+  let u = 0;
+  POSTS.forEach(([x, y], i) => {
+    const [nx, ny] = POSTS[(i + 1) % POSTS.length];
+    const [a, b, b1, a1] = [at(x, y, POST - 7), at(nx, ny, POST - 7), at(nx, ny, POST), at(x, y, POST)];
+    const run = Math.hypot(b[0] - a[0], b[2] - a[2]) / 26;
+    m.tape.pos.push(...a, ...b, ...b1, ...a, ...b1, ...a1);
+    m.tape.uv.push(u, 0, u + run, 0, u + run, 1, u, 0, u + run, 1, u, 1);
+    u += run;
+    // the post: two thin strips crossed
+    const [fx, , fz] = at(x, y);
+    [[1.5, 0], [0, 1.5]].forEach(([dx, dz]) => quad(m.posts, [[fx - dx, 0, fz - dz], [fx + dx, 0, fz + dz], [fx + dx, POST / C, fz + dz], [fx - dx, POST / C, fz - dz]]));
+  });
+
   quad(m.cards, [at(899, 767), at(1022, 784), at(1022, 784, 182), at(899, 767, 182)]); // notice board: flat as it is
 
   // The thin things are flat cut-outs, each turning on its foot to face whoever
   // looks: [foot x, foot y, half width, height, height of the roof it stands on].
   m.turning = [
-    [417, 717, 20, 212], // lamp
+    [417, 709, 20, 204], // lamp
     [294, 525, 36, 340], // mast
     [629, 336, 45, 210], // floodlight
     [719.5, 606, 37, 104, 152], // camera on the booth
@@ -182,7 +226,7 @@ const model = () => {
 };
 
 // The four pictures the model wears, made from the painting. `day` is the day
-// painting, which the night one borrows from where the lamp's beam is in the way.
+// painting, which the night one borrows from where its own lights are in the way.
 const pictures = (img, day, m, night) => {
   const sheet = (w, h, draw) => {
     const c = document.createElement("canvas");
@@ -191,8 +235,9 @@ const pictures = (img, day, m, night) => {
     draw(c.getContext("2d"));
     return c;
   };
+  const trace = (g, pts) => pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y)));
   const path = (g, pts) => {
-    pts.forEach(([x, y], i) => (i ? g.lineTo(x, y) : g.moveTo(x, y)));
+    trace(g, pts);
     g.closePath();
   };
   const fill = (g, pts) => {
@@ -224,39 +269,83 @@ const pictures = (img, day, m, night) => {
     return sheet(W, H, (g) => sizes.reverse().forEach((s) => g.drawImage(s, 0, 0, W, H)));
   };
 
-  // At night the lamp's beam is painted across the stands and would stay there
-  // when the lamp moves away: take that strip from the day, dimmed to the night wall.
+  // the tape and the posts as painted
+  const tape = (g) => {
+    g.lineCap = "round";
+    g.lineWidth = 18;
+    TAPED.forEach((pts) => {
+      g.beginPath();
+      trace(g, pts);
+      g.stroke();
+    });
+    g.lineWidth = 7;
+    POSTS.filter(([, , unseen]) => !unseen).forEach(([x, y]) => {
+      g.beginPath();
+      trace(g, [[x, y + 2], [x, y - POST - 3]]);
+      g.stroke();
+    });
+  };
+
+  // The day painting dimmed to the night's walls, for what the night painting
+  // hides under the lamp's beam and the haze round it.
+  const dusk =
+    night &&
+    sheet(W, H, (g) => {
+      g.drawImage(day, 0, 0);
+      g.globalCompositeOperation = "multiply";
+      g.fillStyle = "#a8a8aa";
+      g.fillRect(0, 0, W, H);
+      g.globalCompositeOperation = "destination-in";
+      g.drawImage(day, 0, 0);
+    });
+  // the beam is painted across the stands and would stay there when the lamp moves away
   const painted = night
     ? sheet(W, H, (g) => {
         g.drawImage(img, 0, 0);
         g.beginPath();
         path(g, GLARE);
         g.clip();
-        g.drawImage(day, 0, 0);
-        g.globalCompositeOperation = "multiply";
-        g.fillStyle = "#a8a8aa";
-        g.fill();
+        g.drawImage(dusk, 0, 0);
       })
     : img;
-  // the solids, without the cameras painted across two of the roofs
-  const solid = heal(painted, (g) => CAMERAS.forEach((pts) => fill(g, pts)));
-  // the garage without the car parked across its door
-  const garage = heal(solid, (g) => cover(g, m.car));
+  // the solids, without the cameras painted across two of the roofs and the tape across the walls
+  const solid = heal(painted, (g) => {
+    CAMERAS.forEach((pts) => fill(g, pts));
+    tape(g);
+  });
+  // The garage without the car parked across its door. Left of the door the
+  // gap takes the brick from higher up the same wall; the rest closes by itself.
+  const garage = heal(solid, (g) => {
+    cover(g, m.car);
+    g.globalCompositeOperation = "destination-over";
+    g.beginPath();
+    g.rect(1060, 440, 38, 120);
+    g.clip();
+    g.drawImage(solid, 0, 50);
+  });
   // The ground, without anything that stood on it. The closed holes come out
   // smooth, so the grain of the open asphalt is pressed back into them.
   const stood = (g) => {
     g.lineWidth = 3;
     [m.things, m.car, m.garage].forEach((part) => cover(g, part));
-    [...THINGS.map((t) => t.shape), ...CUTS, ...(night ? [BEAM] : [])].forEach((pts) => fill(g, pts));
+    const shapes = THINGS.filter((t) => t.id !== "lamp").map((t) => t.shape);
+    [...shapes, ...SKY_CUTS, ...GROUND_CUTS, ...(night ? [BEAM] : [])].forEach((pts) => fill(g, pts));
+    tape(g);
   };
-  const grain = sheet(240, 160, (g) => {
+  const grain = sheet(400, 140, (g) => {
+    // the widest stretch of bare asphalt, mirrored so that it tiles
     [[1, 1], [-1, 1], [1, -1], [-1, -1]].forEach(([sx, sy]) => {
-      g.setTransform(sx, 0, 0, sy, 120, 80);
-      g.drawImage(img, 450, 570, 120, 80, 0, 0, 120, 80);
+      g.setTransform(sx, 0, 0, sy, 200, 70);
+      g.drawImage(img, 600, 660, 200, 70, 0, 0, 200, 70);
     });
     g.resetTransform();
-    g.fillStyle = "rgba(255, 255, 255, 0.18)"; // lifted to a middle grey, which "overlay" leaves as it was
-    g.fillRect(0, 0, 240, 160);
+    // brought to a middle grey, which "overlay" leaves as it was
+    const px = g.getImageData(0, 0, 400, 140).data;
+    let sum = 0;
+    for (let i = 0; i < px.length; i += 4) sum += px[i] + px[i + 1] + px[i + 2];
+    const mean = sum / ((px.length / 4) * 3);
+    g.fillStyle = mean < 127.5 ? `rgba(255, 255, 255, ${(127.5 - mean) / (255 - mean)})` : `rgba(0, 0, 0, ${1 - 127.5 / mean})`;
+    g.fillRect(0, 0, 400, 140);
   });
   const ground = sheet(W, H, (g) => {
     g.drawImage(heal(img, stood), 0, 0);
@@ -272,21 +361,52 @@ const pictures = (img, day, m, night) => {
       0,
     );
   });
+  // What the day painting shows of the things against the sky. The mast is a
+  // lattice, and low down it is asphalt that shows through it: there only what
+  // differs from the asphalt healed across it is mast. Nor is the tape strung
+  // behind it, red and white along the first piece of TAPED.
+  const stencil = sheet(W, H, (g) => {
+    g.drawImage(day, 0, 0);
+    const [x, y, w, h] = [258, 200, 76, 350];
+    const mast = g.getImageData(x, y, w, h);
+    const px = mast.data;
+    const behind = heal(day, (b) => fill(b, SKY_CUTS[0])).getContext("2d").getImageData(x, y, w, h).data;
+    const [[ax, ay], [bx, by]] = TAPED[1];
+    for (let i = 0; i < px.length; i += 4) {
+      const [col, row] = [x + ((i / 4) % w), y + Math.floor(i / 4 / w)];
+      const off = Math.max(...[0, 1, 2].map((k) => Math.abs(px[i + k] - behind[i + k])));
+      const onTape = Math.abs(row - (ay + ((col - ax) * (by - ay)) / (bx - ax))) < 9;
+      if (onTape && (px[i] - px[i + 1] > 20 || px[i + 1] > 195)) px[i + 3] = 0;
+      else if (row > 440) px[i + 3] *= clamp((off - 18) / 14, 0, 1);
+    }
+    g.putImageData(mast, x, y);
+  });
   // only the cut-outs and the car, the rest clear
+  const whole = heal(img, tape); // the painting with the holes in it closed and no tape
   const cuts = sheet(W, H, (g) => {
-    g.save();
-    g.beginPath();
-    CUTS.forEach((pts) => path(g, pts));
-    g.clip();
-    g.drawImage(img, 0, 0);
-    g.drawImage(img, 618, 262, 22, 38, 618, 298, 22, 38); // the floodlight's pole, carried on down where the stands hid it
-    g.restore();
-    g.beginPath();
-    path(g, CAR_CUT);
-    g.clip();
-    g.fillStyle = "#0e0e10"; // the night painting has holes in the car's glass and wheel arches
-    g.fill();
-    g.drawImage(img, 0, 0);
+    const within = (list, draw) => {
+      g.save();
+      g.beginPath();
+      list.forEach((pts) => path(g, pts));
+      g.clip();
+      draw();
+      g.restore();
+    };
+    within(SKY_CUTS, () => {
+      g.drawImage(img, 0, 0);
+      g.drawImage(img, 618, 262, 22, 38, 618, 298, 22, 38); // the floodlight's pole, carried on down where the stands hid it
+    });
+    g.globalCompositeOperation = "destination-in";
+    g.drawImage(stencil, 0, 0);
+    g.globalCompositeOperation = "source-over";
+    if (night) {
+      // the lamp's smoke hangs over the rail
+      within([RAIL], () => {
+        g.clearRect(0, 0, W, H);
+        g.drawImage(dusk, 0, 0);
+      });
+    }
+    within([...GROUND_CUTS, CAR_CUT], () => g.drawImage(whole, 0, 0));
   });
   return { solid, garage, ground, cuts };
 };
@@ -313,6 +433,24 @@ const fade = () => {
   grad.addColorStop(1, "rgba(255, 255, 255, 1)");
   g.fillStyle = grad;
   g.fillRect(0, 0, 2, 64);
+  return c;
+};
+
+// one red stripe of the barrier tape
+const stripe = () => {
+  const c = document.createElement("canvas");
+  c.width = 32;
+  c.height = 8;
+  const g = c.getContext("2d");
+  g.fillStyle = "#e6e2da";
+  g.fillRect(0, 0, 32, 8);
+  g.fillStyle = "#bf2a1e";
+  g.beginPath();
+  g.moveTo(0, 8);
+  g.lineTo(8, 0);
+  g.lineTo(24, 0);
+  g.lineTo(16, 8);
+  g.fill();
   return c;
 };
 
@@ -370,13 +508,20 @@ const Diorama = () => {
     add(parts.car, hull);
     add(parts.garage, mats.garage);
     add(parts.cards, mats.cuts);
+    const stripeMap = new CanvasTexture(stripe());
+    stripeMap.wrapS = RepeatWrapping;
+    stripeMap.colorSpace = SRGBColorSpace;
+    const tape = new MeshBasicMaterial({ map: stripeMap, side: DoubleSide });
+    const post = new MeshBasicMaterial({ side: DoubleSide });
+    add(parts.tape, tape);
+    add(parts.posts, post);
     const turning = parts.turning.map(({ part, foot }) => {
       const mesh = add(part, mats.cuts);
       mesh.position.set(...foot);
       return mesh;
     });
 
-    // Night only: the mast's beacon blinks and the lamp throws its beam up.
+    // Night only: the mast's beacon blinks, the floodlight glows and the lamp throws its beam up.
     const night = new Group();
     const glowMap = new CanvasTexture(glow());
     const beacon = new Sprite(new SpriteMaterial({ map: glowMap, color: 0xff4632, blending: AdditiveBlending, depthWrite: false }));
@@ -388,8 +533,11 @@ const Diorama = () => {
       beamGeo,
       new MeshBasicMaterial({ map: fadeMap, color: 0xdfe6f5, transparent: true, opacity: 0.22, blending: AdditiveBlending, depthWrite: false, side: DoubleSide }),
     );
-    beam.position.set(...at(416, 707, 198 + 170));
-    night.add(beacon, beam);
+    beam.position.set(...at(417, 709, 200 + 170));
+    const flood = new Sprite(new SpriteMaterial({ map: glowMap, color: 0xdfe6f5, opacity: 0.5, blending: AdditiveBlending, depthWrite: false }));
+    flood.position.set(...at(632, 336, 182));
+    flood.scale.setScalar(190);
+    night.add(beacon, flood, beam);
     scene.add(night);
 
     const camera = new OrthographicCamera(-W / 2, W / 2, H / 2, -H / 2, 1, FAR * 3);
@@ -424,6 +572,8 @@ const Diorama = () => {
       }
       hull.map = textures[t].cuts;
       hull.needsUpdate = true;
+      tape.color.set(t === "night" ? 0x8f8f94 : 0xffffff);
+      post.color.set(t === "night" ? 0x55555a : 0x9b9b97);
       night.visible = t === "night";
     };
 
@@ -496,7 +646,8 @@ const Diorama = () => {
       el.removeEventListener("pointercancel", onUp);
       el.removeEventListener("wheel", onWheel);
       Object.values(textures).forEach((set) => Object.values(set).forEach((tex) => tex.dispose()));
-      [...Object.values(mats), hull].forEach((mat) => mat.dispose());
+      [...Object.values(mats), hull, tape, post, flood.material].forEach((mat) => mat.dispose());
+      stripeMap.dispose();
       geometries.forEach((geo) => geo.dispose());
       glowMap.dispose();
       fadeMap.dispose();
