@@ -84,8 +84,9 @@ const SLAB = [
 ];
 const SEEN_SIDES = [4, 5, 6]; // the sides that face the painter; the rest borrow the front one
 
-// The car's side view, nose to tail: [share of its length, height].
-const CAR = [[0, 30], [0.05, 40], [0.3, 46], [0.5, 82], [0.8, 82], [0.95, 48], [1, 44]];
+// The car's side view, nose to tail: [share of its length, height, how far the
+// sides lean in at that height, as a share of the width].
+const CAR = [[0, 30, 0], [0.05, 40, 0], [0.3, 46, 0.05], [0.47, 74, 0.15], [0.78, 64, 0.15], [0.93, 50, 0.05], [1, 44, 0]];
 
 // What the cut-outs keep of the picture.
 const shape = (id) => THINGS.find((t) => t.id === id).shape;
@@ -140,19 +141,24 @@ const model = () => {
   }
 
   {
-    // The car: its side view pushed across its width.
+    // The car: its side view pushed across its width. The far side and the
+    // tail, which the painter never saw, wear the near side and the nose.
+    // Every face is wound to show from outside only.
     const f = at(1030, 592);
     const along = sub(at(1172, 533), f);
     const across = sub(at(940, 574), f);
     const pt = (t, w, h) => [f[0] + t * along[0] + w * across[0], h / C, f[2] + t * along[2] + w * across[2]];
-    CAR.slice(1).forEach(([t1, h1], i) => {
-      const [t0, h0] = CAR[i];
-      quad(m.car, [pt(t0, 0, 0), pt(t1, 0, 0), pt(t1, 0, h1), pt(t0, 0, h0)]);
-      quad(m.car, [pt(t0, 1, 0), pt(t1, 1, 0), pt(t1, 1, h1), pt(t0, 1, h0)]);
-      quad(m.car, [pt(t0, 0, h0), pt(t1, 0, h1), pt(t1, 1, h1), pt(t0, 1, h0)]); // bonnet, glass, roof, boot
+    CAR.slice(1).forEach(([t1, h1, in1], i) => {
+      const [t0, h0, in0] = CAR[i];
+      const near = [pt(t0, 0, 0), pt(t1, 0, 0), pt(t1, in1, h1), pt(t0, in0, h0)];
+      const far = [pt(t1, 1, 0), pt(t0, 1, 0), pt(t0, 1 - in0, h0), pt(t1, 1 - in1, h1)];
+      quad(m.car, near);
+      quad(m.car, far, [near[1], near[0], near[3], near[2]]);
+      quad(m.car, [near[3], near[2], far[3], far[2]]); // bonnet, glass, roof, boot
     });
-    quad(m.car, [pt(0, 0, 0), pt(0, 1, 0), pt(0, 1, 30), pt(0, 0, 30)]);
-    quad(m.car, [pt(1, 0, 0), pt(1, 1, 0), pt(1, 1, 44), pt(1, 0, 44)]);
+    const nose = [pt(0, 1, 0), pt(0, 0, 0), pt(0, 0, 30), pt(0, 1, 30)];
+    quad(m.car, nose);
+    quad(m.car, [pt(1, 0, 0), pt(1, 1, 0), pt(1, 1, 44), pt(1, 0, 44)], [nose[1], nose[0], nose[3], nose[2]]);
   }
 
   quad(m.cards, [at(899, 767), at(1022, 784), at(1022, 784, 182), at(899, 767, 182)]); // notice board: flat as it is
@@ -345,6 +351,8 @@ const Diorama = () => {
       garage: new MeshBasicMaterial({ side: DoubleSide }),
       cuts: new MeshBasicMaterial({ side: DoubleSide, transparent: true, alphaTest: 0.02 }),
     };
+    // the car wears the cut-outs' picture one-sided, so nobody sees into it through the clear parts
+    const hull = new MeshBasicMaterial({ transparent: true, alphaTest: 0.02 });
     const scene = new Scene();
     const geometries = [];
     const add = (part, mat) => {
@@ -359,7 +367,7 @@ const Diorama = () => {
     add(parts.top, mats.ground);
     add(parts.sides, mats.solid);
     add(parts.things, mats.solid);
-    add(parts.car, mats.cuts);
+    add(parts.car, hull);
     add(parts.garage, mats.garage);
     add(parts.cards, mats.cuts);
     const turning = parts.turning.map(({ part, foot }) => {
@@ -414,6 +422,8 @@ const Diorama = () => {
         mats[key].map = textures[t][key];
         mats[key].needsUpdate = true;
       }
+      hull.map = textures[t].cuts;
+      hull.needsUpdate = true;
       night.visible = t === "night";
     };
 
@@ -486,7 +496,7 @@ const Diorama = () => {
       el.removeEventListener("pointercancel", onUp);
       el.removeEventListener("wheel", onWheel);
       Object.values(textures).forEach((set) => Object.values(set).forEach((tex) => tex.dispose()));
-      Object.values(mats).forEach((mat) => mat.dispose());
+      [...Object.values(mats), hull].forEach((mat) => mat.dispose());
       geometries.forEach((geo) => geo.dispose());
       glowMap.dispose();
       fadeMap.dispose();
