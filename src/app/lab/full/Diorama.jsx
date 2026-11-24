@@ -19,7 +19,7 @@ import {
   SRGBColorSpace,
   WebGLRenderer,
 } from "three";
-import { THINGS } from "../../../lib/walk";
+import { SLAB, THINGS } from "../../../lib/walk";
 
 // A trial: the block as a paper model. Every thing is a plain solid (a box, a
 // wedge, a flat cut-out) measured off the painting, and the painting is thrown
@@ -73,17 +73,6 @@ const box = (m, L, F, R, h, plainBack = false) => {
   quad(m, br, plainBack ? side : move(br, sub(f, r)));
 };
 
-// The top edge of the slab, clockwise from its left tip, with the height of
-// the stone side under each corner.
-const SLAB = [
-  [166, 505, 27],
-  [728, 296, 30],
-  [1005, 350, 30],
-  [1290, 400, 30],
-  [1372, 505, 30],
-  [1006, 849, 50],
-  [397, 757, 50],
-];
 const SEEN_SIDES = [4, 5, 6]; // the sides that face the painter; the rest borrow the front one
 
 // The car's side view, nose to tail: [share of its length, height, how far the
@@ -132,7 +121,7 @@ const TAPED = [
 ];
 // The car's outline. Its solid is a rough hull, and whatever of the hull falls
 // outside this line is left clear, so no asphalt or brick rides on the car.
-const CAR_CUT = [[936, 554], [939, 537], [982, 507], [987, 500], [1016, 476], [1058, 467], [1111, 470], [1155, 486], [1166, 490], [1170, 512], [1161, 532], [1143, 551], [1085, 571], [1046, 588], [1032, 586], [1022, 583], [946, 571]];
+const CAR_CUT = shape("car");
 
 const model = () => {
   const m = { top: bin(), sides: bin(), things: bin(), car: bin(), garage: bin(), cards: bin() };
@@ -457,14 +446,17 @@ const stripe = () => {
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const START = { az: 0, el: TILT, zoom: 0.8 };
 
-const Diorama = () => {
+// On its own page the model brings its controls; given a `theme` it is only
+// the model, lit the way its host says and filling the box it is put in.
+const Diorama = ({ theme: given }) => {
   const boxRef = useRef(null);
   const glRef = useRef(null);
-  const [theme, setTheme] = useState(null);
+  const [own, setOwn] = useState(null);
   const [failed, setFailed] = useState(false);
+  const theme = given ?? own;
 
   useEffect(() => {
-    setTheme(document.documentElement.dataset.theme === "day" ? "day" : "night");
+    setOwn(document.documentElement.dataset.theme === "day" ? "day" : "night");
   }, []);
 
   useEffect(() => {
@@ -546,6 +538,7 @@ const Diorama = () => {
 
     const textures = {};
     let gone = false;
+    let stale = true; // something other than the view changed: draw the next frame
     const load = async (t) => {
       const img = new Image();
       img.src = `/scene/${t}.webp`;
@@ -575,35 +568,49 @@ const Diorama = () => {
       tape.color.set(t === "night" ? 0x8f8f94 : 0xffffff);
       post.color.set(t === "night" ? 0x55555a : 0x9b9b97);
       night.visible = t === "night";
+      stale = true;
     };
 
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let turned = false; // the visitor has taken the block in hand: stop swaying it
     let drag = null;
-    glRef.current = {
-      show,
-      reset: () => {
-        view.az = ((((view.az + Math.PI) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) - Math.PI; // the short way round
-        Object.assign(aim, START);
-        turned = false;
-      },
+    const reset = () => {
+      view.az = ((((view.az + Math.PI) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) - Math.PI; // the short way round
+      Object.assign(aim, START);
+      turned = false;
     };
+    glRef.current = { show, reset };
 
-    const resize = new ResizeObserver(() => renderer.setSize(el.clientWidth, el.clientHeight, false));
+    const resize = new ResizeObserver(() => {
+      renderer.setSize(el.clientWidth, el.clientHeight, false);
+      stale = true;
+    });
     resize.observe(el);
 
+    // One finger (or the mouse) turns the block; two fingers pinch it nearer.
+    const fingers = new Map();
+    const spread = () => {
+      const [a, b] = [...fingers.values()];
+      return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+    };
+    let pinch = null;
     const onDown = (e) => {
-      drag = { x: e.clientX, y: e.clientY, az: aim.az, el: aim.el };
+      fingers.set(e.pointerId, e);
+      drag = fingers.size === 1 ? { x: e.clientX, y: e.clientY, az: aim.az, el: aim.el } : null;
+      pinch = fingers.size === 2 ? { spread: spread(), zoom: aim.zoom } : null;
       turned = true;
       el.setPointerCapture(e.pointerId);
     };
     const onMove = (e) => {
+      if (fingers.has(e.pointerId)) fingers.set(e.pointerId, e);
+      if (pinch) aim.zoom = clamp((pinch.zoom * spread()) / pinch.spread, 0.5, 3);
       if (!drag) return;
       aim.az = drag.az - (e.clientX - drag.x) * 0.006;
       aim.el = clamp(drag.el + (e.clientY - drag.y) * 0.004, 0.14, 1.3);
     };
-    const onUp = () => {
-      drag = null;
+    const onUp = (e) => {
+      fingers.delete(e.pointerId);
+      drag = pinch = null;
     };
     const onWheel = (e) => {
       e.preventDefault();
@@ -614,8 +621,8 @@ const Diorama = () => {
     el.addEventListener("pointerup", onUp);
     el.addEventListener("pointercancel", onUp);
     el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("dblclick", reset);
 
-    // shortcut: draws every frame even at rest, stop the loop when nothing moves before this goes on the home page
     let raf;
     let last = performance.now();
     const frame = (t) => {
@@ -623,6 +630,10 @@ const Diorama = () => {
       const k = 1 - Math.exp(-(t - last) / 70);
       last = t;
       if (!turned && !calm) aim.az = 0.35 * Math.sin(t / 2600);
+      // at rest, with no beacon blinking, there is nothing new to draw
+      const still = Object.keys(view).every((key) => Math.abs(aim[key] - view[key]) < 1e-4);
+      if (still && !stale && (calm || !night.visible)) return;
+      stale = false;
       for (const key of Object.keys(view)) view[key] += (aim[key] - view[key]) * k;
       camera.position.set(Math.sin(view.az) * Math.cos(view.el) * FAR, Math.sin(view.el) * FAR, Math.cos(view.az) * Math.cos(view.el) * FAR);
       camera.lookAt(0, 0, 0);
@@ -645,6 +656,7 @@ const Diorama = () => {
       el.removeEventListener("pointerup", onUp);
       el.removeEventListener("pointercancel", onUp);
       el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("dblclick", reset);
       Object.values(textures).forEach((set) => Object.values(set).forEach((tex) => tex.dispose()));
       [...Object.values(mats), hull, tape, post, flood.material].forEach((mat) => mat.dispose());
       stripeMap.dispose();
@@ -662,29 +674,32 @@ const Diorama = () => {
 
   useEffect(() => {
     if (!theme || !glRef.current) return;
-    document.documentElement.dataset.theme = theme;
+    if (!given) document.documentElement.dataset.theme = theme;
     glRef.current.show(theme);
-  }, [theme]);
+  }, [theme, given]);
+
+  const stage = (
+    <div
+      ref={boxRef}
+      className={`cursor-grab active:cursor-grabbing ${given ? "size-full" : ""}`}
+      style={{ touchAction: "none", ...(given ? null : { width: "min(100vw, calc((100dvh - 120px) * 1.5))", aspectRatio: "3 / 2" }) }}
+    >
+      {failed ? <p className="p-5 text-dim">webgl is off in this browser, so there is nothing to show here.</p> : null}
+    </div>
+  );
+  if (given) return stage;
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="grid flex-1 place-items-center overflow-hidden">
-        <div
-          ref={boxRef}
-          className="cursor-grab active:cursor-grabbing"
-          style={{ width: "min(100vw, calc((100dvh - 120px) * 1.5))", aspectRatio: "3 / 2", touchAction: "none" }}
-        >
-          {failed ? <p className="p-5 text-dim">webgl is off in this browser, so there is nothing to show here.</p> : null}
-        </div>
-      </div>
+      <div className="grid flex-1 place-items-center overflow-hidden">{stage}</div>
       <div className="dock flex items-center gap-1 px-3 pt-2">
-        <button type="button" className="ctl" onClick={() => setTheme(theme === "day" ? "night" : "day")}>
+        <button type="button" className="ctl" onClick={() => setOwn(theme === "day" ? "night" : "day")}>
           {theme === "day" ? "night" : "day"}
         </button>
         <button type="button" className="ctl" onClick={() => glRef.current?.reset()}>
           reset view
         </button>
-        <span className="ml-auto text-dim">drag to turn · wheel to zoom</span>
+        <span className="ml-auto text-dim">drag to turn · wheel or pinch to zoom</span>
       </div>
     </div>
   );

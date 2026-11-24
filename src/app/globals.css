@@ -156,8 +156,22 @@ li {
   }
 }
 
+/* The block with depth, or as a model: one canvas in the picture's place.
+   Narrow screens fit it whole instead of panning it, so a drag can turn it. */
+@media (max-width: 1023px) {
+  .scene-wrap[data-view] {
+    height: auto;
+    overflow: hidden;
+  }
+  .scene-wrap[data-view] .scene {
+    width: 100%;
+    height: auto;
+  }
+}
+
 /* No signal: the block drops to static for a moment */
-.scene[data-signal="lost"] .scene-img {
+.scene[data-signal="lost"] .scene-img,
+.scene[data-signal="lost"] canvas {
   opacity: 0;
 }
 
@@ -515,9 +529,23 @@ li {
 }
 
 .lede {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 12px 16px 20px;
   font-size: 12px;
   color: var(--dim);
+}
+
+/* The switch between the ways to look at the block: three signs in a row. */
+.views {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.views .ctl {
+  padding: 0 7px;
 }
 
 @media (min-width: 1024px) {

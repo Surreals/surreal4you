@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import dynamic from "next/dynamic";
 import { AMBIENT_LOG, HQ, SPOTS } from "../../lib/feeds";
 import { useClock } from "./useClock";
 import StatusBar from "./StatusBar";
@@ -17,6 +18,19 @@ import Log from "./windows/Log";
 import Map from "./windows/Map";
 import Note from "./windows/Note";
 import Terminal from "./windows/Terminal";
+
+// Two more ways to look at the block. Both bring three.js with them, so they
+// are fetched only when a visitor asks for one.
+const Block3D = dynamic(() => import("../../app/lab/Block3D"), { ssr: false });
+const Diorama = dynamic(() => import("../../app/lab/full/Diorama"), { ssr: false });
+
+// The ways to look at the block: the painting he walks on, the same painting
+// with depth, and a model to turn. `icon` is the path of a 16px sign.
+const VIEWS = [
+  { id: "flat", label: "painting", hint: "click the ground to walk.", icon: "M2.5 3.5h11v9h-11z" },
+  { id: "depth", label: "depth", hint: "move the pointer over the block.", icon: "M2.5 5.5h8v7h-8zM5.5 5.5v-2h8v7h-3" },
+  { id: "model", label: "model", hint: "drag to turn · wheel or pinch to zoom.", icon: "M8 1.8 13.5 5v6L8 14.2 2.5 11V5zM2.5 5 8 8.2 13.5 5M8 8.2v6" },
+];
 
 const WINDOWS = {
   music: { title: "stands · music", width: 600 },
@@ -54,6 +68,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
   const [open, setOpen] = useState([]); // [{ id, x, y, closing }] — last is on top
   const [signal, setSignal] = useState("ok");
   const [theme, setTheme] = useState("night");
+  const [view, setView] = useState("flat");
   const [entries, setEntries] = useState([]);
   const feedRefs = useRef({});
   const openerRef = useRef(null);
@@ -384,18 +399,44 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
             {(album.status ?? "").toLowerCase()} · listen
           </button>
         </div>
-        <Scene
-          album={album}
-          note={note}
-          open={openIds}
-          signal={signal}
-          merchOffline={!settings.showStore}
-          onOpen={openWindow}
-          spotRefs={feedRefs}
-        />
-        <p className="lede rise">
-          <span className="text-ink">click the ground to walk.</span>
-        </p>
+        {view === "flat" ? (
+          <Scene
+            album={album}
+            note={note}
+            open={openIds}
+            signal={signal}
+            merchOffline={!settings.showStore}
+            onOpen={openWindow}
+            spotRefs={feedRefs}
+          />
+        ) : (
+          <div className="scene-wrap rise" data-view={view}>
+            <div className="scene" data-signal={signal}>
+              {view === "depth" ? <Block3D theme={theme} /> : <Diorama theme={theme} />}
+              <span className="scene-static" aria-hidden="true" />
+            </div>
+          </div>
+        )}
+        <div className="lede rise">
+          <span className="text-ink">{VIEWS.find((v) => v.id === view).hint}</span>
+          <span className="views" role="group" aria-label="view of the block">
+            {VIEWS.map((v) => (
+              <button
+                key={v.id}
+                type="button"
+                className="ctl"
+                onClick={() => setView(v.id)}
+                aria-pressed={view === v.id}
+                aria-label={v.label}
+                title={v.label}
+              >
+                <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                  <path d={v.icon} />
+                </svg>
+              </button>
+            ))}
+          </span>
+        </div>
 
         {/* Window layer: ignores the pointer; windows take it back. */}
         <div ref={layerRef} className="pointer-events-none absolute inset-0 z-30 lg:overflow-hidden">
