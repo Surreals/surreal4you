@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Camera, CanvasTexture, LinearFilter, Mesh, PlaneGeometry, Scene, ShaderMaterial, TextureLoader, Vector2, WebGLRenderer } from "three";
-import { SCENE_H, SCENE_W, SLAB, THINGS } from "../../lib/walk";
+import { Camera, CanvasTexture, LinearFilter, Mesh, PlaneGeometry, Scene, ShaderMaterial, TextureLoader, Vector2, Vector3, Vector4, WebGLRenderer } from "three";
+import { FLAT, SCENE_H, SCENE_W, SLAB, THINGS } from "../../lib/walk";
 
 // How far the nearest and the farthest point drift apart at full tilt, as a
 // share of the picture's width and height.
@@ -17,6 +17,13 @@ const BEAM = {
   base: [[402, 713], [430, 713]],
 };
 
+// How near the ground is at this height of the picture: 0 at the far tip of
+// the slab, 1 at the front one.
+const YS = SLAB.map(([, y]) => y);
+const far = Math.min(...YS);
+const near = Math.max(...YS);
+const depthAt = (y) => Math.min(1, Math.max(0, (y - far) / (near - far)));
+
 // The depth of the block, drawn from the outlines the walker already uses:
 // white is near. The ground comes nearer down the picture; every upright thing
 // (and the wall under the front edge) takes the depth of the ground along its
@@ -28,11 +35,8 @@ const depthMap = (beam) => {
   const g = canvas.getContext("2d");
   g.scale(0.5, 0.5);
 
-  const ys = SLAB.map(([, y]) => y);
-  const far = Math.min(...ys);
-  const near = Math.max(...ys);
   const grey = (y) => {
-    const v = Math.round(255 * Math.min(1, Math.max(0, (y - far) / (near - far))));
+    const v = Math.round(255 * depthAt(y));
     return `rgb(${v}, ${v}, ${v})`;
   };
   // left to right: under each x, the depth of the base line there
@@ -85,8 +89,12 @@ uniform sampler2D map;
 uniform sampler2D depth;
 uniform vec2 tilt;
 uniform float showDepth;
+uniform sampler2D walker;
+uniform vec4 who;  // the walker: his feet on the picture, his depth, and whether he is here at all
+uniform vec3 cell; // the frame of his sheet: column, row from the bottom, mirrored or not
 varying vec2 vUv;
 const int STEPS = 28;
+const vec2 BODY = vec2(0.0446, 0.1338); // one frame as a share of the picture (.walker in globals.css)
 void main() {
   // Every point slides by its own depth. Walk from the nearest depth to the
   // farthest and stop at the first point that lands here, so a near thing
@@ -110,22 +118,35 @@ void main() {
     sPrev = si;
     hPrev = h;
   }
-  if (s < 0.0) {
-    // nothing lands here: open sky
-    gl_FragColor = showDepth > 0.5 ? vec4(vec3(texture2D(depth, vUv).r), 1.0) : vec4(0.0);
-    return;
+  vec4 px = vec4(0.0); // nothing lands here: open sky
+  if (s >= 0.0) {
+    vec2 uv = vUv - tilt * (s - 0.5);
+    vec4 c = texture2D(map, uv);
+    px = showDepth > 0.5 ? vec4(vec3(texture2D(depth, uv).r), 1.0) : vec4(c.rgb * c.a, c.a);
+  } else if (showDepth > 0.5) {
+    px = vec4(vec3(texture2D(depth, vUv).r), 1.0);
   }
-  vec2 uv = vUv - tilt * (s - 0.5);
-  vec4 c = texture2D(map, uv);
-  gl_FragColor = showDepth > 0.5 ? vec4(vec3(texture2D(depth, uv).r), 1.0) : vec4(c.rgb * c.a, c.a);
+  // The walker is one more flat card, standing at the depth of the ground
+  // under his feet. Whatever landed here from nearer than that covers him.
+  if (who.w > 0.5 && s < who.z + 0.008) {
+    vec2 q = (vUv - tilt * (who.z - 0.5) - who.xy) / BODY + vec2(0.5, 0.031);
+    if (q.x > 0.0 && q.x < 1.0 && q.y > 0.0 && q.y < 1.0) {
+      if (cell.z > 0.5) q.x = 1.0 - q.x;
+      vec4 k = texture2D(walker, (cell.xy + q) / vec2(6.0, 2.0));
+      px = vec4(k.rgb * k.a, k.a) + px * (1.0 - k.a);
+    }
+  }
+  gl_FragColor = px;
 }`;
 
 // The painted block with depth. The picture is the same one the home page
 // shows; three.js draws it on one flat plane and a shader slides each pixel by
 // its depth as the pointer moves (or on its own, while nobody does). On its
 // own page it brings its controls; given a `theme` it is only the block, lit
-// the way its host says and filling the box it is put in.
-const Block3D = ({ theme: given }) => {
+// the way its host says and filling the box it is put in. Given a `stage`
+// (see FLAT in lib/walk.js) it also draws the walker and tells the host where
+// things of the picture are now.
+const Block3D = ({ theme: given, stage }) => {
   const boxRef = useRef(null);
   const glRef = useRef(null);
   const [own, setOwn] = useState(null);
@@ -161,9 +182,18 @@ const Block3D = ({ theme: given }) => {
     const material = new ShaderMaterial({
       vertexShader: VERTEX,
       fragmentShader: FRAGMENT,
-      uniforms: { map: { value: null }, depth: { value: null }, tilt: { value: new Vector2() }, showDepth: { value: 0 } },
+      uniforms: {
+        map: { value: null },
+        depth: { value: null },
+        tilt: { value: new Vector2() },
+        showDepth: { value: 0 },
+        walker: { value: null },
+        who: { value: new Vector4() },
+        cell: { value: new Vector3() },
+      },
       transparent: true,
     });
+    const { tilt, who, cell } = Object.fromEntries(Object.entries(material.uniforms).map(([key, u]) => [key, u.value]));
     const scene = new Scene();
     scene.add(new Mesh(new PlaneGeometry(2, 2), material));
     const camera = new Camera();
@@ -173,6 +203,21 @@ const Block3D = ({ theme: given }) => {
       stale = true;
     };
     const loader = new TextureLoader();
+    if (stage) {
+      material.uniforms.walker.value = plain(loader.load("/scene/walker.png", redraw));
+      // a point slides by the depth of the ground it stands on
+      Object.assign(stage, {
+        project: (x, y, up = 0) => {
+          const k = depthAt(y) - 0.5;
+          return [x / SCENE_W + tilt.x * k, (y - up) / SCENE_H - tilt.y * k];
+        },
+        pick: (fx, fy) => {
+          const k = depthAt(fy * SCENE_H) - 0.5;
+          return [(fx - tilt.x * k) * SCENE_W, (fy + tilt.y * k) * SCENE_H];
+        },
+        redraw,
+      });
+    }
     const maps = {};
     glRef.current = {
       material,
@@ -206,9 +251,11 @@ const Block3D = ({ theme: given }) => {
       led = false;
       if (calm) aim.x = aim.y = 0;
     };
-    box.addEventListener("pointermove", onMove);
-    box.addEventListener("pointerleave", onLeave);
-    box.addEventListener("pointercancel", onLeave);
+    // a host lays its spots over the block: the pointer over one of them still leads
+    const pad = stage ? box.parentElement : box;
+    pad.addEventListener("pointermove", onMove);
+    pad.addEventListener("pointerleave", onLeave);
+    pad.addEventListener("pointercancel", onLeave);
 
     let raf;
     let last = performance.now();
@@ -226,24 +273,32 @@ const Block3D = ({ theme: given }) => {
       now.x += (aim.x - now.x) * k;
       now.y += (aim.y - now.y) * k;
       // the camera goes where the pointer goes, so near things go the other way
-      material.uniforms.tilt.value.set(-now.x * REACH[0], now.y * REACH[1]);
+      tilt.set(-now.x * REACH[0], now.y * REACH[1]);
+      const w = stage?.who;
+      if (w) {
+        who.set(w.x / SCENE_W, 1 - w.y / SCENE_H, depthAt(w.y), 1);
+        cell.set(w.col, w.back ? 0 : 1, w.flip ? 1 : 0);
+      }
       renderer.render(scene, camera);
+      stage?.subs.forEach((f) => f());
     };
     raf = requestAnimationFrame(frame);
 
     return () => {
       cancelAnimationFrame(raf);
       resize.disconnect();
-      box.removeEventListener("pointermove", onMove);
-      box.removeEventListener("pointerleave", onLeave);
-      box.removeEventListener("pointercancel", onLeave);
+      pad.removeEventListener("pointermove", onMove);
+      pad.removeEventListener("pointerleave", onLeave);
+      pad.removeEventListener("pointercancel", onLeave);
+      if (stage) Object.assign(stage, FLAT);
+      material.uniforms.walker.value?.dispose();
       Object.values(maps).flat().forEach((m) => m.dispose());
       material.dispose();
       renderer.dispose();
       canvas.remove();
       glRef.current = null;
     };
-  }, []);
+  }, [stage]);
 
   useEffect(() => {
     if (!theme || !glRef.current) return;
@@ -257,16 +312,16 @@ const Block3D = ({ theme: given }) => {
     glRef.current.redraw();
   }, [showDepth]);
 
-  const stage = (
+  const shell = (
     <div ref={boxRef} className={given ? "size-full" : undefined} style={given ? undefined : { width: "min(100vw, calc((100dvh - 120px) * 1.5))", aspectRatio: "3 / 2" }}>
       {failed ? <p className="p-5 text-dim">webgl is off in this browser, so there is nothing to show here.</p> : null}
     </div>
   );
-  if (given) return stage;
+  if (given) return shell;
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="grid flex-1 place-items-center overflow-hidden">{stage}</div>
+      <div className="grid flex-1 place-items-center overflow-hidden">{shell}</div>
       <div className="dock flex items-center gap-1 px-3 pt-2">
         <button type="button" className="ctl" onClick={() => setOwn(theme === "day" ? "night" : "day")}>
           {theme === "day" ? "night" : "day"}

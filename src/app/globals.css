@@ -157,16 +157,23 @@ li {
 }
 
 /* The block with depth, or as a model: one canvas in the picture's place.
-   Narrow screens fit it whole instead of panning it, so a drag can turn it. */
+   Narrow screens fit the model whole instead of panning it, so a drag can
+   turn it. */
 @media (max-width: 1023px) {
-  .scene-wrap[data-view] {
+  .scene-wrap[data-view="model"] {
     height: auto;
     overflow: hidden;
   }
-  .scene-wrap[data-view] .scene {
+  .scene-wrap[data-view="model"] .scene {
     width: 100%;
     height: auto;
   }
+}
+
+/* There the canvas draws the walker itself, behind whatever stands in front
+   of him; only the hint at his feet stays in the DOM. */
+.scene-wrap[data-view] .walker {
+  display: none;
 }
 
 /* No signal: the block drops to static for a moment */

@@ -92,14 +92,36 @@ const footprint = ({ base }) => {
 };
 const FOOTPRINTS = THINGS.map(footprint);
 
-// Is the walker behind this thing? Only where the thing's base runs.
-export const behind = ({ base }, x, y) => {
+// Where a thing's base runs under picture x: null beside the thing.
+export const baseY = ({ base }, x) => {
   for (let i = 1; i < base.length; i++) {
     const [x0, y0] = base[i - 1];
     const [x1, y1] = base[i];
-    if (x >= x0 && x <= x1) return y < y0 + ((y1 - y0) * (x - x0)) / (x1 - x0);
+    if (x >= x0 && x <= x1) return y0 + ((y1 - y0) * (x - x0)) / (x1 - x0);
   }
-  return false;
+  return null;
+};
+
+// Is the walker behind this thing? Only where the thing's base runs.
+export const behind = (thing, x, y) => {
+  const by = baseY(thing, x);
+  return by !== null && y < by;
+};
+
+// The block can be shown as the flat picture, as the picture with depth, or
+// as a model. Whatever shows it says
+//   project: where the point `up` px above the ground point (x, y) falls in
+//            the scene box, as shares of its width and height,
+//   pick:    the ground point under such a spot of the box (null: that press
+//            was not a click on the ground),
+//   steer:   the way over the picture that a direction on the screen means,
+//   redraw:  to draw again, because the walker moved.
+// This is the flat picture; the two views with a canvas put their own in.
+export const FLAT = {
+  project: (x, y, up = 0) => [x / SCENE_W, (y - up) / SCENE_H],
+  pick: (fx, fy) => [fx * SCENE_W, fy * SCENE_H],
+  steer: (dx, dy) => [dx, dy],
+  redraw: () => {},
 };
 
 // Where the walker stands to use each spot (keys are SPOTS ids).

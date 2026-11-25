@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { DOORS, START, THINGS, behind, nearDoor, route, step, walkable } from "./walk.js";
+import { DOORS, FLAT, START, THINGS, baseY, behind, nearDoor, route, step, walkable } from "./walk.js";
 
 test("start and every door are on free ground", () => {
   assert.ok(walkable(...START));
@@ -41,6 +41,13 @@ test("behind a thing means above its base, and only where the base runs", () => 
   assert.ok(walkable(700, 400) && behind(booth, 700, 400));
   assert.ok(!behind(booth, 700, 640));
   assert.ok(!behind(booth, 900, 400));
+});
+
+test("the flat view puts a point where the picture has it, and takes it back", () => {
+  assert.deepEqual(FLAT.project(768, 612, 100), [0.5, 0.5]);
+  assert.deepEqual(FLAT.pick(...FLAT.project(470, 700)), [470, 700]);
+  assert.equal(baseY(THINGS.find((t) => t.id === "board"), 955), 775.5);
+  assert.equal(baseY(THINGS.find((t) => t.id === "board"), 500), null);
 });
 
 test("no footprint can be stood on", () => {

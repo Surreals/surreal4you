@@ -12,14 +12,17 @@ import {
   Mesh,
   MeshBasicMaterial,
   OrthographicCamera,
+  PlaneGeometry,
   RepeatWrapping,
   Scene,
   Sprite,
   SpriteMaterial,
   SRGBColorSpace,
+  TextureLoader,
+  Vector3,
   WebGLRenderer,
 } from "three";
-import { SLAB, THINGS } from "../../../lib/walk";
+import { FLAT, SLAB, THINGS } from "../../../lib/walk";
 
 // A trial: the block as a paper model. Every thing is a plain solid (a box, a
 // wedge, a flat cut-out) measured off the painting, and the painting is thrown
@@ -445,10 +448,13 @@ const stripe = () => {
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 const START = { az: 0, el: TILT, zoom: 0.8 };
+const BODY = [0.0446 * W, 0.0892 * W]; // one frame of the walker's sheet, px of the picture (.walker in globals.css)
 
 // On its own page the model brings its controls; given a `theme` it is only
 // the model, lit the way its host says and filling the box it is put in.
-const Diorama = ({ theme: given }) => {
+// Given a `stage` (see FLAT in lib/walk.js) it also stands the walker on the
+// block and tells the host where things of the picture are now.
+const Diorama = ({ theme: given, stage }) => {
   const boxRef = useRef(null);
   const glRef = useRef(null);
   const [own, setOwn] = useState(null);
@@ -539,6 +545,43 @@ const Diorama = ({ theme: given }) => {
     const textures = {};
     let gone = false;
     let stale = true; // something other than the view changed: draw the next frame
+    let dragged = false; // the press now on the block has turned it, so it is no click
+
+    // The walker: one frame of his sheet on a card that stands on his feet and
+    // turns to whoever looks, like the lamp. The frame's feet are 3.1% up it.
+    let walker = null;
+    if (stage) {
+      const sheet = new TextureLoader().load("/scene/walker.png", () => (stale = true));
+      sheet.colorSpace = SRGBColorSpace;
+      sheet.repeat.set(1 / 6, 1 / 2);
+      const geo = new PlaneGeometry(BODY[0], BODY[1] / C).translate(0, (0.469 * BODY[1]) / C, 0);
+      walker = new Mesh(geo, new MeshBasicMaterial({ map: sheet, alphaTest: 0.5, side: DoubleSide }));
+      scene.add(walker);
+      const v = new Vector3();
+      const d = new Vector3();
+      // the ground under a spot of the box: down the line of sight to height 0
+      const ground = (fx, fy) => {
+        v.set(fx * 2 - 1, 1 - fy * 2, -1).unproject(camera);
+        camera.getWorldDirection(d);
+        const t = -v.y / d.y;
+        return seen([v.x + d.x * t, 0, v.z + d.z * t]);
+      };
+      Object.assign(stage, {
+        project: (x, y, up = 0) => {
+          v.set(...at(x, y, up)).project(camera);
+          return [(v.x + 1) / 2, (1 - v.y) / 2];
+        },
+        pick: (fx, fy) => (dragged ? null : ground(fx, fy)),
+        // a step across the screen, taken down to the ground
+        steer: (dx, dy) => {
+          const [ax, ay] = ground(0.5, 0.5);
+          const [bx, by] = ground(0.5 + dx / W, 0.5 + dy / H);
+          const len = Math.hypot(bx - ax, by - ay);
+          return [(bx - ax) / len, (by - ay) / len];
+        },
+        redraw: () => (stale = true),
+      });
+    }
     const load = async (t) => {
       const img = new Image();
       img.src = `/scene/${t}.webp`;
@@ -598,13 +641,17 @@ const Diorama = ({ theme: given }) => {
       fingers.set(e.pointerId, e);
       drag = fingers.size === 1 ? { x: e.clientX, y: e.clientY, az: aim.az, el: aim.el } : null;
       pinch = fingers.size === 2 ? { spread: spread(), zoom: aim.zoom } : null;
-      turned = true;
+      dragged = Boolean(pinch);
+      // with a walker on the block a press may be a click on the ground: wait and see
+      if (!stage || pinch) turned = true;
       el.setPointerCapture(e.pointerId);
     };
     const onMove = (e) => {
       if (fingers.has(e.pointerId)) fingers.set(e.pointerId, e);
       if (pinch) aim.zoom = clamp((pinch.zoom * spread()) / pinch.spread, 0.5, 3);
       if (!drag) return;
+      if (!dragged && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 5) return;
+      dragged = turned = true;
       aim.az = drag.az - (e.clientX - drag.x) * 0.006;
       aim.el = clamp(drag.el + (e.clientY - drag.y) * 0.004, 0.14, 1.3);
     };
@@ -640,10 +687,18 @@ const Diorama = ({ theme: given }) => {
       camera.zoom = view.zoom;
       camera.updateProjectionMatrix();
       turning.forEach((mesh) => (mesh.rotation.y = view.az));
+      const who = stage?.who;
+      if (who) {
+        walker.position.set(...at(who.x, who.y));
+        walker.rotation.y = view.az;
+        walker.scale.x = who.flip ? -1 : 1;
+        walker.material.map.offset.set(who.col / 6, who.back ? 0 : 0.5);
+      }
       // two short flashes every 5.6s, like the beacon on the home page
       const p = (t % 5600) / 5600;
       beacon.material.opacity = calm ? 0.6 : 0.3 + 0.7 * Math.max(Math.exp(-(((p - 0.03) / 0.018) ** 2)), Math.exp(-(((p - 0.13) / 0.018) ** 2)));
       renderer.render(scene, camera);
+      stage?.subs.forEach((f) => f());
     };
     raf = requestAnimationFrame(frame);
 
@@ -657,6 +712,12 @@ const Diorama = ({ theme: given }) => {
       el.removeEventListener("pointercancel", onUp);
       el.removeEventListener("wheel", onWheel);
       el.removeEventListener("dblclick", reset);
+      if (stage) Object.assign(stage, FLAT);
+      if (walker) {
+        walker.material.map.dispose();
+        walker.material.dispose();
+        walker.geometry.dispose();
+      }
       Object.values(textures).forEach((set) => Object.values(set).forEach((tex) => tex.dispose()));
       [...Object.values(mats), hull, tape, post, flood.material].forEach((mat) => mat.dispose());
       stripeMap.dispose();
@@ -670,7 +731,7 @@ const Diorama = ({ theme: given }) => {
       canvas.remove();
       glRef.current = null;
     };
-  }, []);
+  }, [stage]);
 
   useEffect(() => {
     if (!theme || !glRef.current) return;
@@ -678,7 +739,7 @@ const Diorama = ({ theme: given }) => {
     glRef.current.show(theme);
   }, [theme, given]);
 
-  const stage = (
+  const shell = (
     <div
       ref={boxRef}
       className={`cursor-grab active:cursor-grabbing ${given ? "size-full" : ""}`}
@@ -687,11 +748,11 @@ const Diorama = ({ theme: given }) => {
       {failed ? <p className="p-5 text-dim">webgl is off in this browser, so there is nothing to show here.</p> : null}
     </div>
   );
-  if (given) return stage;
+  if (given) return shell;
 
   return (
     <div className="flex flex-1 flex-col">
-      <div className="grid flex-1 place-items-center overflow-hidden">{stage}</div>
+      <div className="grid flex-1 place-items-center overflow-hidden">{shell}</div>
       <div className="dock flex items-center gap-1 px-3 pt-2">
         <button type="button" className="ctl" onClick={() => setOwn(theme === "day" ? "night" : "day")}>
           {theme === "day" ? "night" : "day"}

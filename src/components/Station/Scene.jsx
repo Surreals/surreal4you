@@ -2,9 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { SPOTS } from "../../lib/feeds";
-import { SCENE_H, SCENE_W, THINGS } from "../../lib/walk";
+import { FLAT, SCENE_H, SCENE_W, THINGS, baseY } from "../../lib/walk";
 import Walker from "./Walker";
+
+// Two more ways to look at the block. Both bring three.js with them, so they
+// are fetched only when a visitor asks for one.
+const Block3D = dynamic(() => import("../../app/lab/Block3D"), { ssr: false });
+const Diorama = dynamic(() => import("../../app/lab/full/Diorama"), { ssr: false });
 
 const ALT =
   "A block of Uzhhorod cut out like a model: stadium stands, a shuttered kiosk, a garage with a black sedan, a guard booth, a street lamp, a notice board and a radio mast";
@@ -24,18 +30,53 @@ const pause = (spot) => spot?.querySelector("video")?.pause();
 const clip = (shape) => `polygon(${shape.map(([x, y]) => `${(x / SCENE_W) * 100}% ${(y / SCENE_H) * 100}%`).join(", ")})`;
 const SIZES = "(min-width: 1024px) 100vw, 150vh";
 
+// Each spot is named after the thing it marks. On the flat picture it is a
+// point; a view with depth needs to know what it hangs on: the ground under
+// the thing's front edge, and how high above that. Three spots do not hang on
+// a front wall: the lamp and the mast stand on one point, and the seats of the
+// stands lean back from their wall. Their ground is as the model measures it.
+const FEET = { music: 414, subject: 709, map: 525 };
+const ANCHORS = Object.fromEntries(
+  SPOTS.map((s) => {
+    const [x, y] = [(s.x / 100) * SCENE_W, (s.y / 100) * SCENE_H];
+    const foot = FEET[s.id] ?? baseY(THINGS.find((t) => t.id === s.place), x) ?? y;
+    return [s.id, [x, foot, foot - y]];
+  }),
+);
+
 // The block. One picture per theme, seven spots on it; each spot opens a
 // window, and the four with a camera show what that camera sees on hover or
-// while the walker stands at it.
-const Scene = ({ album, note, open, signal, merchOffline, onOpen, spotRefs }) => {
+// while the walker stands at it. `view` picks how the block is shown: the
+// flat picture, the picture with depth, or the model. The walker and the
+// spots are the same in all three, placed through `stage`.
+const Scene = ({ album, note, open, signal, merchOffline, view, theme, onOpen, spotRefs }) => {
   const wrapRef = useRef(null);
   const sceneRef = useRef(null);
   const [near, setNear] = useState(null);
+  // `subs` are called after every frame a canvas view draws, to move the DOM with it
+  const [stage] = useState(() => ({ ...FLAT, subs: new Set() }));
 
-  // Narrow screens pan the block sideways; start in the middle of it.
   useEffect(() => {
+    const place = () =>
+      SPOTS.forEach((s) => {
+        const el = spotRefs.current[s.id];
+        if (!el) return;
+        const [fx, fy] = stage.project(...ANCHORS[s.id]);
+        el.style.left = `${fx * 100}%`;
+        el.style.top = `${fy * 100}%`;
+      });
+    stage.subs.add(place);
+    return () => stage.subs.delete(place);
+  }, [stage, spotRefs]);
+
+  useEffect(() => {
+    // Narrow screens pan the block sideways (the model they fit whole); start in the middle of it.
     const el = wrapRef.current;
-    if (el) el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2;
+    if (view !== "model" && el) el.scrollLeft = (el.scrollWidth - el.clientWidth) / 2;
+    stage.subs.forEach((f) => f()); // nobody draws the flat picture, so nobody else calls them
+  }, [view, stage]);
+
+  useEffect(() => {
     // The other theme's picture is fetched once the page has settled, so the
     // day / night switch can crossfade into it instead of waiting for it.
     const warm = setTimeout(() => {
@@ -52,20 +93,28 @@ const Scene = ({ album, note, open, signal, merchOffline, onOpen, spotRefs }) =>
   }, [near, spotRefs]);
 
   return (
-    <div ref={wrapRef} className="scene-wrap rise">
+    <div ref={wrapRef} className="scene-wrap rise" data-view={view === "flat" ? undefined : view}>
       <div ref={sceneRef} className="scene" data-signal={signal}>
-        {/* shortcut: only the night picture is preloaded, a day-time visit fetches its picture late; split by theme cookie if LCP matters */}
-        <Image src="/scene/night.webp" alt={ALT} fill priority sizes={SIZES} className="scene-img night-only" />
-        <Image src="/scene/day.webp" alt={ALT} fill sizes={SIZES} className="scene-img day-only" />
-        <span className="beacon night-only" aria-hidden="true" />
+        {view === "flat" ? (
+          <>
+            {/* shortcut: only the night picture is preloaded, a day-time visit fetches its picture late; split by theme cookie if LCP matters */}
+            <Image src="/scene/night.webp" alt={ALT} fill priority sizes={SIZES} className="scene-img night-only" />
+            <Image src="/scene/day.webp" alt={ALT} fill sizes={SIZES} className="scene-img day-only" />
+            <span className="beacon night-only" aria-hidden="true" />
+            {THINGS.map((t) => (
+              <div key={t.id} className="occluder" data-thing={t.id} style={{ clipPath: clip(t.shape) }} aria-hidden="true">
+                <Image src="/scene/night.webp" alt="" fill sizes={SIZES} className="scene-img night-only" />
+                <Image src="/scene/day.webp" alt="" fill sizes={SIZES} className="scene-img day-only" />
+              </div>
+            ))}
+          </>
+        ) : view === "depth" ? (
+          <Block3D theme={theme} stage={stage} />
+        ) : (
+          <Diorama theme={theme} stage={stage} />
+        )}
         <span className="scene-static" aria-hidden="true" />
-        {THINGS.map((t) => (
-          <div key={t.id} className="occluder" data-thing={t.id} style={{ clipPath: clip(t.shape) }} aria-hidden="true">
-            <Image src="/scene/night.webp" alt="" fill sizes={SIZES} className="scene-img night-only" />
-            <Image src="/scene/day.webp" alt="" fill sizes={SIZES} className="scene-img day-only" />
-          </div>
-        ))}
-        <Walker sceneRef={sceneRef} wrapRef={wrapRef} spots={SPOTS} onOpen={onOpen} onNear={setNear} />
+        <Walker sceneRef={sceneRef} wrapRef={wrapRef} stage={stage} view={view} spots={SPOTS} onOpen={onOpen} onNear={setNear} />
 
         {SPOTS.map((s, i) => {
           const offline = s.id === "merch" && merchOffline;
