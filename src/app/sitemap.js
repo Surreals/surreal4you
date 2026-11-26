@@ -14,7 +14,7 @@ const LAST_MODIFIED = {
 };
 
 // Generated rather than static: /store only belongs in the sitemap while merch
-// is published from /admin/products.
+// is published from /adminka/products.
 const sitemap = async () => {
   const { settings } = await getContent();
 

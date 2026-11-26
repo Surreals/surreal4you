@@ -1,6 +1,6 @@
 // Minimal service worker: makes the site installable and shows a branded
 // offline page when a navigation fails. Nothing else is cached — pages, API
-// and /admin always go to the network.
+// and /adminka always go to the network.
 const CACHE = 'offline-v2';
 const OFFLINE_URL = '/offline.html';
 

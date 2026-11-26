@@ -6,21 +6,20 @@ import { getContent, saveContent } from "@/lib/content";
 
 const str = (formData, key) => (formData.get(key) ?? "").toString().trim();
 
-export async function saveNote(formData) {
+export async function saveAlbum(formData) {
   await requireAdmin();
 
   const content = await getContent();
-  const date = str(formData, "date") || new Date().toISOString().slice(0, 10);
   await saveContent({
     ...content,
-    note: {
-      title: str(formData, "title") || content.note.title,
-      body: (formData.get("body") ?? "").toString().replace(/\r\n/g, "\n").trim(),
-      date,
+    album: {
+      ...content.album,
+      title: str(formData, "title"),
+      status: str(formData, "status"),
     },
   });
 
   revalidatePath("/");
-  revalidatePath("/admin/note");
-  revalidatePath("/admin");
+  revalidatePath("/adminka/album");
+  revalidatePath("/adminka");
 }

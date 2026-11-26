@@ -19,16 +19,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   providers: [Google],
   session: { strategy: "jwt" },
-  pages: { signIn: "/admin/login" },
+  pages: { signIn: "/adminka/login" },
   callbacks: {
     // Runs at sign-in: reject anyone not on the allowlist.
     signIn({ profile, user }) {
       return isAdminEmail(profile?.email ?? user?.email);
     },
     // Optimistic guard used by middleware. The login page is always reachable;
-    // everything else under /admin requires an allowlisted session.
+    // everything else under /adminka requires an allowlisted session.
     authorized({ auth: session, request }) {
-      if (request.nextUrl.pathname === "/admin/login") return true;
+      if (request.nextUrl.pathname === "/adminka/login") return true;
       return isAdminEmail(session?.user?.email);
     },
   },

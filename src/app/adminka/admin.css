@@ -1,0 +1,649 @@
+/* ------------------------------------------------------------------------
+ * /adminka — one stylesheet, every rule under .adm so nothing leaks into the
+ * station (Next keeps a layout's CSS loaded after client navigation).
+ *
+ * Colours, type and curves are the station tokens from globals.css, so the
+ * admin follows night / day with the rest of the site. It takes none of the
+ * station's decor: no film, no crosshair cursor, no tape. See DESIGN.md.
+ * ---------------------------------------------------------------------- */
+
+.adm {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.adm ::selection {
+  background: var(--red);
+  color: #fff;
+}
+
+.adm :focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+.adm code,
+.adm .adm-code {
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--panel-2);
+  padding: 0 4px;
+}
+
+/* ---- header + nav ------------------------------------------------------ */
+
+.adm-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 10px 24px;
+  background: var(--panel);
+  border-bottom: 2px solid var(--ink);
+}
+
+.adm-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.adm-brand a {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.adm-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.adm-nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 12px;
+  color: var(--dim);
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.adm-nav a[aria-current="page"] {
+  color: var(--ink);
+}
+
+/* the current section carries the one accent as a 2px bar under it */
+.adm-nav a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 2px;
+  height: 2px;
+  background: var(--red);
+}
+
+.adm-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.adm-main {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+
+/* ---- page header ------------------------------------------------------- */
+
+.adm-page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.adm-page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.adm-title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 40px;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: lowercase;
+}
+
+.adm-title.adm-title-sm {
+  font-size: 28px;
+}
+
+.adm-lede {
+  max-width: 65ch;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.adm-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.adm-link {
+  font-size: 12px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color 150ms ease;
+}
+
+/* ---- surfaces ---------------------------------------------------------- */
+
+.adm-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 16px;
+}
+
+.adm-rows {
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+.adm-rows > * + * {
+  border-top: 1px solid var(--line);
+}
+
+.adm-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 12px 16px;
+}
+
+.adm-empty {
+  border: 1px dashed var(--line);
+  padding: 16px;
+  font-size: 12px;
+  color: var(--dim);
+}
+
+.adm-stat {
+  display: block;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 16px;
+  transition: border-color 150ms ease, transform 160ms var(--ease-out);
+}
+
+.adm-stat .adm-label {
+  margin-bottom: 0;
+}
+
+.adm-stat:active {
+  transform: scale(0.98);
+}
+
+.adm-stat-value {
+  margin-top: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.adm-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.adm-badge[data-on] {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+}
+
+/* ---- form fields ------------------------------------------------------- */
+
+.adm-field {
+  display: block;
+}
+
+.adm-input,
+.adm-textarea {
+  display: block;
+  width: 100%;
+  background: var(--panel-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 7px 10px;
+  font: inherit;
+  font-size: 14px;
+  transition: border-color 150ms ease;
+}
+
+.adm-textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+
+.adm-input::placeholder,
+.adm-textarea::placeholder {
+  color: var(--dim);
+}
+
+.adm-input:focus,
+.adm-textarea:focus {
+  border-color: var(--ink);
+}
+
+/* native date picker icon follows the theme */
+.adm-input[type="date"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="day"] .adm-input[type="date"] {
+  color-scheme: light;
+}
+
+.adm-input[type="file"] {
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.adm-input[type="file"]::file-selector-button {
+  margin-right: 10px;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  padding: 2px 8px;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* ---- buttons ----------------------------------------------------------- */
+
+.adm-btn {
+  position: relative;
+  display: inline-grid;
+  align-items: center;
+  justify-items: center;
+  height: 36px;
+  padding: 0 16px;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease,
+    opacity 150ms ease, transform 160ms var(--ease-out);
+}
+
+/* reach 44px on touch without growing the box */
+.adm-btn::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+}
+
+.adm-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.adm-btn:disabled {
+  cursor: progress;
+}
+
+.adm-btn-primary {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.adm-btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.adm-btn-danger {
+  background: transparent;
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.adm-btn-danger-solid {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+}
+
+.adm-btn-sm {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.adm-btn-block {
+  display: grid;
+  width: 100%;
+}
+
+/* Label and pending label share one grid cell, so the button keeps the width
+   of the longer one and nothing shifts when a save starts. */
+.adm-btn > span {
+  grid-area: 1 / 1;
+  transition: opacity 150ms ease;
+}
+
+.adm-btn > .adm-btn-pending {
+  opacity: 0;
+}
+
+.adm-btn[data-pending] > .adm-btn-idle {
+  opacity: 0;
+}
+
+.adm-btn[data-pending] > .adm-btn-pending {
+  opacity: 1;
+  animation: adm-blink 1s steps(2, jump-none) infinite;
+}
+
+@keyframes adm-blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .adm-nav a:hover {
+    color: var(--ink);
+    background: var(--panel-2);
+  }
+
+  .adm-link:hover {
+    color: var(--red);
+  }
+
+  .adm-brand a:hover {
+    color: var(--red);
+  }
+
+  .adm-stat:hover {
+    border-color: var(--ink);
+  }
+
+  .adm-btn-primary:hover:not(:disabled),
+  .adm-btn-danger:hover:not(:disabled) {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+  }
+
+  .adm-btn-ghost:hover:not(:disabled) {
+    border-color: var(--ink);
+  }
+
+  .adm-btn-danger-solid:hover:not(:disabled) {
+    opacity: 0.88;
+  }
+
+  .adm-input:hover:not(:focus),
+  .adm-textarea:hover:not(:focus) {
+    border-color: var(--dim);
+  }
+}
+
+/* ---- login ------------------------------------------------------------- */
+
+.adm-login {
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+  padding: 24px 16px;
+}
+
+.adm-login-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--panel);
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow);
+  padding: 28px;
+}
+
+/* ---- alert dialog (Radix) ---------------------------------------------- */
+
+.adm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.adm-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  width: min(420px, calc(100vw - 32px));
+  height: fit-content;
+  margin: auto;
+  background: var(--panel);
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow);
+  padding: 24px;
+}
+
+.adm-dialog-title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.adm-dialog-text {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.adm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+/* Radix waits for animationend before unmounting, so enter and exit are
+   keyframes. Exit is faster than enter: the system is responding, not asking. */
+.adm-overlay[data-state="open"] {
+  animation: adm-fade-in 220ms var(--ease-out);
+}
+
+.adm-overlay[data-state="closed"] {
+  animation: adm-fade-out 140ms var(--ease-out) forwards;
+}
+
+.adm-dialog[data-state="open"] {
+  animation: adm-dialog-in 220ms var(--ease-out);
+}
+
+.adm-dialog[data-state="closed"] {
+  animation: adm-dialog-out 140ms var(--ease-out) forwards;
+}
+
+@keyframes adm-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes adm-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes adm-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes adm-dialog-out {
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* ---- toasts (Sonner, unstyled: its motion, our look) ------------------- */
+
+.adm [data-sonner-toast].adm-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: var(--width);
+  padding: 12px 14px;
+  background: var(--panel-2);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  box-shadow: var(--shadow);
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 13px;
+}
+
+.adm [data-sonner-toast].adm-toast-error {
+  border-color: var(--red);
+}
+
+.adm [data-sonner-toast].adm-toast [data-icon] {
+  display: flex;
+  width: 16px;
+  height: 16px;
+  color: var(--ink);
+}
+
+.adm [data-sonner-toast].adm-toast-error [data-icon] {
+  color: var(--red);
+}
+
+/* ---- page entrance ----------------------------------------------------- */
+
+/* One short staggered rise per navigation. A server action re-render keeps
+   the same DOM nodes, so saving never replays it. Delays are uneven on
+   purpose and cap early; opacity never blocks clicks. */
+.adm-stagger > * {
+  animation: adm-rise 360ms var(--ease-out) backwards;
+}
+
+.adm-stagger > :nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.adm-stagger > :nth-child(3) {
+  animation-delay: 90ms;
+}
+
+.adm-stagger > :nth-child(4) {
+  animation-delay: 130ms;
+}
+
+.adm-stagger > :nth-child(5) {
+  animation-delay: 180ms;
+}
+
+.adm-stagger > :nth-child(n + 6) {
+  animation-delay: 210ms;
+}
+
+@keyframes adm-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .adm-stagger > * {
+    animation-name: adm-fade-in;
+  }
+
+  .adm-dialog[data-state="open"] {
+    animation-name: adm-fade-in;
+  }
+
+  .adm-dialog[data-state="closed"] {
+    animation-name: adm-fade-out;
+  }
+
+  .adm-btn:active:not(:disabled),
+  .adm-stat:active {
+    transform: none;
+  }
+
+  .adm-btn[data-pending] > .adm-btn-pending {
+    animation: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .adm-head {
+    position: static;
+    padding: 10px 16px;
+  }
+
+  .adm-main {
+    padding: 24px 16px 64px;
+  }
+
+  .adm-title {
+    font-size: 32px;
+  }
+}

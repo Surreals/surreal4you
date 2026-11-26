@@ -1,9 +1,9 @@
 {
-  "id": "/admin",
+  "id": "/adminka",
   "name": "SRRLOVYCH Admin",
   "short_name": "SRRLOVYCH Admin",
-  "start_url": "/admin",
-  "scope": "/admin",
+  "start_url": "/adminka",
+  "scope": "/adminka",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",

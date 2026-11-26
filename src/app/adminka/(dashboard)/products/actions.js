@@ -19,8 +19,8 @@ function refresh() {
   revalidatePath("/");
   revalidatePath("/store");
   revalidatePath("/sitemap.xml");
-  revalidatePath("/admin/products");
-  revalidatePath("/admin");
+  revalidatePath("/adminka/products");
+  revalidatePath("/adminka");
 }
 
 // Publishes / unpublishes the whole merch section: the STORE link on the

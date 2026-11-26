@@ -31,6 +31,6 @@ export async function saveLinks(formData) {
   await saveContent({ ...content, links: { main, side } });
 
   revalidatePath("/");
-  revalidatePath("/admin/links");
-  revalidatePath("/admin");
+  revalidatePath("/adminka/links");
+  revalidatePath("/adminka");
 }

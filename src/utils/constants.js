@@ -26,19 +26,19 @@ export const sideLinks = [
 // Seed for the admin-managed settings (see src/lib/content.js).
 export const settings = {
     // Merch is unpublished: the STORE link is hidden and /store stays out of
-    // search until this is switched on from /admin/products.
+    // search until this is switched on from /adminka/products.
     showStore: false,
 }
 
 // Feeds the ticker, the music camera and the dossier. Editable from
-// /admin/album.
+// /adminka/album.
 export const album = {
     title: 'hehemonia',
     status: 'OUT now',
 }
 
 // The artist's note: the sheet pinned to the board on the block. Editable
-// from /admin/note. Plain text, blank line = new paragraph.
+// from /adminka/note. Plain text, blank line = new paragraph.
 export const note = {
     title: 'pinned',
     body: [

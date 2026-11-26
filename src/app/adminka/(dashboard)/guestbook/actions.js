@@ -7,8 +7,8 @@ import { deleteGuestLine, setGuestStatus } from "@/lib/guestbook";
 const field = (formData, key) => (formData.get(key) ?? "").toString();
 
 const done = () => {
-  revalidatePath("/admin/guestbook");
-  revalidatePath("/admin");
+  revalidatePath("/adminka/guestbook");
+  revalidatePath("/adminka");
 };
 
 export async function approveLine(formData) {

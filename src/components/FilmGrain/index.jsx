@@ -3,7 +3,7 @@
 // server component; motion is dropped under prefers-reduced-motion.
 //
 // Rendered per public page rather than from the root layout on purpose — it
-// must not reach /admin, which is a plain black-on-white tool.
+// must not reach /adminka, which is a plain working tool.
 const FilmGrain = () => (
   <div className="film" aria-hidden="true">
     <span className="film-grain" />

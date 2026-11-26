@@ -15,12 +15,22 @@ Built with **Next.js (App Router, SSR)**, React 18 and Tailwind CSS.
   See [`DESIGN.md`](DESIGN.md) and the spec in `docs/superpowers/specs/`.
 - `/store` — catalog-only merch store with an embedded Spotify player.
 - `/moodboard` — the visual system reference (see [`DESIGN.md`](DESIGN.md)).
-- `/admin` — admin panel (Google login) to manage merch, its visibility, the album, links,
+- `/adminka` — admin panel (Google login) to manage merch, its visibility, the album, links,
   the artist's note and the guestbook queue.
 
 ## Admin panel
 
-Google sign-in (NextAuth v5) restricted to an email allowlist. Edited content
+Google sign-in (NextAuth v5) restricted to an email allowlist. The panel lives at `/adminka`;
+`/admin/*` 308-redirects there (`next.config.mjs`).
+
+The UI uses the station tokens, so it follows night / day, and one stylesheet,
+[`src/app/adminka/admin.css`](src/app/adminka/admin.css), where every rule sits under `.adm`.
+Shared pieces are in `src/app/adminka/_components/`: `ActionForm` wraps a server action and
+reports the result with a [Sonner](https://sonner.emilkowal.ski) toast, `SubmitButton` shows the
+pending state, `Field` and `Nav`. Deleting a product asks through a Radix `AlertDialog`. Every
+server action still calls `requireAdmin()` itself.
+
+Edited content
 (products, settings, album, links, note) and uploaded images are stored in **Vercel Blob**;
 the public pages read it at request time. Locally, if `BLOB_READ_WRITE_TOKEN`
 is not set, content falls back to a `.data/content.json` file (dev only) and
@@ -33,7 +43,7 @@ no links, one per minute, at most 10 *waiting* lines per visitor, 300 waiting in
 approved history never blocks the queue). Every line is its own **private** blob under
 `guestbook/<status>/<visitor>/<id>.json` (or a file under `.data/guestbook/` locally), so
 visitors never overwrite each other or a moderation decision. Nothing is public until
-approved in `/admin/guestbook`; approving rebuilds `guestbook/feed.json`, the only thing
+approved in `/adminka/guestbook`; approving rebuilds `guestbook/feed.json`, the only thing
 the public endpoint reads. Approved lines drip into every visitor's log between the
 station's own entries. The visitor identity comes from `x-real-ip`, which Vercel sets;
 client-sent `x-forwarded-for` is ignored.
@@ -65,11 +75,11 @@ Other scripts: `pnpm build`, `pnpm start`, `pnpm lint`.
 ## Store
 
 Catalog-only — seed products live in [`src/data/products.js`](src/data/products.js), and are
-managed from `/admin/products` once an admin saves. "Buy" buttons open the order channel set by
+managed from `/adminka/products` once an admin saves. "Buy" buttons open the order channel set by
 `ORDER_URL` in [`src/utils/constants.js`](src/utils/constants.js). There is no on-site checkout or
 payment processing.
 
-**Visibility.** `/admin/products` carries a master switch (`settings.showStore`). While merch is
+**Visibility.** `/adminka/products` carries a master switch (`settings.showStore`). While merch is
 hidden, any link pointing at `/store` is stripped from the landing page and `/store` is left out of
 [`src/app/sitemap.js`](src/app/sitemap.js) and marked `noindex` — but the page still opens by
 direct URL so the catalog can be previewed before it goes live.
@@ -85,7 +95,7 @@ Current setup flow:
    <https://artists.spotify.com/merch>
 4. Publish the Shopify products to Spotify, then pin/tag featured merch in
    Spotify for Artists.
-5. Paste the same Shopify product URLs into `/admin/products` as `Buy URL` so
+5. Paste the same Shopify product URLs into `/adminka/products` as `Buy URL` so
    the website store links to the catalog Spotify uses.
 
 Listing merch **on the Spotify artist profile** is not a website feature — it is
@@ -98,7 +108,7 @@ Artists once a merch partner is connected.
 
 The site and the admin panel install from the browser as two separate apps:
 `public/manifest.webmanifest` (linked from the root layout) and `public/admin.webmanifest`
-(linked from `src/app/admin/layout.jsx`, kept outside `/admin/` so the middleware never
+(linked from `src/app/adminka/layout.jsx`, kept outside `/adminka/` so the middleware never
 redirects it). Icons live in `public/icons/` — admin variants carry an "ADM" tag.
 `public/sw.js` caches only `public/offline.html` and serves it when a page can't load offline;
 nothing else is cached. It is registered in production only by
