@@ -14,12 +14,8 @@ const AlbumPage = async () => {
       <div>
         <h1 className="adm-title">Album</h1>
         <p className="adm-lede">
-          The landing page no longer carries an album announcement block. These two values feed the
-          mono info strip at the bottom of the landing page, which reads{" "}
-          <code>
-            {album.title} — {(album.status ?? "").toLowerCase()}
-          </code>
-          .
+          The title sits large over the block, on the music camera and in the dossier. The status goes
+          on the listen button, lowercase: <code>{(album.status ?? "").toLowerCase()} · listen</code>.
         </p>
       </div>
 

@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { auth, isAdminEmail, signOut } from "@/auth";
+import { getContent } from "@/lib/content";
 import Nav from "../_components/Nav";
 import SubmitButton from "../_components/SubmitButton";
+import Pulse from "../_components/Pulse";
 
 export const metadata = {
   title: "Admin — SRRLOVYCH",
@@ -12,6 +14,7 @@ const DashboardLayout = async ({ children }) => {
   const session = await auth();
   const email = session?.user?.email;
   if (!isAdminEmail(email)) redirect("/adminka/login");
+  const { texts } = await getContent();
 
   return (
     <>
@@ -25,6 +28,7 @@ const DashboardLayout = async ({ children }) => {
           </span>
           <Nav />
         </div>
+        <Pulse lines={texts.log} />
         <div className="adm-user">
           <span>{email ?? ""}</span>
           <form

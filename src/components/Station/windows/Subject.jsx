@@ -5,7 +5,7 @@ import { HQ } from "../../../lib/feeds";
 const BIRTH = "2000-10-14";
 
 // The lamp: the dossier. Who the block is watching.
-const Subject = ({ album, links }) => {
+const Subject = ({ album, links, dossier }) => {
   const age = calculateAge(BIRTH);
   const channels = [...links.main, ...links.side].filter((l) => !l.url.startsWith("/"));
 
@@ -19,7 +19,7 @@ const Subject = ({ album, links }) => {
         <dt>name</dt>
         <dd className="font-display text-base font-bold">SRRLOVYCH</dd>
         <dt>aka</dt>
-        <dd>srrl · surrealovych</dd>
+        <dd>{dossier.aka}</dd>
         <dt>age</dt>
         <dd className="tnum">{age}</dd>
         <dt>city</dt>
@@ -27,15 +27,15 @@ const Subject = ({ album, links }) => {
           {HQ.city} · {HQ.lat} {HQ.lon}
         </dd>
         <dt>genre</dt>
-        <dd>hip-hop</dd>
+        <dd>{dossier.genre}</dd>
         <dt>album</dt>
         <dd>
           {album.title} · <span className="text-red">{(album.status ?? "").toLowerCase()}</span>
         </dd>
         <dt>status</dt>
-        <dd>under observation</dd>
+        <dd>{dossier.status}</dd>
         <dt>last seen</dt>
-        <dd>under the lamp</dd>
+        <dd>{dossier.lastSeen}</dd>
         <dt>channels</dt>
         <dd className="-ml-2 flex flex-wrap">
           {channels.map((l) => (

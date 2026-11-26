@@ -49,7 +49,7 @@ const ANCHORS = Object.fromEntries(
 // while the walker stands at it. `view` picks how the block is shown: the
 // flat picture, the picture with depth, or the model. The walker and the
 // spots are the same in all three, placed through `stage`.
-const Scene = ({ album, note, open, signal, merchOffline, view, theme, onOpen, spotRefs }) => {
+const Scene = ({ album, note, labels, open, signal, merchOffline, view, theme, onOpen, spotRefs }) => {
   const wrapRef = useRef(null);
   const sceneRef = useRef(null);
   const [near, setNear] = useState(null);
@@ -120,7 +120,7 @@ const Scene = ({ album, note, open, signal, merchOffline, view, theme, onOpen, s
           const offline = s.id === "merch" && merchOffline;
           const view = offline ? { ...s, ...s.offline } : s;
           const isOpen = open.includes(s.id);
-          const what = s.id === "music" ? album.title : s.id === "note" ? note.title : s.label;
+          const what = s.id === "music" ? album.title : s.id === "note" ? note.title : labels[s.id] ?? s.label;
           return (
             <button
               key={s.id}

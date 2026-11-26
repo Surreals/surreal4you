@@ -4,7 +4,7 @@ import { isStoreLink } from "../lib/store";
 import { artistJsonLd } from "../lib/jsonLd";
 
 const Home = async () => {
-  const { album, links, settings, products, note } = await getContent();
+  const { album, links, settings, products, note, texts } = await getContent();
 
   // The store link only exists on the landing page while merch is published.
   const visible = (list) => (settings.showStore ? list : list.filter((l) => !isStoreLink(l)));
@@ -22,6 +22,7 @@ const Home = async () => {
         settings={settings}
         products={products}
         note={note}
+        texts={texts}
         attribution={
           <a
             href="https://www.bytcd.com/"

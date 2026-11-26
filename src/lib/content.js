@@ -10,6 +10,7 @@ import {
   note as defaultNote,
 } from "../utils/constants";
 import { products as defaultProducts } from "../data/products";
+import { TEXTS, normalizeTexts } from "./feeds";
 
 const CONTENT_PATH = "content/site.json";
 const LOCAL_FILE = path.join(process.cwd(), ".data", "content.json");
@@ -23,6 +24,7 @@ export const DEFAULT_CONTENT = {
   links: { main: mainLinks, side: sideLinks },
   settings: defaultSettings,
   note: defaultNote,
+  texts: TEXTS,
 };
 
 // Coerce arbitrary stored JSON into the shape the UI expects.
@@ -49,6 +51,7 @@ function normalize(raw) {
       body: typeof n.body === "string" ? n.body : DEFAULT_CONTENT.note.body,
       date: typeof n.date === "string" ? n.date : DEFAULT_CONTENT.note.date,
     },
+    texts: normalizeTexts(c.texts),
   };
 }
 

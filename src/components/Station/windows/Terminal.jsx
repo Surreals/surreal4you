@@ -94,12 +94,12 @@ const Terminal = ({ api }) => {
         if (!arg || /srrl|surreal/.test(arg)) {
           print(
             "  name     SRRLOVYCH",
-            "  aka      srrl · surrealovych",
+            `  aka      ${api.dossier().aka}`,
             `  city     ${HQ.city} · ${HQ.lat} ${HQ.lon}`,
-            "  genre    hip-hop",
+            `  genre    ${api.dossier().genre}`,
             `  album    ${api.album().title} · ${(api.album().status ?? "").toLowerCase()}`,
-            "  status   under observation",
-            "  seen     under the lamp",
+            `  status   ${api.dossier().status}`,
+            `  seen     ${api.dossier().lastSeen}`,
           );
         } else print(`whois: no record for "${arg}"`);
         break;

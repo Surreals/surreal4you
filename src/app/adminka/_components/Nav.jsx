@@ -9,6 +9,7 @@ const NAV = [
   { href: "/adminka/album", label: "album" },
   { href: "/adminka/links", label: "links" },
   { href: "/adminka/note", label: "note" },
+  { href: "/adminka/texts", label: "texts" },
   { href: "/adminka/guestbook", label: "guestbook" },
 ];
 

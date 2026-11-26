@@ -1,5 +1,9 @@
+import { useRef } from "react";
 import Image from "next/image";
 import { HQ } from "../../lib/feeds";
+
+const NAME = "SRRLOVYCH";
+const KNOCK_MS = 3000;
 
 const Tool = ({ id, label, open, onOpen, badge }) => (
   <button
@@ -17,11 +21,34 @@ const Tool = ({ id, label, open, onOpen, badge }) => (
 // The one line above the block: the mask and the name, rec, Uzhhorod time and the tools.
 const StatusBar = ({ clock, signal, theme, onRec, onToggleTheme, onOpen, open, noteIsNew }) => {
   const next = theme === "day" ? "night" : "day";
+  const step = useRef(0);
+  const last = useRef(0);
+
+  // The way in: the mask, then every letter of the name in order, each within
+  // KNOCK_MS of the last, opens the admin in a new window. A wrong click starts over.
+  const knock = (i) => {
+    const now = Date.now();
+    if (now - last.current > KNOCK_MS) step.current = 0;
+    last.current = now;
+    step.current = i === step.current ? i + 1 : i === 0 ? 1 : 0;
+    if (step.current > NAME.length) {
+      step.current = 0;
+      window.open("/adminka", "_blank");
+    }
+  };
+
   return (
     <div className="status">
-      <span className="flex items-center gap-2 font-display text-base font-black leading-none tracking-tight text-ink">
-        <Image src="/brand/logo-64.png" alt="" width={22} height={22} />
-        SRRLOVYCH
+      <span className="flex select-none items-center gap-2 font-display text-base font-black leading-none tracking-tight text-ink">
+        <Image src="/brand/logo-64.png" alt="" width={22} height={22} onClick={() => knock(0)} />
+        <span className="sr-only">{NAME}</span>
+        <span aria-hidden="true">
+          {[...NAME].map((ch, i) => (
+            <span key={i} onClick={() => knock(i + 1)}>
+              {ch}
+            </span>
+          ))}
+        </span>
       </span>
       <button
         type="button"

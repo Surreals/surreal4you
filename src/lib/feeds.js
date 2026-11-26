@@ -130,3 +130,32 @@ export const BOOT_LINES = [
   "cam-04 ok",
   "one block · uzh · 48.62n 22.29e",
 ];
+
+// Words on the block the admin can change at /adminka/texts. These are the
+// seed values; an empty field in the admin falls back to them.
+export const TEXTS = {
+  dossier: { aka: "srrl · surrealovych", genre: "hip-hop", status: "under observation", lastSeen: "under the lamp" },
+  map: { region: "zakarpattia", state: "subject within range" },
+  // hover-card captions; music and note show the album and note titles instead
+  spots: Object.fromEntries(SPOTS.filter((s) => s.id !== "music" && s.id !== "note").map((s) => [s.id, s.label])),
+  log: AMBIENT_LOG,
+};
+
+const MAX_TEXT = 120;
+const clean = (v) => (typeof v === "string" ? v.trim().slice(0, MAX_TEXT) : "");
+
+// Every known key keeps its seed unless a non-empty string replaces it;
+// unknown keys are dropped.
+const pick = (src, seed) => Object.fromEntries(Object.entries(seed).map(([k, v]) => [k, clean(src?.[k]) || v]));
+
+// Coerce stored texts (any JSON) into the TEXTS shape.
+export function normalizeTexts(raw) {
+  const t = raw && typeof raw === "object" ? raw : {};
+  const log = Array.isArray(t.log) ? t.log.map(clean).filter(Boolean).slice(0, 200) : [];
+  return {
+    dossier: pick(t.dossier, TEXTS.dossier),
+    map: pick(t.map, TEXTS.map),
+    spots: pick(t.spots, TEXTS.spots),
+    log: log.length ? log : TEXTS.log,
+  };
+}

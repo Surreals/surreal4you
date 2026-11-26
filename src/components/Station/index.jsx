@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { AMBIENT_LOG, HQ, SPOTS } from "../../lib/feeds";
+import { HQ, SPOTS } from "../../lib/feeds";
 import { useClock } from "./useClock";
 import StatusBar from "./StatusBar";
 import Scene from "./Scene";
@@ -57,7 +57,7 @@ const Play = () => (
 // The station: one block, a stack of windows, a clock and a log that writes
 // itself. All interaction state lives here; the pieces stay dumb. Day and
 // night are the same block under different light.
-const Station = ({ album, links, settings, products, note, attribution }) => {
+const Station = ({ album, links, settings, products, note, texts, attribution }) => {
   const clock = useClock(HQ.tz);
   const [open, setOpen] = useState([]); // [{ id, x, y, closing }] — last is on top
   const [signal, setSignal] = useState("ok");
@@ -113,7 +113,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
     const schedule = () => {
       id = setTimeout(() => {
         const guest = guests.current.length && Math.random() < 0.5 ? guests.current.shift() : null;
-        log(guest ?? AMBIENT_LOG[Math.floor(Math.random() * AMBIENT_LOG.length)]);
+        log(guest ?? texts.log[Math.floor(Math.random() * texts.log.length)]);
         schedule();
       }, 18000 + Math.random() * 17000);
     };
@@ -122,7 +122,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
       clearTimeout(t);
       clearTimeout(id);
     };
-  }, [log, settings.showStore]);
+  }, [log, settings.showStore, texts.log]);
 
   // An open sheet locks the page behind it (mobile only, see globals.css).
   useEffect(() => {
@@ -333,6 +333,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
     entries: () => entries,
     note: () => note,
     album: () => album,
+    dossier: () => texts.dossier,
     links: () => [...links.main, ...links.side],
     clock: () => clock,
     theme: () => theme,
@@ -352,13 +353,13 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
       case "archive":
         return <Archive />;
       case "subject":
-        return <Subject album={album} links={links} />;
+        return <Subject album={album} links={links} dossier={texts.dossier} />;
       case "note":
         return <Note note={note} />;
       case "log":
         return <Log entries={entries} onSend={sendLine} />;
       case "map":
-        return <Map clock={clock} />;
+        return <Map clock={clock} text={texts.map} />;
       case "terminal":
         return <Terminal api={terminalApi} />;
       default:
@@ -396,6 +397,7 @@ const Station = ({ album, links, settings, products, note, attribution }) => {
         <Scene
           album={album}
           note={note}
+          labels={texts.spots}
           open={openIds}
           signal={signal}
           merchOffline={!settings.showStore}
