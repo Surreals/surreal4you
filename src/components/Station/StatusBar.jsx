@@ -4,6 +4,7 @@ import { HQ } from "../../lib/feeds";
 
 const NAME = "SRRLOVYCH";
 const KNOCK_MS = 3000;
+const TEXT_CLICKS = 5;
 
 const Tool = ({ id, label, open, onOpen, badge }) => (
   <button
@@ -24,14 +25,14 @@ const StatusBar = ({ clock, signal, theme, onRec, onToggleTheme, onOpen, open, n
   const step = useRef(0);
   const last = useRef(0);
 
-  // The way in: the mask, then every letter of the name in order, each within
-  // KNOCK_MS of the last, opens the admin in a new window. A wrong click starts over.
-  const knock = (i) => {
+  // The way in: one click on the mask, then TEXT_CLICKS on the name, each within
+  // KNOCK_MS of the last, opens the admin in a new window. The mask starts over.
+  const knock = (onName) => {
     const now = Date.now();
     if (now - last.current > KNOCK_MS) step.current = 0;
     last.current = now;
-    step.current = i === step.current ? i + 1 : i === 0 ? 1 : 0;
-    if (step.current > NAME.length) {
+    step.current = !onName ? 1 : step.current ? step.current + 1 : 0;
+    if (step.current > TEXT_CLICKS) {
       step.current = 0;
       window.open("/adminka", "_blank");
     }
@@ -40,15 +41,8 @@ const StatusBar = ({ clock, signal, theme, onRec, onToggleTheme, onOpen, open, n
   return (
     <div className="status">
       <span className="flex select-none items-center gap-2 font-display text-base font-black leading-none tracking-tight text-ink">
-        <Image src="/brand/logo-64.png" alt="" width={22} height={22} onClick={() => knock(0)} />
-        <span className="sr-only">{NAME}</span>
-        <span aria-hidden="true">
-          {[...NAME].map((ch, i) => (
-            <span key={i} onClick={() => knock(i + 1)}>
-              {ch}
-            </span>
-          ))}
-        </span>
+        <Image src="/brand/logo-64.png" alt="" width={22} height={22} onClick={() => knock(false)} />
+        <span onClick={() => knock(true)}>{NAME}</span>
       </span>
       <button
         type="button"
